@@ -11,3 +11,8 @@ export async function getAllProducts(): Promise<Product[]> {
   await delay(1000);
   return mockProducts;
 }
+
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  await delay(1000);
+  return mockProducts.find(p => p.slug === slug) || null;
+}
