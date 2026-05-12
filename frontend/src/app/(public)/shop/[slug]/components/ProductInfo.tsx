@@ -31,7 +31,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         </span>
       )}
 
-      <AddToCartForm productId={product.id} price={product.price} />
+      <AddToCartForm product={product} />
     </div>
   );
 }
