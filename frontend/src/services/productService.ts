@@ -1,0 +1,13 @@
+import { mockProducts, Product } from '@/data/mock/products';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export async function getFeaturedProducts(): Promise<Product[]> {
+  await delay(1000);
+  return mockProducts.slice(0, 4);
+}
+
+export async function getAllProducts(): Promise<Product[]> {
+  await delay(1000);
+  return mockProducts;
+}
