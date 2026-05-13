@@ -16,3 +16,9 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   await delay(1000);
   return mockProducts.find(p => p.slug === slug) || null;
 }
+
+export async function getVendorProducts(): Promise<Product[]> {
+  await delay(1000);
+  // In a real app, this would filter by the logged-in vendor's ID.
+  return mockProducts;
+}
