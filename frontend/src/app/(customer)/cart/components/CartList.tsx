@@ -21,7 +21,7 @@ export function CartList() {
       <div className="flex-1 py-12 text-center bg-gray-50 rounded-2xl border border-gray-100">
         <h2 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h2>
         <p className="text-gray-500 mb-6">Looks like you haven't added anything yet.</p>
-        <Link href="/shop" className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-md">
+        <Link href="/shop" className="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-md">
           Continue Shopping
         </Link>
       </div>
@@ -37,7 +37,7 @@ export function CartList() {
           </div>
           <div className="flex-1">
             <Link href={`/shop/${item.product.slug}`}>
-              <h3 className="font-bold text-gray-900 hover:text-blue-600 transition-colors">{item.product.name}</h3>
+              <h3 className="font-bold text-gray-900 hover:text-indigo-600 transition-colors">{item.product.name}</h3>
             </Link>
             <div className="text-sm text-gray-500 mb-2">{item.product.category}</div>
             <div className="font-extrabold text-gray-900">${item.product.price}</div>
@@ -48,7 +48,7 @@ export function CartList() {
               min="1" 
               value={item.quantity} 
               onChange={(e) => updateQuantity(item.product.id, Number(e.target.value))}
-              className="w-16 border border-gray-200 rounded-lg px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-16 border border-gray-200 rounded-lg px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button 
               onClick={() => removeItem(item.product.id)}
@@ -62,3 +62,4 @@ export function CartList() {
     </div>
   );
 }
+

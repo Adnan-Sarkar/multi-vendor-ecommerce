@@ -57,7 +57,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
               </td>
               <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                  <button className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
                     <PencilSimple size={20} />
                   </button>
                   <button 
@@ -82,3 +82,4 @@ export function ProductsTable({ products }: ProductsTableProps) {
     </div>
   );
 }
+

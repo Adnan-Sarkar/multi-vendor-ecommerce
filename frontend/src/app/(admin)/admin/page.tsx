@@ -9,7 +9,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm flex items-center gap-4 hover:shadow-md transition-shadow">
-          <div className="h-12 w-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <CurrencyDollar size={24} weight="bold" />
           </div>
           <div>
@@ -41,3 +41,4 @@ export default async function AdminDashboardPage() {
     </div>
   );
 }
+

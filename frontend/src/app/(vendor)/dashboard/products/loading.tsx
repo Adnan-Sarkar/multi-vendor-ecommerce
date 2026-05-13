@@ -3,7 +3,7 @@ export default function ProductsLoading() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="h-8 w-32 bg-gray-200 rounded animate-pulse" />
-        <div className="h-10 w-36 bg-blue-100 rounded-lg animate-pulse" />
+        <div className="h-10 w-36 bg-indigo-100 rounded-lg animate-pulse" />
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
@@ -23,3 +23,4 @@ export default function ProductsLoading() {
     </div>
   );
 }
+

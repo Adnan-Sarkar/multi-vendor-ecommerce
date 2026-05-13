@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="text-xl font-bold text-white">SuperAdmin</span>
         </div>
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white">
+          <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white">
             <ChartPieSlice size={20} />
             Overview
           </Link>
@@ -51,3 +51,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+

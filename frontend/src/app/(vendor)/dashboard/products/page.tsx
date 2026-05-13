@@ -12,7 +12,7 @@ export default async function VendorProductsPage() {
         <h1 className="text-2xl font-bold text-gray-900">Products</h1>
         <Link 
           href="/dashboard/products/new" 
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors shadow-sm"
+          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-sm"
         >
           <Plus size={20} weight="bold" />
           Add Product
@@ -25,3 +25,4 @@ export default async function VendorProductsPage() {
     </div>
   );
 }
+

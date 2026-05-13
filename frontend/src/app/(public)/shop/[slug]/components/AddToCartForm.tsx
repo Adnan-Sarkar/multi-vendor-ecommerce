@@ -26,9 +26,9 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
         min="1" 
         value={quantity} 
         onChange={(e) => setQuantity(Number(e.target.value))}
-        className="w-20 border border-gray-200 rounded-lg px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-20 border border-gray-200 rounded-lg px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500"
       />
-      <button type="submit" className="flex-1 bg-blue-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg">
+      <button type="submit" className="flex-1 bg-indigo-600 text-white rounded-lg px-6 py-3 font-semibold hover:bg-indigo-700 transition-colors shadow-md hover:shadow-lg">
         Add to Cart - ${(product.price * quantity).toFixed(2)}
       </button>
     </form>

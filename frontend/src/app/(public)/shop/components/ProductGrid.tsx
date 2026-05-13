@@ -10,7 +10,7 @@ export function ProductGrid({ products }: ProductGridProps) {
     <div className="flex-1">
       <div className="mb-6 flex items-center justify-between">
         <span className="text-sm text-gray-500">Showing {products.length} products</span>
-        <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <option>Most Popular</option>
           <option>Newest Arrivals</option>
           <option>Price: Low to High</option>
@@ -25,3 +25,4 @@ export function ProductGrid({ products }: ProductGridProps) {
     </div>
   );
 }
+

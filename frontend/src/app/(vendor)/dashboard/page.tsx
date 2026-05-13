@@ -14,7 +14,7 @@ export default function VendorDashboardPage() {
         <StatCard 
           title="Active Orders" 
           value="24" 
-          icon={<ClipboardText size={24} className="text-blue-600" />} 
+          icon={<ClipboardText size={24} className="text-indigo-600" />} 
           trend="4 pending fulfillment" 
         />
         <StatCard 
@@ -67,3 +67,4 @@ export default function VendorDashboardPage() {
     </div>
   );
 }
+

@@ -48,7 +48,7 @@ export function ProductForm() {
         <label className="text-sm font-bold text-gray-900">Product Name</label>
         <input 
           {...register("name")}
-          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="e.g., iPhone 15 Pro"
         />
         {errors.name && <p className="text-red-500 text-sm font-medium">{errors.name.message}</p>}
@@ -59,7 +59,7 @@ export function ProductForm() {
           <label className="text-sm font-bold text-gray-900">Category</label>
           <select 
             {...register("category")}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
           >
             <option value="">Select Category...</option>
             <option value="Electronics">Electronics</option>
@@ -75,7 +75,7 @@ export function ProductForm() {
             type="number"
             step="0.01"
             {...register("price")}
-            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="0.00"
           />
           {errors.price && <p className="text-red-500 text-sm font-medium">{errors.price.message}</p>}
@@ -87,7 +87,7 @@ export function ProductForm() {
         <textarea 
           {...register("short_description")}
           rows={4}
-          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           placeholder="Briefly describe the product..."
         />
         {errors.short_description && <p className="text-red-500 text-sm font-medium">{errors.short_description.message}</p>}
@@ -98,7 +98,7 @@ export function ProductForm() {
           type="checkbox"
           id="in_stock"
           {...register("in_stock")}
-          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
         />
         <label htmlFor="in_stock" className="text-sm font-medium text-gray-900 cursor-pointer">Product is currently in stock</label>
       </div>
@@ -114,7 +114,7 @@ export function ProductForm() {
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className="bg-blue-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-indigo-600 text-white px-8 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? "Creating..." : "Create Product"}
         </button>
@@ -122,3 +122,4 @@ export function ProductForm() {
     </form>
   );
 }
+

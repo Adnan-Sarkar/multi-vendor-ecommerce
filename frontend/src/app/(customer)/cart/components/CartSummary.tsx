@@ -42,9 +42,10 @@ export function CartSummary() {
         </div>
       </div>
 
-      <Link href="/checkout" className="block w-full text-center bg-blue-600 text-white rounded-lg px-6 py-4 font-bold hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl">
+      <Link href="/checkout" className="block w-full text-center bg-indigo-600 text-white rounded-lg px-6 py-4 font-bold hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl">
         Proceed to Checkout
       </Link>
     </div>
   );
 }
+

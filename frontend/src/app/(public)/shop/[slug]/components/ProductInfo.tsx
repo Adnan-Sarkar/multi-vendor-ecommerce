@@ -8,7 +8,7 @@ interface ProductInfoProps {
 export function ProductInfo({ product }: ProductInfoProps) {
   return (
     <div className="flex flex-col">
-      <div className="text-sm font-semibold text-blue-600 uppercase tracking-wider mb-2">
+      <div className="text-sm font-semibold text-indigo-600 uppercase tracking-wider mb-2">
         {product.category}
       </div>
       <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">

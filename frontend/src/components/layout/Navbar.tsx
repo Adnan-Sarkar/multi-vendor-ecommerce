@@ -19,7 +19,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-xl font-bold tracking-tight text-blue-600">
+          <Link href="/" className="text-xl font-bold tracking-tight text-indigo-600">
             MultiVendor
           </Link>
           <nav className="hidden md:flex gap-4">
@@ -34,7 +34,7 @@ export function Navbar() {
             <input 
               type="text" 
               placeholder="Search products..." 
-              className="w-full h-10 pl-10 pr-4 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              className="w-full h-10 pl-10 pr-4 rounded-full border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-shadow"
             />
             <MagnifyingGlass className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           </div>
@@ -47,7 +47,7 @@ export function Navbar() {
           <Link href="/cart" className="relative p-2 text-gray-600 hover:text-black transition-colors">
             <ShoppingCart size={24} weight="regular" />
             {mounted && totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white border-2 border-white">
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white border-2 border-white">
                 {totalItems}
               </span>
             )}
@@ -57,3 +57,4 @@ export function Navbar() {
     </header>
   );
 }
+
