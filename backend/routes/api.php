@@ -1,8 +1,19 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\Api\V1\AuthController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Health
+Route::get('/health', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'API is running',
+        'version' => 'v1',
+    ]);
+});
+
+Route::prefix('v1')->group(function () {
+    // Auth routes
+    Route::prefix('auth')->controller(AuthController::class)->group(function () {
+        Route::post('/register', 'register');
+    });
+});

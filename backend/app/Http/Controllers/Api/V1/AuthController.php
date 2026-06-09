@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Auth\RegisterRequest;
+use App\Services\AuthService;
+use App\Traits\ApiResponse;
+
+class AuthController extends Controller
+{
+    use ApiResponse;
+    protected AuthService $authService;
+
+    /**
+     * @param AuthService $authService
+     */
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
+    public function register(RegisterRequest $request) {
+        $result = $this->authService->register($request->validated());
+
+        return $this->success($result, 'Customer registered successfully', 201);
+    }
+}
