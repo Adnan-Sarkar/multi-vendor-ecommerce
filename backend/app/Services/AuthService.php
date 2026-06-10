@@ -50,6 +50,6 @@ class AuthService
     }
 
     public function logout(): void {
-        auth()->user()->currentAccessToken()->delete();
+        auth()->user()->tokens()->delete();
     }
 }
