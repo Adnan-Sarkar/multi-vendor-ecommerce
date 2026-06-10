@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
         // private routes
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', 'logout');
+            Route::get('/profile', 'getProfile');
         });
     });
 });

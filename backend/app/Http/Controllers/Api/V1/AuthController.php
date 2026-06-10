@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
@@ -22,13 +23,13 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(RegisterRequest $request) {
+    public function register(RegisterRequest $request): JsonResponse {
         $result = $this->authService->register($request->validated());
 
         return $this->success($result, 'Customer registered successfully', 201);
     }
 
-    public function login(LoginRequest $request) {
+    public function login(LoginRequest $request): JsonResponse {
         try {
             $result = $this->authService->login($request->validated());
 
@@ -38,9 +39,16 @@ class AuthController extends Controller
         }
     }
 
-    public function logout() {
+    public function logout(): JsonResponse {
         $this->authService->logout();
 
         return $this->success(null, "Logout successful", 200);
+    }
+
+    public function getProfile(): JsonResponse {
+        return $this->success(
+            $this->authService->getProfile(),
+            'Customer profile retrieved successfully'
+        );
     }
 }

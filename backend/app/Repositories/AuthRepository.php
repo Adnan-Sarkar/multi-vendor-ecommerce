@@ -13,4 +13,16 @@ class AuthRepository
     public function findByEmail(string $email): ?User {
         return User::where('email', $email)->first();
     }
+
+    public function getAuthenticatedUser(): User {
+        $user = auth()->user();
+
+        if ($user->role === 'customer') {
+            $user->load('customerProfile');
+        } elseif ($user->role === 'vendor') {
+            $user->load('vendorProfile');
+        }
+
+        return $user;
+    }
 }

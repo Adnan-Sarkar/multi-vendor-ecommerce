@@ -25,6 +25,8 @@ class AuthService
         $user = $this->authRepository->createUser($data);
 
         $user->assignRole('customer');
+        $user->customerProfile()->create([]);
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
@@ -51,5 +53,10 @@ class AuthService
 
     public function logout(): void {
         auth()->user()->tokens()->delete();
+    }
+
+    public function getProfile(): UserResource {
+        $user = $this->authRepository->getAuthenticatedUser();
+        return new UserResource($user);
     }
 }

@@ -28,6 +28,8 @@ class UserResource extends JsonResource
             'is_active' => $this->is_active,
             'email_verified_at' => $this->email_verified_at,
             'created_at' => $this->created_at,
+            'customer_profile' => new CustomerProfileResource($this->whenLoaded('customerProfile')),
+            'vendor_profile' => $this->whenLoaded('vendorProfile'),
         ];
     }
 }
