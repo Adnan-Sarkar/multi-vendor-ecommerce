@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Resources\Api\V1\UserResource;
 use App\Repositories\AuthRepository;
 
 class AuthService
@@ -18,13 +19,14 @@ class AuthService
 
     public function register(array $data) {
         $data['role'] = 'customer';
+        $data['is_active'] = true;
         $user = $this->authRepository->createUser($data);
 
         $user->assignRole('customer');
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
         ];
     }
