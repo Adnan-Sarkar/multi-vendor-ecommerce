@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Exceptions\AuthenticationException;
 use App\Http\Resources\Api\V1\UserResource;
-use App\Models\User;
+use App\Mail\OtpMail;
 use App\Repositories\AuthRepository;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Throwable;
 
 class AuthService
@@ -117,5 +119,73 @@ class AuthService
 
             return new UserResource($this->authRepository->getAuthenticatedUser());
         });
+    }
+
+    public function forgotPassword(string $email): void {
+        $user = $this->authRepository->findByEmail($email);
+
+        $otp = (string) rand(100000, 999999);
+
+        DB::table('password_reset_tokens')->updateOrInsert(
+            ['email' => $email],
+            ['token' => $otp, 'created_at' => now()],
+        );
+
+        Mail::to($email)->send(new OtpMail($otp, $user->name));
+    }
+
+    /**
+     * @throws AuthenticationException
+     * @throws Throwable
+     */
+    public function resetPassword(array $data): void {
+        $user = $this->authRepository->findByEmail($data['email']);
+
+        $otpExists = DB::table('password_reset_tokens')
+            ->where('email', $data['email'])
+            ->first();
+
+        // OTP exists?
+        if (!$otpExists) {
+            throw new AuthenticationException('Invalid credentials', 401);
+        }
+
+        // OTP expired?
+        if (Carbon::parse($otpExists->created_at)->addMinutes(10)->isPast()) {
+            DB::table('password_reset_tokens')
+                ->where('email', $data['email'])
+                ->delete();
+            throw new AuthenticationException('OTP has expired', 401);
+        }
+
+        // OTP match?
+        if ($data['otp'] !== $otpExists->token) {
+            throw new AuthenticationException('Invalid credentials', 401);
+        }
+
+        // Update password and delete OTP
+        DB::transaction(function () use ($data, $user) {
+            $user->update([
+                'password' => $data['password']
+            ]);
+
+            DB::table('password_reset_tokens')
+                ->where('email', $data['email'])
+                ->delete();
+        });
+    }
+
+    /**
+     * @throws AuthenticationException
+     */
+    public function changePassword(array $data): void {
+        $user = auth()->user();
+
+        // Check current password
+        if (!Hash::check($data['current_password'], $user->password)) {
+            throw new AuthenticationException('Invalid credentials', 401);
+        }
+
+        $this->authRepository->updatePassword($user, $data['new_password']);
     }
 }

@@ -16,6 +16,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->controller(AuthController::class)->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login');
+        Route::post('/forgot-password', 'forgotPassword');
+        Route::post('/reset-password', 'resetPassword');
 
         // private routes
         Route::middleware('auth:sanctum')->group(function () {
@@ -23,6 +25,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/profile', 'getProfile');
             Route::patch('/profile/customer', 'updateCustomer');
             Route::patch('/profile/vendor', 'updateVendor');
+            Route::post('/change-password', 'changePassword');
         });
     });
 });

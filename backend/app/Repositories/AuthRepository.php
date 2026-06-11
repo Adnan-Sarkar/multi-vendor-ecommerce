@@ -39,4 +39,12 @@ class AuthRepository
         $user->vendorProfile()->update($data);
         return $user;
     }
+
+    public function updatePassword(User $user, string $password): void {
+        $user->update([
+            'password' => $password
+        ]);
+
+        $user->tokens()->delete();
+    }
 }
