@@ -6,6 +6,8 @@ use App\Exceptions\AuthenticationException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
+use App\Http\Requests\Api\V1\Auth\UpdateCustomerProfileRequest;
+use App\Http\Requests\Api\V1\Auth\UpdateVendorProfileRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -50,5 +52,23 @@ class AuthController extends Controller
             $this->authService->getProfile(),
             'Customer profile retrieved successfully'
         );
+    }
+
+    public function updateCustomer(UpdateCustomerProfileRequest $request): JsonResponse {
+        try {
+            $result = $this->authService->updateCustomerProfile($request->validated());
+            return $this->success($result, 'Customer profile updated successfully');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function updateVendor(UpdateVendorProfileRequest $request): JsonResponse {
+        try {
+            $result = $this->authService->updateVendorProfile($request->validated());
+            return $this->success($result, 'Vendor profile updated successfully');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
     }
 }

@@ -25,4 +25,18 @@ class AuthRepository
 
         return $user;
     }
+
+    public function updateUser(User $user, array $data): User {
+        $user->update($data);
+        return $user;
+    }
+
+    public function updateCustomerProfile(User $user, array $data): User {
+        $user->customerProfile()->update($data);
+        return $user;
+    }
+    public function updateVendorProfile(User $user, array $data): User {
+        $user->vendorProfile()->update($data);
+        return $user;
+    }
 }

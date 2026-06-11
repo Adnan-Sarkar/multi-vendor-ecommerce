@@ -21,6 +21,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', 'logout');
             Route::get('/profile', 'getProfile');
+            Route::patch('/profile/customer', 'updateCustomer');
+            Route::patch('/profile/vendor', 'updateVendor');
         });
     });
 });
