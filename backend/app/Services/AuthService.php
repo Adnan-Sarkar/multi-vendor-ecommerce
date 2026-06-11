@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Throwable;
 
 class AuthService
@@ -31,6 +32,45 @@ class AuthService
 
         $user->assignRole('customer');
         $user->customerProfile()->create([]);
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return [
+            'user' => new UserResource($user),
+            'token' => $token,
+        ];
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function registerVendor(array $data): array {
+        $userData = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => 'vendor',
+            'is_active' => true,
+            'password' => $data['password'],
+            'phone' => $data['phone'],
+        ];
+
+        $vendorProfileData = [
+            'shop_name' => $data['shop_name'],
+            'slug' => Str::slug($data['shop_name']),
+            'description' => $data['description'],
+            'address' => $data['address'],
+            'city' => $data['city'],
+            'state' => $data['state'],
+        ];
+
+        $user = DB::transaction(function () use ($userData, $vendorProfileData) {
+            $newUser = $this->authRepository->createUser($userData);
+            $newUser->assignRole('vendor');
+
+            $newUser->vendorProfile()->create($vendorProfileData);
+
+            return $newUser->load('vendorProfile');
+        });
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

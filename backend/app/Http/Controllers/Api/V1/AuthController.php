@@ -11,6 +11,7 @@ use App\Http\Requests\Api\V1\Auth\RegisterRequest;
 use App\Http\Requests\Api\V1\Auth\ResetPasswordRequest;
 use App\Http\Requests\Api\V1\Auth\UpdateCustomerProfileRequest;
 use App\Http\Requests\Api\V1\Auth\UpdateVendorProfileRequest;
+use App\Http\Requests\Api\V1\Auth\VendorRegisterRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -32,6 +33,16 @@ class AuthController extends Controller
         $result = $this->authService->register($request->validated());
 
         return $this->success($result, 'Customer registered successfully', 201);
+    }
+
+    public function registerVendor(VendorRegisterRequest $request):JsonResponse {
+        try {
+            $result = $this->authService->registerVendor($request->validated());
+
+            return $this->success($result, 'Vendor registered successfully', 201);
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function login(LoginRequest $request): JsonResponse {
