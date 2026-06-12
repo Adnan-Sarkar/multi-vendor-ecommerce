@@ -34,7 +34,7 @@ Route::prefix('v1')->group(function () {
     // Category routes
     Route::prefix('/category')->controller(CategoryController::class)->group(function () {
         // private routes
-        Route::middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
+        Route::middleware(['auth:sanctum', 'permission:manage-categories,api'])->group(function () {
             Route::post('/', 'store');
             Route::patch('/{category}', 'update');
             Route::delete('/{category}', 'destroy');
