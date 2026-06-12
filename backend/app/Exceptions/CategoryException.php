@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class CategoryException extends Exception
+class CategoryException extends BaseException
 {
 
     public function __construct($message = 'Category not found', $code = 404)
