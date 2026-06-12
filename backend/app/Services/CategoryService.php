@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\CategoryException;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Support\Str;
@@ -28,5 +29,17 @@ class CategoryService
             $data['slug'] = Str::slug($data['name']);
         }
         return $this->categoryRepository->updateCategory($category, $data);
+    }
+
+    /**
+     * @throws CategoryException
+     */
+    public function deleteCategory(Category $category): void
+    {
+        $deleted = $this->categoryRepository->deleteCategory($category);
+
+        if (!$deleted) {
+            throw new CategoryException('Failed to delete category', 500);
+        }
     }
 }

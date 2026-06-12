@@ -51,4 +51,17 @@ class CategoryController extends Controller
             return $this->error($e->getMessage(), $e->getCode());
         }
     }
+
+    public function destroy(Category $category): JsonResponse {
+        try {
+            $this->categoryService->deleteCategory($category);
+
+            return $this->success(
+                null,
+                'Category deleted successfully',
+                200);
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
 }

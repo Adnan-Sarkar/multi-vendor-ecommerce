@@ -15,4 +15,8 @@ class CategoryRepository
 
         return $category->fresh();
     }
+
+    public function deleteCategory(Category $category): bool {
+        return $category->delete();
+    }
 }
