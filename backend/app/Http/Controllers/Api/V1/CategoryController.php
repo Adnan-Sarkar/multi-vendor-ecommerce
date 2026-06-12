@@ -39,7 +39,32 @@ class CategoryController extends Controller
         }
     }
 
-    public function update(Category $category, UpdateCategoryRequest $request): JsonResponse {
+    public function index(): JsonResponse {
+        try {
+            $result = $this->categoryService->getAllCategories();
+
+            return $this->paginated(
+                CategoryResource::collection($result),
+                'Categories retrieved successfully'
+            );
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function show(Category $category): JsonResponse {
+        try {
+            $result = $this->categoryService->getCategoryDetails($category);
+
+            return $this->success(
+                new CategoryResource($result),
+                'Category details retrieved successfully');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage(), $e->getCode());
+        }
+    }
+
+    public function update(UpdateCategoryRequest $request, Category $category): JsonResponse {
         try {
             $category = $this->categoryService->updateCategory($category, $request->validated());
 

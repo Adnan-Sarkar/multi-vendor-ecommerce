@@ -33,6 +33,9 @@ Route::prefix('v1')->group(function () {
 
     // Category routes
     Route::prefix('/category')->controller(CategoryController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{category}', 'show');
+
         // private routes
         Route::middleware(['auth:sanctum', 'permission:manage-categories,api'])->group(function () {
             Route::post('/', 'store');

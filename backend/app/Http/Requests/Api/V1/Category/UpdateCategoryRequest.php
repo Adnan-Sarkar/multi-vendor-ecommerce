@@ -23,6 +23,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'parent_id' => 'sometimes|nullable|integer|exists:categories,id',
             'name' => 'sometimes|string|min:3',
             'description' => 'sometimes|string|min:5',
             'image' => 'sometimes|string|url',
