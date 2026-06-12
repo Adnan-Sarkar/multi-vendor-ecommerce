@@ -36,6 +36,7 @@ Route::prefix('v1')->group(function () {
         // private routes
         Route::middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
             Route::post('/', 'store');
+            Route::patch('/{category}', 'update');
         });
     });
 });

@@ -22,4 +22,11 @@ class CategoryService
         $data['slug'] = Str::slug($data['name']);
         return $this->categoryRepository->createCategory($data);
     }
+
+    public function updateCategory(Category $category, array $data): Category {
+        if ($data['name']) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+        return $this->categoryRepository->updateCategory($category, $data);
+    }
 }
