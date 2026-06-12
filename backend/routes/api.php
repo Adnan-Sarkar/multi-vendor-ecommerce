@@ -1,6 +1,7 @@
 <?php
 
 use \App\Http\Controllers\Api\V1\AuthController;
+use \App\Http\Controllers\Api\V1\CategoryController;
 
 // Health
 Route::get('/health', function () {
@@ -27,6 +28,14 @@ Route::prefix('v1')->group(function () {
             Route::patch('/profile/customer', 'updateCustomer');
             Route::patch('/profile/vendor', 'updateVendor');
             Route::post('/change-password', 'changePassword');
+        });
+    });
+
+    // Category routes
+    Route::prefix('/category')->controller(CategoryController::class)->group(function () {
+        // private routes
+        Route::middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
+            Route::post('/', 'store');
         });
     });
 });
