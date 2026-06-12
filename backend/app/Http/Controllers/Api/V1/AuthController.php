@@ -15,6 +15,7 @@ use App\Http\Requests\Api\V1\Auth\VendorRegisterRequest;
 use App\Services\AuthService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -35,24 +36,22 @@ class AuthController extends Controller
         return $this->success($result, 'Customer registered successfully', 201);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function registerVendor(VendorRegisterRequest $request):JsonResponse {
-        try {
-            $result = $this->authService->registerVendor($request->validated());
+        $result = $this->authService->registerVendor($request->validated());
 
-            return $this->success($result, 'Vendor registered successfully', 201);
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        return $this->success($result, 'Vendor registered successfully', 201);
     }
 
+    /**
+     * @throws AuthenticationException
+     */
     public function login(LoginRequest $request): JsonResponse {
-        try {
-            $result = $this->authService->login($request->validated());
+        $result = $this->authService->login($request->validated());
 
-            return $this->success($result, 'Login successful', 200);
-        } catch (AuthenticationException $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        return $this->success($result, 'Login successful');
     }
 
     public function logout(): JsonResponse {
@@ -68,51 +67,46 @@ class AuthController extends Controller
         );
     }
 
+    /**
+     * @throws Throwable
+     */
     public function updateCustomer(UpdateCustomerProfileRequest $request): JsonResponse {
-        try {
-            $result = $this->authService->updateCustomerProfile($request->validated());
-            return $this->success($result, 'Customer profile updated successfully');
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        $result = $this->authService->updateCustomerProfile($request->validated());
+
+        return $this->success($result, 'Customer profile updated successfully');
     }
 
+    /**
+     * @throws Throwable
+     */
     public function updateVendor(UpdateVendorProfileRequest $request): JsonResponse {
-        try {
-            $result = $this->authService->updateVendorProfile($request->validated());
-            return $this->success($result, 'Vendor profile updated successfully');
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        $result = $this->authService->updateVendorProfile($request->validated());
+
+        return $this->success($result, 'Vendor profile updated successfully');
     }
 
     public function forgotPassword(ForgotPasswordRequest $request): JsonResponse {
-        try {
-            $this->authService->forgotPassword($request->email);
+        $this->authService->forgotPassword($request->email);
 
-            return $this->success(null, 'OTP sends successfully');
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        return $this->success(null, 'OTP sends successfully');
     }
 
+    /**
+     * @throws Throwable
+     * @throws AuthenticationException
+     */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse {
-        try {
-            $this->authService->resetPassword($request->validated());
+        $this->authService->resetPassword($request->validated());
 
-            return $this->success(null, 'Password reset successfully');
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        return $this->success(null, 'Password reset successfully');
     }
 
+    /**
+     * @throws AuthenticationException
+     */
     public function changePassword(ChangePasswordRequest $request): JsonResponse {
-        try {
-            $this->authService->changePassword($request->validated());
+        $this->authService->changePassword($request->validated());
 
-            return $this->success(null, 'Password changed successfully');
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage(), $e->getCode());
-        }
+        return $this->success(null, 'Password changed successfully');
     }
 }
