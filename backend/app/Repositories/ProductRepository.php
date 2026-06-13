@@ -10,4 +10,8 @@ class ProductRepository
     {
         return Product::create($data);
     }
+
+    public function addProductImages(Product $product, array $data): void {
+        $product->images()->createMany($data['images']);
+    }
 }

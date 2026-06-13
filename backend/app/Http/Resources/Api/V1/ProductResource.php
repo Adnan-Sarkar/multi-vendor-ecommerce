@@ -72,6 +72,8 @@ class ProductResource extends JsonResource
 
             'vendor' => new VendorProfileResource($this->whenLoaded('vendor')),
 
+            'images' => ProductImageResource::collection($this->whenLoaded('images')),
+
             // Timestamps
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

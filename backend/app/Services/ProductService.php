@@ -47,4 +47,10 @@ class ProductService
             return $product->load(['categories', 'tags', 'vendor']);
         });
     }
+
+    public function addProductImages(Product $product, array $data): Product {
+        $this->productRepository->addProductImages($product, $data);
+
+        return $product->load('images');
+    }
 }
