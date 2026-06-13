@@ -9,7 +9,17 @@ class Product extends Model
 {
     use SoftDeletes;
 
+    protected $attributes = [
+        'status' => 'pending',
+        'is_featured' => false,
+        'views' => 0,
+        'manage_stock' => true,
+        'in_stock' => true,
+        'weight' => 0,
+    ];
+
     protected $fillable = [
+        'vendor_id',
         'name',
         'slug',
         'sku',

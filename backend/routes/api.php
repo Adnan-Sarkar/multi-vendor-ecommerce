@@ -2,6 +2,7 @@
 
 use \App\Http\Controllers\Api\V1\AuthController;
 use \App\Http\Controllers\Api\V1\CategoryController;
+use \App\Http\Controllers\Api\V1\ProductController;
 
 // Health
 Route::get('/health', function () {
@@ -41,6 +42,14 @@ Route::prefix('v1')->group(function () {
             Route::post('/', 'store');
             Route::patch('/{category}', 'update');
             Route::delete('/{category}', 'destroy');
+        });
+    });
+
+    // Product routes
+    Route::prefix('/product')->controller(ProductController::class)->group(function () {
+        // Private routes
+        Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->group(function () {
+            Route::post('/', 'store');
         });
     });
 });
