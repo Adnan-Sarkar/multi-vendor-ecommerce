@@ -85,7 +85,11 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'success' => false,
                 'message' => app()->isProduction() ? 'Server error' : $e->getMessage(),
-                'errors' => null,
+                'errors' => app()->isProduction() ? null : [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         });
     })->create();
