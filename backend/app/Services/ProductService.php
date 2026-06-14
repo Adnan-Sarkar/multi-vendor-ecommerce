@@ -7,6 +7,7 @@ use App\Models\ProductVariant;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use \Illuminate\Pagination\LengthAwarePaginator;
 use Throwable;
 
 class ProductService
@@ -48,6 +49,43 @@ class ProductService
 
             return $product->load(['categories', 'tags', 'vendor']);
         });
+    }
+
+    public function getMyProducts(): LengthAwarePaginator
+    {
+        $vendorId = auth()->user()->vendorProfile->id;
+
+        return $this->productRepository->getVendorProducts($vendorId);
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function updateProduct(Product $product, array $data): Product {
+        if (isset($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+
+        $categories = $data['categories'] ?? [];
+        $tags = $data['tags'] ?? [];
+        unset($data['categories'], $data['tags']);
+
+        return DB::transaction(function () use ($product, $data, $categories, $tags) {
+            $this->productRepository->updateProduct($product, $data);
+
+            if (!empty($categories)) {
+                $product->categories()->sync($categories);
+            }
+            if (!empty($tags)) {
+                $product->tags()->sync($tags);
+            }
+
+            return $product->load(['categories', 'tags', 'images', 'vendor']);
+        });
+    }
+
+    public function deleteProduct(Product $product): void {
+        $this->productRepository->deleteProduct($product);
     }
 
     public function addProductImages(Product $product, array $data): Product {

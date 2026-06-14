@@ -49,9 +49,12 @@ Route::prefix('v1')->group(function () {
     Route::prefix('/product')->controller(ProductController::class)->group(function () {
         // Private routes
         Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->group(function () {
+            Route::get('/my-products', 'myProducts');
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');
             Route::post('/{product}/variants', 'storeProductVariant');
+            Route::patch('/{product}', 'update');
+            Route::delete('/{product}', 'destroy');
         });
     });
 });
