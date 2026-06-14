@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
+    protected $attributes = [
+        'in_stock' => true,
+    ];
+
     protected $fillable = [
         'sku',
         'price',

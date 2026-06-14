@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ProductService
 {
@@ -20,7 +22,7 @@ class ProductService
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function createProduct(array $data): Product {
         $user = auth()->user();
@@ -52,5 +54,23 @@ class ProductService
         $this->productRepository->addProductImages($product, $data);
 
         return $product->load('images');
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function createProductVariant(Product $product, array $data): ProductVariant {
+        $data['sku'] = $product->sku . '-' . Str::random(6);
+
+        $attributeIds = $data['attributes'];
+        unset($data['attributes']);
+
+        return DB::transaction(function () use ($product, $data, $attributeIds) {
+            $productVariant = $this->productRepository->createProductVariant($product, $data);
+
+            $productVariant->attributeValues()->attach($attributeIds);
+
+            return $productVariant->load('attributeValues.attribute');
+        });
     }
 }

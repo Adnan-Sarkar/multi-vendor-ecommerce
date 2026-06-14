@@ -51,6 +51,7 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->group(function () {
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');
+            Route::post('/{product}/variants', 'storeProductVariant');
         });
     });
 });
