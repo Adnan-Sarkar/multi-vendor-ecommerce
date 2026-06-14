@@ -54,4 +54,24 @@ class ProductRepository
     public function createProductVariant(Product $product, array $data): ProductVariant {
         return $product->variants()->create($data);
     }
+
+    public function getPendingProducts(): LengthAwarePaginator {
+        return Product::where('status', 'pending')
+            ->with(['images', 'vendor', 'categories', 'variants'])
+            ->paginate(20);
+    }
+
+    public function approveProduct(Product $product): void {
+        $product->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+        ]);
+    }
+
+    public function rejectProduct(Product $product, string $rejectionReason): void {
+        $product->update([
+            'status' => 'rejected',
+            'rejection_reason' => $rejectionReason,
+        ]);
+    }
 }

@@ -119,4 +119,18 @@ class ProductService
             return $productVariant->load('attributeValues.attribute');
         });
     }
+
+    public function getPendingProducts(): LengthAwarePaginator {
+        return $this->productRepository->getPendingProducts();
+    }
+
+    public function approveProduct(Product $product): Product {
+        $this->productRepository->approveProduct($product);
+
+        return $product->refresh();
+    }
+
+    public function rejectProduct(Product $product, string $rejectionReason): void {
+        $this->productRepository->rejectProduct($product, $rejectionReason);
+    }
 }

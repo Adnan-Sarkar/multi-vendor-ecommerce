@@ -3,6 +3,7 @@
 use \App\Http\Controllers\Api\V1\AuthController;
 use \App\Http\Controllers\Api\V1\CategoryController;
 use \App\Http\Controllers\Api\V1\ProductController;
+use \App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
 
 // Health
 Route::get('/health', function () {
@@ -60,5 +61,16 @@ Route::prefix('v1')->group(function () {
         // Public routes
         Route::get('/', 'index');
         Route::get('/{product}', 'show');
+    });
+
+    // Admin routes
+    Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
+
+        // Admin product management
+        Route::prefix('/products')->controller(AdminProductController::class)->group(function () {
+            Route::get('/', 'index');
+            Route::post('/{product}/approve', 'approve');
+            Route::post('/{product}/reject', 'reject');
+        });
     });
 });
