@@ -29,6 +29,24 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
+    public function index(): JsonResponse {
+        $result = $this->productService->getAllProducts();
+
+        return $this->paginated(
+            ProductResource::collection($result),
+            'Products retrieved successfully'
+        );
+    }
+
+    public function show(Product $product): JsonResponse {
+        $result = $this->productService->getProductDetails($product);
+
+        return $this->success(
+            new ProductResource($result),
+            'Product details retrieved successfully'
+        );
+    }
+
     /**
      * @throws Throwable
      */

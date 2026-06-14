@@ -13,6 +13,25 @@ class ProductRepository
         return Product::create($data);
     }
 
+    public function getAllProducts(): LengthAwarePaginator
+    {
+        return Product::where('status', 'approved')
+            ->with(['images', 'tags', 'categories', 'vendor'])
+            ->paginate(20);
+    }
+
+    public function getProductDetails(Product $product): Product
+    {
+        return $product->load([
+            'vendor',
+            'categories',
+            'tags',
+            'images',
+            'variants',
+            'reviews',
+            ]);
+    }
+
     public function updateProduct(Product $product, array $data): void {
         $product->update($data);
     }

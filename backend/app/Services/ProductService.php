@@ -51,6 +51,14 @@ class ProductService
         });
     }
 
+    public function getAllProducts(): LengthAwarePaginator {
+        return $this->productRepository->getAllProducts();
+    }
+
+    public function getProductDetails(Product $product): Product {
+        return $this->productRepository->getProductDetails($product);
+    }
+
     public function getMyProducts(): LengthAwarePaginator
     {
         $vendorId = auth()->user()->vendorProfile->id;
