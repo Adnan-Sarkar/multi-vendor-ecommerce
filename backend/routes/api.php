@@ -4,6 +4,7 @@ use \App\Http\Controllers\Api\V1\AuthController;
 use \App\Http\Controllers\Api\V1\CategoryController;
 use \App\Http\Controllers\Api\V1\ProductController;
 use \App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
+use \App\Http\Controllers\Api\V1\CartController;
 
 // Health
 Route::get('/health', function () {
@@ -61,6 +62,15 @@ Route::prefix('v1')->group(function () {
         // Public routes
         Route::get('/', 'index');
         Route::get('/{product}', 'show');
+    });
+
+    // Cart routes
+    Route::prefix('/cart')->controller(CartController::class)->group(function () {
+        // Private routes
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/', 'getCart');
+            Route::post('/', 'addToCart');
+        });
     });
 
     // Admin routes
