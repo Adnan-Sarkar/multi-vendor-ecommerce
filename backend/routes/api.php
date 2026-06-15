@@ -70,6 +70,9 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', 'getCart');
             Route::post('/', 'addToCart');
+            Route::patch('/{cartItem}', 'updateCartItem');
+            Route::delete('/{cartItem}', 'removeCartItem');
+            Route::delete('/', 'clearCart');
         });
     });
 

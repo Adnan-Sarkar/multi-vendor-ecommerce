@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Repositories\CartRepository;
@@ -41,5 +42,20 @@ class CartService
         $userId = auth()->user()->id;
 
         return $this->cartRepository->getCart($userId);
+    }
+
+    public function updateCartItem(CartItem $cartItem, int $quantity): CartItem {
+        return $this->cartRepository->updateCartItem($cartItem, $quantity);
+    }
+
+    public function removeCartItem(CartItem $cartItem): void {
+        $this->cartRepository->removeCartItem($cartItem);
+    }
+
+    public function clearCart(): void {
+        $userId = auth()->user()->id;
+
+        $cart = $this->cartRepository->getOrCreateCart($userId);
+        $this->cartRepository->clearCart($cart);
     }
 }
