@@ -5,6 +5,7 @@ use \App\Http\Controllers\Api\V1\CategoryController;
 use \App\Http\Controllers\Api\V1\ProductController;
 use \App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
 use \App\Http\Controllers\Api\V1\CartController;
+use \App\Http\Controllers\Api\V1\AddressController;
 
 // Health
 Route::get('/health', function () {
@@ -73,6 +74,16 @@ Route::prefix('v1')->group(function () {
             Route::patch('/{cartItem}', 'updateCartItem');
             Route::delete('/{cartItem}', 'removeCartItem');
             Route::delete('/', 'clearCart');
+        });
+    });
+
+    Route::prefix('/address')->controller(AddressController::class)->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::patch('/{address}', 'update');
+            Route::delete('/{address}', 'destroy');
+            Route::patch('/{address}/set-default', 'setDefaultAddress');
         });
     });
 

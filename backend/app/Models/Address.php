@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
+    protected $attributes = [
+        'is_default' => false
+    ];
+
     protected $fillable = [
         'user_id',
         'name',
