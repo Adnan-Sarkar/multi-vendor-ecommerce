@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderVendor extends Model
 {
+    protected $attributes = [
+        'status' => 'pending',
+        'shipping_cost' => 0,
+        'commission' => 0,
+        'vendor_earning' => 0,
+    ];
+
     protected $fillable = [
         'order_id',
         'vendor_id',

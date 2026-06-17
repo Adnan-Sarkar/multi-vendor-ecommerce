@@ -6,6 +6,7 @@ use \App\Http\Controllers\Api\V1\ProductController;
 use \App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
 use \App\Http\Controllers\Api\V1\CartController;
 use \App\Http\Controllers\Api\V1\AddressController;
+use \App\Http\Controllers\Api\V1\OrderController;
 
 // Health
 Route::get('/health', function () {
@@ -77,6 +78,7 @@ Route::prefix('v1')->group(function () {
         });
     });
 
+    // Address routes
     Route::prefix('/address')->controller(AddressController::class)->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', 'index');
@@ -87,7 +89,14 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    // Admin routes
+    // Order routes
+    Route::prefix('/order')->controller(OrderController::class)->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/', 'store');
+        });
+    });
+
+        // Admin routes
     Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
 
         // Admin product management

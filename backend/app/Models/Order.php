@@ -9,6 +9,13 @@ class Order extends Model
 {
     use SoftDeletes;
 
+    protected $attributes = [
+        'coupon_discount' => 0,
+        'shipping_cost' => 0,
+        'status' => 'pending',
+        'payment_status' => 'pending',
+    ];
+
     protected $fillable = [
         'user_id',
         'shipping_address_id',
