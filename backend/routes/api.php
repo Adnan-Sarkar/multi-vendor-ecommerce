@@ -95,6 +95,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/', 'index');
             Route::get('/{order}', 'show');
             Route::post('/', 'store');
+            Route::patch('/{order}/cancel', 'cancel');
         });
     });
 

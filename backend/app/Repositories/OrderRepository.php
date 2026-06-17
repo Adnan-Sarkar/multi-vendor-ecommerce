@@ -34,4 +34,13 @@ class OrderRepository
             'orderItems',
         ]);
     }
+
+    public function cancelOrder(Order $order, string $reason): void
+    {
+        $order->update([
+            'status' => 'cancelled',
+            'cancellation_reason' => $reason,
+            'cancelled_at' => now()
+        ]);
+    }
 }

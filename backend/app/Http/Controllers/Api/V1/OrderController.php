@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Exceptions\BaseException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Order\CancelOrderRequest;
 use App\Http\Requests\Api\V1\Order\CheckoutRequest;
 use App\Http\Resources\Api\V1\OrderResource;
 use App\Models\Order;
@@ -54,6 +55,22 @@ class OrderController extends Controller
             new OrderResource($result),
             'Order created successfully',
             201
+        );
+    }
+
+    /**
+     * @throws BaseException
+     */
+    public function cancel(CancelOrderRequest $request, Order $order)
+    {
+        $result = $this->orderService->cancelOrder(
+            $order,
+            $request->validated()['cancellation_reason']
+        );
+
+        return $this->success(
+            new OrderResource($result),
+            'Order cancelled successfully'
         );
     }
 }

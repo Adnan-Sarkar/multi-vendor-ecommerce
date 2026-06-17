@@ -110,4 +110,19 @@ class OrderService
     public function getOrderDetails(Order $order): Order {
         return $this->orderRepository->getOrderDetails($order);
     }
+
+    /**
+     * @throws BaseException
+     */
+    public function cancelOrder(Order $order, string $reason): Order
+    {
+        if (!in_array($order->status, ['pending', 'confirmed'])) {
+            throw new BaseException('Order cannot be cancelled at this stage', 400);
+        }
+
+        $this->orderRepository->cancelOrder($order, $reason);
+
+        return $order->refresh()
+            ->load(['orderVendors', 'shippingAddress', 'orderItems']);
+    }
 }
