@@ -6,6 +6,7 @@ use App\Exceptions\BaseException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Order\CheckoutRequest;
 use App\Http\Resources\Api\V1\OrderResource;
+use App\Models\Order;
 use App\Services\OrderService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -24,6 +25,22 @@ class OrderController extends Controller
     public function __construct(OrderService $orderService)
     {
         $this->orderService = $orderService;
+    }
+
+    public function index(): JsonResponse {
+        $result = $this->orderService->getOrders();
+        return $this->paginated(
+            OrderResource::collection($result),
+            'Orders retrieved successfully'
+        );
+    }
+
+    public function show(Order $order): JsonResponse {
+        $result = $this->orderService->getOrderDetails($order);
+        return $this->success(
+            new OrderResource($result),
+            'Order details retrieved successfully'
+        );
     }
 
     /**

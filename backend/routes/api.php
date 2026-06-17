@@ -92,6 +92,8 @@ Route::prefix('v1')->group(function () {
     // Order routes
     Route::prefix('/order')->controller(OrderController::class)->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/', 'index');
+            Route::get('/{order}', 'show');
             Route::post('/', 'store');
         });
     });

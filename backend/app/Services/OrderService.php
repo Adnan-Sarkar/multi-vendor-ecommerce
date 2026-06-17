@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use \App\Exceptions\BaseException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Throwable;
@@ -99,4 +100,14 @@ class OrderService
         });
     }
 
+    public function getOrders(): LengthAwarePaginator
+    {
+        $userId = auth()->user()->id;
+
+        return $this->orderRepository->getOrders($userId);
+    }
+
+    public function getOrderDetails(Order $order): Order {
+        return $this->orderRepository->getOrderDetails($order);
+    }
 }
