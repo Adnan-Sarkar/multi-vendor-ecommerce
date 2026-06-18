@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Order;
+use App\Models\OrderVendor;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class OrderRepository
@@ -42,5 +43,12 @@ class OrderRepository
             'cancellation_reason' => $reason,
             'cancelled_at' => now()
         ]);
+    }
+
+    public function getVendorOrders(int $vendorId): LengthAwarePaginator {
+        return OrderVendor::where('vendor_id', $vendorId)
+            ->with(['order.shippingAddress', 'orderItems', 'order'])
+            ->latest()
+            ->paginate(20);
     }
 }

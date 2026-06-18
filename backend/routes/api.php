@@ -99,9 +99,18 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-        // Admin routes
-    Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
+    // Vendor routes
+    Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor'])->group(function () {
+        // Vendor order management
+        Route::prefix('/orders')
+            ->controller(\App\Http\Controllers\Api\V1\Vendor\OrderController::class)
+            ->group(function () {
+                Route::get('/', 'index');
+            });
+    });
 
+    // Admin routes
+    Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
         // Admin product management
         Route::prefix('/products')->controller(AdminProductController::class)->group(function () {
             Route::get('/', 'index');

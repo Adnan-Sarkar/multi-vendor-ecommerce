@@ -125,4 +125,10 @@ class OrderService
         return $order->refresh()
             ->load(['orderVendors', 'shippingAddress', 'orderItems']);
     }
+
+    public function getVendorOrders(): LengthAwarePaginator {
+        $vendorId = auth()->user()->vendorProfile->id;
+
+        return $this->orderRepository->getVendorOrders($vendorId);
+    }
 }
