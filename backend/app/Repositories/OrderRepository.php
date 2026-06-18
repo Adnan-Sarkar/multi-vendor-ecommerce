@@ -75,4 +75,9 @@ class OrderRepository
             'order'
         ]);
     }
+
+    public function updateTrackingNumber(OrderVendor $orderVendor, string $trackingNumber): OrderVendor {
+        $orderVendor->update(['tracking_number' => $trackingNumber]);
+        return $orderVendor->refresh();
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Vendor\UpdateOrderStatusRequest;
+use App\Http\Requests\Api\V1\Vendor\UpdateTrackingNumberRequest;
 use App\Http\Resources\Api\V1\OrderVendorResource;
 use App\Models\OrderVendor;
 use App\Services\OrderService;
@@ -41,6 +42,16 @@ class OrderController extends Controller
         return $this->success(
             new OrderVendorResource($result),
             'Order status updated successfully'
+        );
+    }
+
+    public function updateTrackingNumber(UpdateTrackingNumberRequest $request, OrderVendor $orderVendor): JsonResponse {
+        $result = $this->orderService
+            ->updateTrackingNumber($orderVendor, $request->validated()['tracking_number']);
+
+        return $this->success(
+            new OrderVendorResource($result),
+            'Order tracking number updated successfully'
         );
     }
 }

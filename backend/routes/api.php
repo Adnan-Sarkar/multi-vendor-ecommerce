@@ -107,6 +107,7 @@ Route::prefix('v1')->group(function () {
             ->group(function () {
                 Route::get('/', 'index');
                 Route::patch('/{orderVendor}', 'update');
+                Route::patch('/{orderVendor}/tracking-number', 'updateTrackingNumber');
             });
     });
 

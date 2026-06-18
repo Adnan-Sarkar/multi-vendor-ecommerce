@@ -136,4 +136,8 @@ class OrderService
     public function updateVendorOrder(OrderVendor $orderVendor, string $status): OrderVendor {
         return $this->orderRepository->updateVendorOrder($orderVendor, $status);
     }
+
+    public function updateTrackingNumber(OrderVendor $orderVendor, string $trackingNumber): OrderVendor {
+        return $this->orderRepository->updateTrackingNumber($orderVendor, $trackingNumber);
+    }
 }
