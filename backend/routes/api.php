@@ -106,6 +106,7 @@ Route::prefix('v1')->group(function () {
             ->controller(\App\Http\Controllers\Api\V1\Vendor\OrderController::class)
             ->group(function () {
                 Route::get('/', 'index');
+                Route::patch('/{orderVendor}', 'update');
             });
     });
 

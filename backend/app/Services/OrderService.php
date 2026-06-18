@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\OrderVendor;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use \App\Exceptions\BaseException;
@@ -130,5 +131,9 @@ class OrderService
         $vendorId = auth()->user()->vendorProfile->id;
 
         return $this->orderRepository->getVendorOrders($vendorId);
+    }
+
+    public function updateVendorOrder(OrderVendor $orderVendor, string $status): OrderVendor {
+        return $this->orderRepository->updateVendorOrder($orderVendor, $status);
     }
 }

@@ -51,4 +51,28 @@ class OrderRepository
             ->latest()
             ->paginate(20);
     }
+
+    public function updateVendorOrder(OrderVendor $orderVendor, string $status): OrderVendor {
+        if ($status === 'shipped') {
+            $orderVendor->update([
+                'status' => $status,
+                'shipped_at' => now()
+            ]);
+        } else if ($status === 'delivered') {
+            $orderVendor->update([
+                'status' => $status,
+                'delivered_at' => now()
+            ]);
+        } else {
+            $orderVendor->update([
+                'status' => $status
+            ]);
+        }
+
+        return $orderVendor->load([
+            'order.shippingAddress',
+            'orderItems',
+            'order'
+        ]);
+    }
 }
