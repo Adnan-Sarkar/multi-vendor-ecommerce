@@ -22,6 +22,16 @@ class OrderVendorResource extends JsonResource
         return [
             'id' => $this->id,
             'vendor' => new VendorProfileResource($this->whenLoaded('vendor')),
+            'order' => $this->whenLoaded('order', fn() => [
+                'id' => $this->order->id,
+                'order_number' => $this->order->order_number,
+                'status' => $this->order->status,
+                'payment_method' => $this->order->payment_method,
+                'payment_status' => $this->order->payment_status,
+                'shipping_address' => new AddressResource($this->order->shippingAddress),
+                'created_at' => $this->order->created_at,
+            ]),
+            'order_items' => OrderItemResource::collection($this->whenLoaded('orderItems')),
             'subtotal' => $this->subtotal,
             'shipping_cost' => $this->shipping_cost,
             'commission' => $this->commission,

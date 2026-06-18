@@ -27,7 +27,7 @@ class OrderController extends Controller
         $result = $this->orderService->getVendorOrders();
 
         return $this->paginated(
-            new OrderVendorResource($result),
+            OrderVendorResource::collection($result),
             'Vendor orders retrieved successfully'
         );
     }
