@@ -119,5 +119,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/{product}/approve', 'approve');
             Route::post('/{product}/reject', 'reject');
         });
+
+        // Admin order management
+        Route::prefix('/orders')->controller(\App\Http\Controllers\Api\V1\Admin\OrderController::class)->group(function () {
+            Route::get('/', 'index');
+        });
     });
 });

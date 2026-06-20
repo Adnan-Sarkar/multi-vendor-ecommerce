@@ -80,4 +80,10 @@ class OrderRepository
         $orderVendor->update(['tracking_number' => $trackingNumber]);
         return $orderVendor->refresh();
     }
+
+    public function getAllOrders(): LengthAwarePaginator {
+        return Order::with(['user', 'shippingAddress', 'orderVendors.vendor', 'orderItems'])
+            ->latest()
+            ->paginate(20);
+    }
 }

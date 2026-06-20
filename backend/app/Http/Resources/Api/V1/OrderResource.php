@@ -25,6 +25,7 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'payment_method' => $this->payment_method,
             'payment_status' => $this->payment_status,
+            'customer' => new UserResource($this->whenLoaded('user')),
 
             // Amounts
             'subtotal' => $this->subtotal,

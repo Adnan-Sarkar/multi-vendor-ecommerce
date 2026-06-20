@@ -140,4 +140,8 @@ class OrderService
     public function updateTrackingNumber(OrderVendor $orderVendor, string $trackingNumber): OrderVendor {
         return $this->orderRepository->updateTrackingNumber($orderVendor, $trackingNumber);
     }
+
+    public function getAllOrders(): LengthAwarePaginator {
+        return $this->orderRepository->getAllOrders();
+    }
 }
