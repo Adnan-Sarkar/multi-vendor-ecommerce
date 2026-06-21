@@ -29,6 +29,7 @@ class VendorProfileResource extends JsonResource
             'state' => $this->state,
             'zip_code' => $this->zip_code,
             'status' => $this->status,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

@@ -9,6 +9,7 @@ use \App\Http\Controllers\Api\V1\AddressController;
 use \App\Http\Controllers\Api\V1\OrderController;
 use \App\Http\Controllers\Api\V1\WishlistController;
 use \App\Http\Controllers\Api\V1\ReviewController;
+use \App\Http\Controllers\Api\V1\Admin\VendorController;
 
 // Health
 Route::get('/health', function () {
@@ -132,6 +133,13 @@ Route::prefix('v1')->group(function () {
 
     // Admin routes
     Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
+        // Admin vendor management
+        Route::prefix('/vendor')->controller(VendorController::class)->group(function () {
+            Route::get('/pending', 'getPendingVendors');
+            Route::post('/{vendorProfile}/approve', 'approveVendor');
+            Route::post('/{vendorProfile}/reject', 'rejectVendor');
+        });
+
         // Admin product management
         Route::prefix('/products')->controller(AdminProductController::class)->group(function () {
             Route::get('/', 'index');
