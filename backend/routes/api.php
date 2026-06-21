@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
 
         // Public routes
         Route::get('/', 'index');
+        Route::get('/{product}/reviews', 'getProductReviews');
         Route::get('/{product}', 'show');
     });
 

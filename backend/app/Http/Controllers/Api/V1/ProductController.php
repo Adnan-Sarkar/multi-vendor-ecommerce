@@ -9,8 +9,10 @@ use App\Http\Requests\Api\V1\Product\StoreProductVariantRequest;
 use App\Http\Requests\Api\V1\Product\UpdateProductRequest;
 use App\Http\Resources\Api\V1\ProductResource;
 use App\Http\Resources\Api\V1\ProductVariantResource;
+use App\Http\Resources\Api\V1\ReviewResource;
 use App\Models\Product;
 use App\Services\ProductService;
+use App\Services\ReviewService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Throwable;
@@ -20,14 +22,18 @@ class ProductController extends Controller
     use ApiResponse;
 
     protected ProductService $productService;
+    protected ReviewService $reviewService;
 
     /**
      * @param ProductService $productService
+     * @param ReviewService $reviewService
      */
-    public function __construct(ProductService $productService)
+    public function __construct(ProductService $productService, ReviewService $reviewService)
     {
         $this->productService = $productService;
+        $this->reviewService = $reviewService;
     }
+
 
     public function index(): JsonResponse {
         $result = $this->productService->getAllProducts();
@@ -106,5 +112,14 @@ class ProductController extends Controller
             new ProductVariantResource($result),
             'Product variant added successfully',
             201);
+    }
+
+    public function getProductReviews(Product $product): JsonResponse {
+        $result = $this->reviewService->getProductReviews($product->id);
+
+        return $this->paginated(
+            ReviewResource::collection($result),
+            'Product reviews retrieved successfully'
+        );
     }
 }

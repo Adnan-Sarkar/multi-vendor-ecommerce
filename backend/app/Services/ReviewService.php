@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Review;
 use App\Repositories\OrderRepository;
 use App\Repositories\ReviewRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use \Symfony\Component\HttpFoundation\Response;
 
 class ReviewService
@@ -50,5 +51,9 @@ class ReviewService
         $data['user_id'] = $userId;
 
         return $this->reviewRepository->createReview($data);
+    }
+
+    public function getProductReviews(int $productId): LengthAwarePaginator {
+        return $this->reviewRepository->getProductReviews($productId);
     }
 }

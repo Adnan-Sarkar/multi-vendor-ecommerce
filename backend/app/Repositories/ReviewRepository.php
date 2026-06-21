@@ -3,11 +3,20 @@
 namespace App\Repositories;
 
 use App\Models\Review;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReviewRepository
 {
     public function createReview(array $data): Review {
         $review = Review::create($data);
         return $review->load(['product', 'user']);
+    }
+
+    public function getProductReviews(int $productId): LengthAwarePaginator {
+        return Review::where('product_id', $productId)
+            ->where('is_approved', true)
+            ->with('user')
+            ->latest()
+            ->paginate(10);
     }
 }
