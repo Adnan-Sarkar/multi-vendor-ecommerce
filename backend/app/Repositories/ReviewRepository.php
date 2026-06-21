@@ -19,4 +19,15 @@ class ReviewRepository
             ->latest()
             ->paginate(10);
     }
+
+    public function getPendingReviews(): LengthAwarePaginator {
+        return Review::where('is_approved', false)
+            ->with(['user', 'product'])
+            ->latest()
+            ->paginate(20);
+    }
+
+    public function approveReview(Review $review): void {
+        $review->update(['is_approved' => true]);
+    }
 }
