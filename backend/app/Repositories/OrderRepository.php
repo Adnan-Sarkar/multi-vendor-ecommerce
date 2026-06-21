@@ -12,6 +12,13 @@ class OrderRepository
         return Order::create($data);
     }
 
+    public function findUserOrder(int $userId, int $orderId): ?Order {
+        return Order::where('user_id', $userId)
+            ->where('id', $orderId)
+            ->with('orderItems')
+            ->first();
+    }
+
     public function createOrderItems(Order $order, array $items): void {
         $order->orderItems()->createMany($items);
     }

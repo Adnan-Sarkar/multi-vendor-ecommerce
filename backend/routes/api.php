@@ -7,6 +7,8 @@ use \App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductControll
 use \App\Http\Controllers\Api\V1\CartController;
 use \App\Http\Controllers\Api\V1\AddressController;
 use \App\Http\Controllers\Api\V1\OrderController;
+use \App\Http\Controllers\Api\V1\WishlistController;
+use \App\Http\Controllers\Api\V1\ReviewController;
 
 // Health
 Route::get('/health', function () {
@@ -96,6 +98,22 @@ Route::prefix('v1')->group(function () {
             Route::get('/{order}', 'show');
             Route::post('/', 'store');
             Route::patch('/{order}/cancel', 'cancel');
+        });
+    });
+
+    // Wishlist routes
+    Route::prefix('/wishlist')->controller(WishlistController::class)->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+            Route::get('/', 'index');
+            Route::post('/', 'store');
+            Route::delete('/{product}', 'destroy');
+        });
+    });
+
+    // Review routes
+    Route::prefix('/review')->controller(ReviewController::class)->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+            Route::post('/', 'store');
         });
     });
 

@@ -9,6 +9,10 @@ class Review extends Model
 {
     use SoftDeletes;
 
+    protected $attributes = [
+        'is_approved' => false
+    ];
+
     protected $fillable = [
         'product_id',
         'user_id',
