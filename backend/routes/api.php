@@ -10,6 +10,7 @@ use \App\Http\Controllers\Api\V1\OrderController;
 use \App\Http\Controllers\Api\V1\WishlistController;
 use \App\Http\Controllers\Api\V1\ReviewController;
 use \App\Http\Controllers\Api\V1\Admin\VendorController;
+use \App\Http\Controllers\Api\V1\CouponController;
 
 // Health
 Route::get('/health', function () {
@@ -119,6 +120,13 @@ Route::prefix('v1')->group(function () {
         });
     });
 
+    // Coupon routes
+    Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/apply', 'applyCoupon');
+        });
+    });
+
     // Vendor routes
     Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor'])->group(function () {
         // Vendor order management
@@ -129,6 +137,13 @@ Route::prefix('v1')->group(function () {
                 Route::patch('/{orderVendor}', 'update');
                 Route::patch('/{orderVendor}/tracking-number', 'updateTrackingNumber');
             });
+
+        // Vendor coupon management
+        Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
+            Route::get('/', 'vendorIndex');
+            Route::post('/', 'store');
+            Route::delete('/{coupon}', 'destroy');
+        });
     });
 
     // Admin routes
@@ -156,6 +171,12 @@ Route::prefix('v1')->group(function () {
         Route::prefix('/review')->controller(\App\Http\Controllers\Api\V1\Admin\ReviewController::class)->group(function () {
             Route::get('/', 'getPendingReviews');
             Route::post('/{review}/approve', 'approveReview');
+        });
+
+        // Admin coupon management
+        Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
+            Route::get('/', 'adminIndex');
+            Route::delete('/{coupon}', 'destroy');
         });
     });
 });

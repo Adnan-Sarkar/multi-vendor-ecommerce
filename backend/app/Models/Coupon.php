@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Coupon extends Model
 {
+    protected $attributes = [
+        'used_count' => 0,
+        'max_uses_per_user' => 1,
+        'is_active' => true,
+    ];
+
     protected $fillable = [
         'vendor_id',
         'code',
