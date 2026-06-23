@@ -11,6 +11,7 @@ use \App\Http\Controllers\Api\V1\WishlistController;
 use \App\Http\Controllers\Api\V1\ReviewController;
 use \App\Http\Controllers\Api\V1\Admin\VendorController;
 use \App\Http\Controllers\Api\V1\CouponController;
+use \App\Http\Controllers\Api\V1\WithdrawalController;
 
 // Health
 Route::get('/health', function () {
@@ -144,6 +145,12 @@ Route::prefix('v1')->group(function () {
             Route::post('/', 'store');
             Route::delete('/{coupon}', 'destroy');
         });
+
+        // Vendor withdrawals management
+        Route::prefix('/withdrawals')->controller(WithdrawalController::class)->group(function () {
+                Route::get('/', 'getVendorWithdrawals');
+                Route::post('/', 'store');
+            });
     });
 
     // Admin routes
@@ -178,5 +185,12 @@ Route::prefix('v1')->group(function () {
             Route::get('/', 'adminIndex');
             Route::delete('/{coupon}', 'destroy');
         });
+
+        // Admin withdrawals management
+        Route::prefix('/withdrawals')->controller(WithdrawalController::class)->group(function () {
+                Route::get('/', 'getPendingWithdrawals');
+                Route::post('/{withdrawal}/approve', 'approveWithdrawal');
+                Route::post('/{withdrawal}/reject', 'rejectWithdrawal');
+            });
     });
 });

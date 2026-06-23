@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Withdrawal extends Model
 {
+    protected $attributes = [
+        'status' => 'pending',
+        'method' => 'bank',
+    ];
+
     protected $fillable = [
         'vendor_id',
         'amount',
@@ -20,7 +25,7 @@ class Withdrawal extends Model
     {
         return [
             'amount' => 'decimal:2',
-            'account_details' => 'json',
+            'account_details' => 'array',
             'processed_at' => 'datetime',
         ];
     }
