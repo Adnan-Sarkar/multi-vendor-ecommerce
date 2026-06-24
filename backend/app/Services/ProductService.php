@@ -51,8 +51,8 @@ class ProductService
         });
     }
 
-    public function getAllProducts(): LengthAwarePaginator {
-        return $this->productRepository->getAllProducts();
+    public function getAllProducts(array $filters = []): LengthAwarePaginator {
+        return $this->productRepository->getAllProducts($filters);
     }
 
     public function getProductDetails(Product $product): Product {

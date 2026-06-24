@@ -15,6 +15,7 @@ use App\Services\ProductService;
 use App\Services\ReviewService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Throwable;
 
 class ProductController extends Controller
@@ -35,8 +36,20 @@ class ProductController extends Controller
     }
 
 
-    public function index(): JsonResponse {
-        $result = $this->productService->getAllProducts();
+    public function index(Request $request): JsonResponse {
+        $filters = $request->only([
+            'search',
+            'categories',
+            'tags',
+            'min_price',
+            'max_price',
+            'vendor_id',
+            'featured',
+            'in_stock',
+            'sort'
+        ]);
+
+        $result = $this->productService->getAllProducts($filters);
 
         return $this->paginated(
             ProductResource::collection($result),

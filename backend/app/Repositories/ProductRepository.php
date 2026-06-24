@@ -13,11 +13,76 @@ class ProductRepository
         return Product::create($data);
     }
 
-    public function getAllProducts(): LengthAwarePaginator
+    public function getAllProducts(array $filters = []): LengthAwarePaginator
     {
-        return Product::where('status', 'approved')
-            ->with(['images', 'tags', 'categories', 'vendor'])
-            ->paginate(20);
+        $query = Product::where('status', 'approved')
+            ->with(['images', 'tags', 'categories', 'vendor']);
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('name', 'ilike', "%{$filters['search']}%")
+                    ->orWhere('sku', 'ilike', "%{$filters['search']}%")
+                    ->orWhere('short_description', 'ilike', "%{$filters['search']}%");
+            });
+        }
+
+        if (!empty($filters['categories'])) {
+            $query->whereHas('categories', function ($q) use ($filters) {
+                $q->whereIn('slug', $filters['categories']);
+            });
+        }
+
+        if (!empty($filters['tags'])) {
+            $query->whereHas('tags', function ($q) use ($filters) {
+                $q->where('slug', $filters['tags']);
+            });
+        }
+
+        if (!empty($filters['min_price']) || !empty($filters['max_price'])) {
+            $query->whereBetween('regular_price', [
+                $filters['min_price'] ?? 0,
+                $filters['max_price'] ?? PHP_INT_MAX,
+            ]);
+        }
+
+        if (!empty($filters['vendor_id'])) {
+            $query->where('vendor_id', $filters['vendor_id']);
+        }
+
+        if (isset($filters['featured'])) {
+            $query->where('is_featured',
+                filter_var($filters['featured'], FILTER_VALIDATE_BOOLEAN),
+            );
+        }
+
+        if (isset($filters['in_stock'])) {
+            $query->where('in_stock',
+                filter_var($filters['in_stock'], FILTER_VALIDATE_BOOLEAN));
+        }
+
+        switch ($filters['sort'] ?? null) {
+            case 'price_asc':
+                $query->orderBy('regular_price');
+                break;
+
+            case 'price_desc':
+                $query->orderByDesc('regular_price');
+                break;
+
+            case 'popular':
+                $query->orderByDesc('views');
+                break;
+
+            case 'newest':
+                $query->latest();
+                break;
+
+            case 'oldest':
+                $query->oldest();
+                break;
+        }
+
+        return $query->paginate(20);
     }
 
     public function getProductDetails(Product $product): Product
