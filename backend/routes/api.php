@@ -25,14 +25,14 @@ Route::get('/health', function () {
 Route::prefix('v1')->group(function () {
     // Auth routes
     Route::prefix('auth')->controller(AuthController::class)->group(function () {
-        Route::post('/register', 'register');
+        Route::post('/register', 'register')->middleware('throttle:register');
         Route::post('/register-vendor', 'registerVendor');
-        Route::post('/login', 'login');
-        Route::post('/forgot-password', 'forgotPassword');
+        Route::post('/login', 'login')->middleware('throttle:login');
+        Route::post('/forgot-password', 'forgotPassword')->middleware('throttle:forgot-password');
         Route::post('/reset-password', 'resetPassword');
 
         // private routes
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::post('/logout', 'logout');
             Route::get('/profile', 'getProfile');
             Route::patch('/profile/customer', 'updateCustomer');
@@ -47,7 +47,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/{category}', 'show');
 
         // private routes
-        Route::middleware(['auth:sanctum', 'permission:manage-categories,api'])->group(function () {
+        Route::middleware(['auth:sanctum', 'permission:manage-categories,api'])->middleware('throttle:api')->group(function () {
             Route::post('/', 'store');
             Route::patch('/{category}', 'update');
             Route::delete('/{category}', 'destroy');
@@ -57,7 +57,7 @@ Route::prefix('v1')->group(function () {
     // Product routes
     Route::prefix('/product')->controller(ProductController::class)->group(function () {
         // Private routes
-        Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->group(function () {
+        Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->middleware('throttle:api')->group(function () {
             Route::get('/me/products', 'myProducts');
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');
@@ -75,7 +75,7 @@ Route::prefix('v1')->group(function () {
     // Cart routes
     Route::prefix('/cart')->controller(CartController::class)->group(function () {
         // Private routes
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::get('/', 'getCart');
             Route::post('/', 'addToCart');
             Route::patch('/{cartItem}', 'updateCartItem');
@@ -86,7 +86,7 @@ Route::prefix('v1')->group(function () {
 
     // Address routes
     Route::prefix('/address')->controller(AddressController::class)->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::patch('/{address}', 'update');
@@ -97,7 +97,7 @@ Route::prefix('v1')->group(function () {
 
     // Order routes
     Route::prefix('/order')->controller(OrderController::class)->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::get('/', 'index');
             Route::get('/{order}', 'show');
             Route::post('/', 'store');
@@ -107,7 +107,7 @@ Route::prefix('v1')->group(function () {
 
     // Wishlist routes
     Route::prefix('/wishlist')->controller(WishlistController::class)->group(function () {
-        Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer'])->middleware('throttle:api')->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::delete('/{product}', 'destroy');
@@ -116,20 +116,20 @@ Route::prefix('v1')->group(function () {
 
     // Review routes
     Route::prefix('/review')->controller(ReviewController::class)->group(function () {
-        Route::middleware(['auth:sanctum', 'role:customer'])->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer'])->middleware('throttle:api')->group(function () {
             Route::post('/', 'store');
         });
     });
 
     // Coupon routes
     Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::post('/apply', 'applyCoupon');
         });
     });
 
     // Vendor routes
-    Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor'])->group(function () {
+    Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor'])->middleware('throttle:api')->group(function () {
         // Vendor order management
         Route::prefix('/orders')
             ->controller(\App\Http\Controllers\Api\V1\Vendor\OrderController::class)
