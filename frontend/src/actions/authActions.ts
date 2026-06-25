@@ -23,6 +23,20 @@ const RegisterSchema = z.object({
   path: ["password_confirmation"],
 });
 
+const ForgotPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+const ResetPasswordSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  otp: z.string().length(6, "OTP must be exactly 6 digits"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  password_confirmation: z.string(),
+}).refine((data) => data.password === data.password_confirmation, {
+  message: "Passwords do not match",
+  path: ["password_confirmation"],
+});
+
 async function createSession(token: string, role: string) {
   const cookieStore = await cookies();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -158,5 +172,98 @@ export async function logoutAction() {
     cookieStore.delete(process.env.ROLE_COOKIE_NAME as string);
 
     redirect("/login");
+  }
+}
+
+export async function forgotPasswordAction(prevState: any, formData: FormData) {
+  const validatedFields = ForgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      inputs: { email: formData.get("email") as string }
+    };
+  }
+
+  const { email } = validatedFields.data;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ email })
+    });
+    const result = await res.json();
+    if (!res.ok || !result.success) {
+      return {
+        success: false,
+        error: result.message || "Failed to send OTP.",
+        inputs: { email }
+      };
+    }
+    return { success: true, email };
+  } catch (err) {
+    return {
+      success: false,
+      error: "Server connection failed.",
+      inputs: { email }
+    };
+  }
+}
+
+export async function resetPasswordAction(prevState: any, formData: FormData) {
+  const validatedFields = ResetPasswordSchema.safeParse({
+    email: formData.get("email"),
+    otp: formData.get("otp"),
+    password: formData.get("password"),
+    password_confirmation: formData.get("password_confirmation"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      inputs: {
+        email: formData.get("email") as string,
+        otp: formData.get("otp") as string,
+      }
+    };
+  }
+
+  const { email, otp, password, password_confirmation } = validatedFields.data;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ email, otp, password, password_confirmation })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      return {
+        success: false,
+        error: result.message || "Failed to reset password.",
+        inputs: { email, otp }
+      };
+    }
+
+    return { success: true };
+  } catch (err) {
+    return {
+      success: false,
+      error: "Server connection failed.",
+      inputs: { email, otp }
+    };
   }
 }
