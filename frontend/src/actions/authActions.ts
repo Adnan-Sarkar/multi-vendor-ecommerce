@@ -2,8 +2,26 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 const API_URL = process.env.API_URL;
+
+// Zod validation schemas
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const RegisterSchema = z.object({
+  name: z.string().min(3, "Name must be at least 3 characters"),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().min(11, "Phone number must be at least 11 digits"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  password_confirmation: z.string()
+}).refine((data) => data.password === data.password_confirmation, {
+  message: "Passwords do not match",
+  path: ["password_confirmation"],
+});
 
 async function createSession(token: string, role: string) {
   const cookieStore = await cookies();
@@ -26,9 +44,24 @@ async function createSession(token: string, role: string) {
   });
 }
 
-export async function loginAction(state: any, formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
+export async function loginAction(prevState: any, formData: FormData) {
+  const validatedFields = loginSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password")
+  });
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      inputs: {
+        email: formData.get("email"),
+        password: formData.get("password")
+      }
+    };
+  }
+
+  const { email, password } = validatedFields.data;
 
   try {
     const res = await fetch(`${API_URL}/auth/login`, {
@@ -44,6 +77,55 @@ export async function loginAction(state: any, formData: FormData) {
 
     if (!res.ok || !result.success) {
       return { success: false, error: result.message || "Invalid credentials." };
+    }
+
+    const { token, user } = result.data;
+    await createSession(token, user.role);
+
+    return { success: true, role: user.role };
+  } catch (err) {
+    return { success: false, error: "Server connection failed." };
+  }
+}
+
+export async function registerAction(prevState: any, formData: FormData) {
+  const validatedFields = RegisterSchema.safeParse({
+    name: formData.get("name"),
+    email: formData.get("email"),
+    phone: formData.get("phone"),
+    password: formData.get("password"),
+    password_confirmation: formData.get("password_confirmation"),
+  });
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      inputs: {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        password: formData.get("password"),
+        password_confirmation: formData.get("password_confirmation"),
+      }
+    };
+  }
+  const { name, email, phone, password, password_confirmation } = validatedFields.data;
+
+  try {
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify({ name, email, phone, password, password_confirmation })
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      return { success: false, error: result.message || "Registration failed." };
     }
 
     const { token, user } = result.data;
