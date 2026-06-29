@@ -25,4 +25,42 @@ class LoginTest extends TestCase
             ])
             ->assertJson(['success' => true]);
     }
+
+    public function test_login_fails_with_missing_email(): void {
+        $response = $this->postJson('/api/v1/auth/login', [
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_login_fails_with_missing_password(): void {
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => 'abc@example.com',
+        ]);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_login_fails_with_invalid_email(): void {
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => 'abc@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(401);
+    }
+
+    public function test_login_fails_with_invalid_password(): void {
+        $user = User::factory()->create();
+
+        $response = $this->postJson('/api/v1/auth/login', [
+            'email' => $user->email,
+            'password' => '123456',
+        ]);
+
+        $response->assertStatus(401);
+    }
 }
