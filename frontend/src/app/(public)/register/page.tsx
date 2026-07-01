@@ -11,7 +11,7 @@ export default function RegisterPage() {
 
   const [state, formAction, isPending] = useActionState(registerAction, null);
 
-    useEffect(() => {
+  useEffect(() => {
     if (isPending) {
       toast.loading("Creating account...", { id: "auth-toast" });
     } else if (state?.success) {
@@ -27,20 +27,14 @@ export default function RegisterPage() {
 
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4">
+      {/* Main white form card */}
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow border border-gray-100">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Create your account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{" "}
-            <Link href="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
-              sign in to your account
-            </Link>
-          </p>
         </div>
-
         <form className="mt-8 space-y-6" action={formAction}>
           {state?.error && (
             <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
@@ -144,12 +138,37 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors"
+              className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors cursor-pointer"
             >
               {isPending ? "Creating account..." : "Register"}
             </button>
           </div>
         </form>
+      </div>
+
+      <div className="max-w-md w-full space-y-4 mt-4 animate-fade-in">
+        {/* Become a Vendor */}
+        <div className="bg-indigo-50 border border-indigo-100/80 p-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
+          <span className="text-sm text-indigo-900">
+            Want to sell products on our platform?
+          </span>
+          <Link
+            href="/register-vendor"
+            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1"
+          >
+            Become a Vendor &rarr;
+          </Link>
+        </div>
+
+        {/* Redirect to Login */}
+        <div className="text-center">
+          <p className="text-sm text-gray-500">
+            Already have an account?{" "}
+            <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+              Sign In
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

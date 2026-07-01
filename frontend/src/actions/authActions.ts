@@ -37,7 +37,7 @@ const ResetPasswordSchema = z.object({
   path: ["password_confirmation"],
 });
 
-async function createSession(token: string, role: string) {
+export async function createSession(token: string, role: string) {
   const cookieStore = await cookies();
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 

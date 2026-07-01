@@ -16,7 +16,7 @@ export default function LoginPage() {
       toast.loading("Signing in...", { id: "auth-toast" });
     } else if (state?.success) {
       toast.success("Login successful!", { id: "auth-toast" });
-      
+
       if (state.role === "vendor") {
         router.push("/dashboard");
       } else if (state.role === "admin" || state.role === "super_admin") {
@@ -33,18 +33,13 @@ export default function LoginPage() {
   }, [isPending, state, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 gap-4">
+      {/* Main white form card */}
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow border border-gray-100">
         <div>
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Sign in to your account
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{" "}
-            <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
-              create a customer account
-            </Link>
-          </p>
         </div>
 
         <form className="mt-8 space-y-6" action={formAction}>
@@ -103,12 +98,37 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors"
+              className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors cursor-pointer"
             >
               {isPending ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
+      </div>
+
+      <div className="max-w-md w-full space-y-4 mt-4 animate-fade-in">
+        {/* Become a Vendor */}
+        <div className="bg-indigo-50 border border-indigo-100/80 p-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
+          <span className="text-sm text-indigo-900">
+            Want to sell products on our platform?
+          </span>
+          <Link
+            href="/register-vendor"
+            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1"
+          >
+            Become a Vendor &rarr;
+          </Link>
+        </div>
+
+        {/* Redirect to Register */}
+        <div className="text-center">
+          <p className="text-sm text-gray-500">
+            New to our platform?{" "}
+            <Link href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
+              Create an account
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
