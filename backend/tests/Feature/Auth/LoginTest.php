@@ -58,7 +58,7 @@ class LoginTest extends TestCase
 
         $response = $this->postJson('/api/v1/auth/login', [
             'email' => $user->email,
-            'password' => '123456',
+            'password' => '12345678',
         ]);
 
         $response->assertStatus(401);
