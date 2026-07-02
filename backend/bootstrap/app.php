@@ -30,11 +30,11 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
+            fn (Request $request) => str_contains($request->path(), 'api'),
         );
 
         $exceptions->render(function (\Throwable $e, Request $request) {
-            if (!$request->is('api/*')) return null;
+            if (!str_contains($request->path(), 'api')) return null;
 
             // Validation errors
             if ($e instanceof ValidationException) {

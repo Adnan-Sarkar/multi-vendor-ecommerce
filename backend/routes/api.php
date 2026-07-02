@@ -57,7 +57,7 @@ Route::prefix('v1')->group(function () {
     // Product routes
     Route::prefix('/product')->controller(ProductController::class)->group(function () {
         // Private routes
-        Route::middleware(['auth:sanctum', 'permission:manage-own-products,api'])->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'permission:manage-own-products', 'throttle:api'])->group(function () {
             Route::get('/me/products', 'myProducts');
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');

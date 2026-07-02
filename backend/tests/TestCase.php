@@ -4,6 +4,7 @@ namespace Tests;
 
 use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Spatie\Permission\PermissionRegistrar;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -11,5 +12,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
         $this->seed(RoleAndPermissionSeeder::class);
+
+        app(PermissionRegistrar::class)
+            ->forgetCachedPermissions();
     }
 }
