@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\BaseException;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Repositories\ProductRepository;
@@ -55,7 +56,14 @@ class ProductService
         return $this->productRepository->getAllProducts($filters);
     }
 
+    /**
+     * @throws BaseException
+     */
     public function getProductDetails(Product $product): Product {
+        if ($product->status !== 'approved') {
+            throw new BaseException('Product not found', 404);
+        }
+
         return $this->productRepository->getProductDetails($product);
     }
 

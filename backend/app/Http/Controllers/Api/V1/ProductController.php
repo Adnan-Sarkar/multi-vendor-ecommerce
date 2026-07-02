@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\BaseException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Product\StoreProductImageRequest;
 use App\Http\Requests\Api\V1\Product\StoreProductRequest;
@@ -57,6 +58,9 @@ class ProductController extends Controller
         );
     }
 
+    /**
+     * @throws BaseException
+     */
     public function show(Product $product): JsonResponse {
         $result = $this->productService->getProductDetails($product);
 
