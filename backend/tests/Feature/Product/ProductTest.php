@@ -5,26 +5,12 @@ namespace Tests\Feature\Product;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\VendorProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
-use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class ProductTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function authenticatedVendor(): User
-    {
-        $user = User::factory()->create(['role' => 'vendor']);
-        $user->assignRole('vendor');
-        $user->givePermissionTo('manage-own-products');
-
-        VendorProfile::factory()->create(['user_id' => $user->id]);
-
-        return $user;
-    }
 
     public function test_vendor_can_create_product_with_valid_data(): void {
         $vendor = $this->authenticatedVendor();
