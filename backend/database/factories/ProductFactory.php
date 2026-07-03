@@ -19,7 +19,6 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'vendor_id' => VendorProfile::factory(),
             'name' => fake()->words(3, true),
             'slug' => fake()->unique()->slug(),
             'sku' => strtoupper(fake()->unique()->bothify('??-####')),

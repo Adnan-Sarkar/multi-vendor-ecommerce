@@ -75,7 +75,7 @@ Route::prefix('v1')->group(function () {
     // Cart routes
     Route::prefix('/cart')->controller(CartController::class)->group(function () {
         // Private routes
-        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::get('/', 'getCart');
             Route::post('/', 'addToCart');
             Route::patch('/{cartItem}', 'updateCartItem');
