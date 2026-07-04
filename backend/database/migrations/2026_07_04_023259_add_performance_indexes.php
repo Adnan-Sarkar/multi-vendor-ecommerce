@@ -57,23 +57,23 @@ return new class extends Migration
         });
 
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropIndex('user_id');
-            $table->dropIndex('status');
-            $table->dropIndex('payment_status');
+            $table->dropIndex(['user_id']);
+            $table->dropIndex(['status']);
+            $table->dropIndex(['payment_status']);
         });
 
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropIndex('product_id');
-            $table->dropIndex('is_approved');
+            $table->dropIndex(['product_id']);
+            $table->dropIndex(['is_approved']);
         });
 
         Schema::table('cart_items', function (Blueprint $table) {
-            $table->dropIndex('cart_id');
+            $table->dropIndex(['cart_id']);
         });
 
         Schema::table('withdrawals', function (Blueprint $table) {
-            $table->dropIndex('vendor_id');
-            $table->dropIndex('status');
+            $table->dropIndex(['vendor_id']);
+            $table->dropIndex(['status']);
         });
     }
 };
