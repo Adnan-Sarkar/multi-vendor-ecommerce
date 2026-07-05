@@ -21,14 +21,14 @@ class VendorProfileResource extends JsonResource
         return [
             'shop_name' => $this->shop_name,
             'slug' => $this->slug,
-            'description' => $this->description,
-            'logo' => $this->logo,
-            'banner' => $this->banner,
-            'address' => $this->address,
-            'city' => $this->city,
-            'state' => $this->state,
-            'zip_code' => $this->zip_code,
-            'status' => $this->status,
+            'description' => $this->whenNotNull($this->description),
+            'logo' => $this->whenNotNull($this->logo),
+            'banner' => $this->whenNotNull($this->banner),
+            'address' => $this->whenNotNull($this->address),
+            'city' => $this->whenNotNull($this->city),
+            'state' => $this->whenNotNull($this->state),
+            'zip_code' => $this->whenNotNull($this->zip_code),
+            'status' => $this->whenNotNull($this->status),
             'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
