@@ -50,11 +50,21 @@ class OrderRepository
             'cancellation_reason' => $reason,
             'cancelled_at' => now()
         ]);
+
+        $order->load('orderItems.product');
+
+        foreach ($order->orderItems as $item) {
+            $product = $item->product;
+            if ($product->manage_stock) {
+                $product->increment('stock_qty', $item->quantity);
+                $product->update(['in_stock' => true]);
+            }
+        }
     }
 
     public function getVendorOrders(int $vendorId): LengthAwarePaginator {
         return OrderVendor::where('vendor_id', $vendorId)
-            ->with(['order.shippingAddress', 'orderItems', 'order'])
+            ->with(['order.shippingAddress', 'orderItems'])
             ->latest()
             ->paginate(20);
     }

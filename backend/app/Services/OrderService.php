@@ -89,6 +89,16 @@ class OrderService
                 $order->orderItems()->createMany($orderItems);
             }
 
+            foreach ($cart->cartItems as $item) {
+                if ($item->product->manage_stock) {
+                    $item->product->decrement('stock_qty', $item->quantity);
+
+                    if ($item->product->fresh()->stock_qty <= 0) {
+                        $item->product->update(['in_stock' => false]);
+                    }
+                }
+            }
+
             // Clear the cart
             $this->cartRepository->clearCart($cart);
 
