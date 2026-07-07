@@ -12,6 +12,8 @@ use \App\Http\Controllers\Api\V1\ReviewController;
 use \App\Http\Controllers\Api\V1\Admin\VendorController;
 use \App\Http\Controllers\Api\V1\CouponController;
 use \App\Http\Controllers\Api\V1\WithdrawalController;
+use \App\Http\Controllers\Api\V1\Vendor\DashboardController;
+use \App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
 
 // Health
 Route::get('/health', function () {
@@ -32,7 +34,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/reset-password', 'resetPassword');
 
         // private routes
-        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::post('/logout', 'logout');
             Route::get('/profile', 'getProfile');
             Route::patch('/profile/customer', 'updateCustomer');
@@ -47,7 +49,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/{category}', 'show');
 
         // private routes
-        Route::middleware(['auth:sanctum', 'permission:manage-categories,api'])->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'permission:manage-categories', 'throttle:api'])->group(function () {
             Route::post('/', 'store');
             Route::patch('/{category}', 'update');
             Route::delete('/{category}', 'destroy');
@@ -129,7 +131,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Vendor routes
-    Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor'])->middleware('throttle:api')->group(function () {
+    Route::prefix('/vendor')->middleware(['auth:sanctum', 'role:vendor', 'throttle:api'])->group(function () {
         // Vendor order management
         Route::prefix('/orders')
             ->controller(\App\Http\Controllers\Api\V1\Vendor\OrderController::class)
@@ -150,7 +152,12 @@ Route::prefix('v1')->group(function () {
         Route::prefix('/withdrawals')->controller(WithdrawalController::class)->group(function () {
                 Route::get('/', 'getVendorWithdrawals');
                 Route::post('/', 'store');
-            });
+        });
+
+        // Vendor dashboard routes
+        Route::prefix('/dashboard')->controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index');
+        });
     });
 
     // Admin routes
@@ -191,6 +198,11 @@ Route::prefix('v1')->group(function () {
                 Route::get('/', 'getPendingWithdrawals');
                 Route::post('/{withdrawal}/approve', 'approveWithdrawal');
                 Route::post('/{withdrawal}/reject', 'rejectWithdrawal');
-            });
+        });
+
+        // Admin dashboard routes
+        Route::prefix('/dashboard')->controller(AdminDashboardController::class)->group(function () {
+            Route::get('/', 'index');
+        });
     });
 });
