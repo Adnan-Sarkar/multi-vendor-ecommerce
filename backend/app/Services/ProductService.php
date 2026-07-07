@@ -64,6 +64,8 @@ class ProductService
             throw new BaseException('Product not found', 404);
         }
 
+        $product->increment('views');
+
         return $this->productRepository->getProductDetails($product);
     }
 
