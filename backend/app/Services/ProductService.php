@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\BaseException;
 use App\Models\Product;
 use App\Models\ProductVariant;
+use App\Notifications\ProductApprovedNotification;
 use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -136,6 +137,9 @@ class ProductService
 
     public function approveProduct(Product $product): Product {
         $this->productRepository->approveProduct($product);
+
+        $product->vendor->user
+            ->notify(new ProductApprovedNotification($product));
 
         return $product->refresh();
     }

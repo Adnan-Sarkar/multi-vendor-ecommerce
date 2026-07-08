@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\VendorProfile;
+use App\Notifications\VendorApprovedNotification;
 use App\Repositories\VendorRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -23,7 +24,13 @@ class VendorService
     }
 
     public function approveVendor(VendorProfile $vendorProfile): VendorProfile {
-        return $this->vendorRepository->approveVendor($vendorProfile);
+        $result = $this->vendorRepository->approveVendor($vendorProfile);
+
+        $vendorProfile->user
+            ->notify(new VendorApprovedNotification($vendorProfile));
+
+        return $result;
+
     }
 
     public function rejectVendor(VendorProfile $vendorProfile, string $reason): void {

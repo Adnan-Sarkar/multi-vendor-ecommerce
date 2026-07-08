@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderVendor;
+use App\Notifications\OrderCancelledNotification;
+use App\Notifications\OrderPlacedNotification;
 use App\Repositories\CartRepository;
 use App\Repositories\OrderRepository;
 use \App\Exceptions\BaseException;
@@ -33,7 +35,7 @@ class OrderService
      * @throws Throwable
      */
     public function checkout(array $data): Order {
-        return DB::transaction(function () use ($data) {
+        $order = DB::transaction(function () use ($data) {
             // Get user's cart items
             $userId = auth()->user()->id;
             $cart = $this->cartRepository->getCart($userId);
@@ -109,6 +111,10 @@ class OrderService
                 'billingAddress'
             ]);
         });
+
+        auth()->user()->notify(new OrderPlacedNotification($order));
+
+        return $order;
     }
 
     public function getOrders(): LengthAwarePaginator
@@ -132,6 +138,8 @@ class OrderService
         }
 
         $this->orderRepository->cancelOrder($order, $reason);
+
+        $order->user->notify(new OrderCancelledNotification($order));
 
         return $order->refresh()
             ->load(['orderVendors', 'shippingAddress', 'orderItems']);

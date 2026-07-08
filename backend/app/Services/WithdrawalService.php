@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BaseException;
 use App\Models\Withdrawal;
+use App\Notifications\WithdrawalApprovedNotification;
 use App\Repositories\WithdrawalRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -45,8 +46,12 @@ class WithdrawalService
     }
 
     public function approveWithdrawal(Withdrawal $withdrawal): Withdrawal {
-        return $this->withdrawalRepository->approveWithdrawal($withdrawal);
-    }
+        $result = $this->withdrawalRepository->approveWithdrawal($withdrawal);
+
+        $withdrawal->vendor->user
+            ->notify(new WithdrawalApprovedNotification($withdrawal));
+
+        return $result;    }
 
     public function rejectWithdrawal(Withdrawal $withdrawal, string $note): void {
         $this->withdrawalRepository->rejectWithdrawal($withdrawal, $note);
