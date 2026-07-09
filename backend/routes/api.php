@@ -16,6 +16,7 @@ use \App\Http\Controllers\Api\V1\Vendor\DashboardController;
 use \App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
 use \App\Http\Controllers\Api\V1\NotificationController;
 use \App\Http\Controllers\Api\V1\TagController;
+use \App\Http\Controllers\Api\V1\AttributeController;
 
 // Health
 Route::get('/health', function () {
@@ -150,6 +151,19 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['auth:sanctum', 'role:super_admin|admin', 'throttle:api'])->group(function () {
             Route::post('/', 'store');
             Route::delete('/{tag}', 'destroy');
+        });
+    });
+
+    // Attribute routes
+    Route::prefix('/attribute')->controller(AttributeController::class)->group(function () {
+        Route::get('/', 'index');
+
+        // Admin only
+        Route::middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
+            Route::post('/', 'store');
+            Route::post('/{attribute}/values', 'storeValue');
+            Route::delete('/{attribute}', 'destroy');
+            Route::delete('/values/{value}', 'destroyValue');
         });
     });
 

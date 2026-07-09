@@ -2,14 +2,14 @@
 
 namespace App\Http\Resources\Api\V1;
 
-use App\Models\ProductAttributeValue;
+use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin ProductAttributeValue
+ * @mixin ProductAttribute
  */
-class ProductAttributeValueResource extends JsonResource
+class ProductAttributeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,8 @@ class ProductAttributeValueResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'value' => $this->value,
+            'name' => $this->name,
+            'values' => ProductAttributeValueResource::collection($this->whenLoaded('values')),
         ];
     }
 }
