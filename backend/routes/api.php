@@ -15,6 +15,7 @@ use \App\Http\Controllers\Api\V1\WithdrawalController;
 use \App\Http\Controllers\Api\V1\Vendor\DashboardController;
 use \App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
 use \App\Http\Controllers\Api\V1\NotificationController;
+use \App\Http\Controllers\Api\V1\TagController;
 
 // Health
 Route::get('/health', function () {
@@ -89,7 +90,7 @@ Route::prefix('v1')->group(function () {
 
     // Address routes
     Route::prefix('/address')->controller(AddressController::class)->group(function () {
-        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::patch('/{address}', 'update');
@@ -100,7 +101,7 @@ Route::prefix('v1')->group(function () {
 
     // Order routes
     Route::prefix('/order')->controller(OrderController::class)->group(function () {
-        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::get('/', 'index');
             Route::get('/{order}', 'show');
             Route::post('/', 'store');
@@ -110,7 +111,7 @@ Route::prefix('v1')->group(function () {
 
     // Wishlist routes
     Route::prefix('/wishlist')->controller(WishlistController::class)->group(function () {
-        Route::middleware(['auth:sanctum', 'role:customer'])->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer', 'throttle:api'])->group(function () {
             Route::get('/', 'index');
             Route::post('/', 'store');
             Route::delete('/{product}', 'destroy');
@@ -119,25 +120,36 @@ Route::prefix('v1')->group(function () {
 
     // Review routes
     Route::prefix('/review')->controller(ReviewController::class)->group(function () {
-        Route::middleware(['auth:sanctum', 'role:customer'])->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'role:customer', 'throttle:api'])->group(function () {
             Route::post('/', 'store');
         });
     });
 
     // Coupon routes
     Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
-        Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::post('/apply', 'applyCoupon');
         });
     });
 
     // Notification routes
     Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
-        Route::middleware('auth:sanctum')->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
             Route::get('/', 'index');
             Route::get('/unread-count', 'unreadCount');
-            Route::patch('/{id}/read', 'markAsRead');
             Route::patch('/read-all', 'markAllAsRead');
+            Route::patch('/{id}/read', 'markAsRead');
+        });
+    });
+
+    // Tag routes
+    Route::prefix('/tag')->controller(TagController::class)->group(function () {
+        Route::get('/', 'index');
+
+        // Admin only
+        Route::middleware(['auth:sanctum', 'role:super_admin|admin', 'throttle:api'])->group(function () {
+            Route::post('/', 'store');
+            Route::delete('/{tag}', 'destroy');
         });
     });
 
@@ -172,7 +184,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Admin routes
-    Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin,api'])->group(function () {
+    Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
         // Admin vendor management
         Route::prefix('/vendor')->controller(VendorController::class)->group(function () {
             Route::get('/pending', 'getPendingVendors');
