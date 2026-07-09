@@ -14,6 +14,7 @@ use \App\Http\Controllers\Api\V1\CouponController;
 use \App\Http\Controllers\Api\V1\WithdrawalController;
 use \App\Http\Controllers\Api\V1\Vendor\DashboardController;
 use \App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
+use \App\Http\Controllers\Api\V1\NotificationController;
 
 // Health
 Route::get('/health', function () {
@@ -127,6 +128,16 @@ Route::prefix('v1')->group(function () {
     Route::prefix('/coupon')->controller(CouponController::class)->group(function () {
         Route::middleware('auth:sanctum')->middleware('throttle:api')->group(function () {
             Route::post('/apply', 'applyCoupon');
+        });
+    });
+
+    // Notification routes
+    Route::prefix('/notifications')->controller(NotificationController::class)->group(function () {
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/', 'index');
+            Route::get('/unread-count', 'unreadCount');
+            Route::patch('/{id}/read', 'markAsRead');
+            Route::patch('/read-all', 'markAllAsRead');
         });
     });
 
