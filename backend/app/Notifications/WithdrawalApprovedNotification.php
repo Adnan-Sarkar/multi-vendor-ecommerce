@@ -4,10 +4,11 @@ namespace App\Notifications;
 
 use App\Models\Withdrawal;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WithdrawalApprovedNotification extends Notification
+class WithdrawalApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

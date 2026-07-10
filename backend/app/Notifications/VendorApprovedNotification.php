@@ -4,10 +4,11 @@ namespace App\Notifications;
 
 use App\Models\VendorProfile;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class VendorApprovedNotification extends Notification
+class VendorApprovedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
