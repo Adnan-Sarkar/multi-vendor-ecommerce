@@ -17,6 +17,7 @@ use \App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardCont
 use \App\Http\Controllers\Api\V1\NotificationController;
 use \App\Http\Controllers\Api\V1\TagController;
 use \App\Http\Controllers\Api\V1\AttributeController;
+use \App\Http\Controllers\Api\V1\PaymentController;
 
 // Health
 Route::get('/health', function () {
@@ -164,6 +165,13 @@ Route::prefix('v1')->group(function () {
             Route::post('/{attribute}/values', 'storeValue');
             Route::delete('/{attribute}', 'destroy');
             Route::delete('/values/{value}', 'destroyValue');
+        });
+    });
+
+    // Payment routes
+    Route::prefix('/payment')->controller(PaymentController::class)->group(function () {
+        Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
+            Route::post('/{order}/initiate', 'initiatePayment');
         });
     });
 
