@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { loginAction } from "@/actions/authActions";
 import Link from "next/link";
 import { toast } from "sonner";
+import {
+  Envelope,
+  Lock,
+  SignIn,
+  Storefront,
+  ArrowRight,
+} from "@phosphor-icons/react";
+import { AuthShell, AuthBrandPanel } from "@/components/shared/auth";
+import { Input, Button, FormError, FormHeader } from "@/components/ui";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,103 +42,116 @@ export default function LoginPage() {
   }, [isPending, state, router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 gap-4">
-      {/* Main white form card */}
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow border border-gray-100">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
+    <AuthShell>
+      <div className="animate-fade-in-up grid w-full max-w-4xl overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl lg:grid-cols-2">
+        <AuthBrandPanel
+          eyebrow="Welcome back"
+          heading="Your marketplace, all in one place."
+          subheading="Sign in to track orders, manage your wishlist and pick up right where you left off."
+          features={[
+            {
+              icon: "shield",
+              title: "Secure by design",
+              description: "Your account and payments stay protected.",
+            },
+            {
+              icon: "truck",
+              title: "Fast delivery",
+              description: "Track every order from checkout to doorstep.",
+            },
+            {
+              icon: "sparkle",
+              title: "Curated picks",
+              description: "Discover top products from trusted vendors.",
+            },
+          ]}
+        />
 
-        <form className="mt-8 space-y-6" action={formAction}>
-          {state?.error && (
-            <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
-              {state.error}
-            </div>
-          )}
+        <div className="p-8 sm:p-10">
+          <FormHeader
+            icon={SignIn}
+            title="Sign in to your account"
+            subtitle="Enter your credentials to continue."
+            showBrand
+          />
 
-          <div className="space-y-4">
-            {/* Email Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <input
-                name="email"
-                type="email"
-                required
-                defaultValue={state?.inputs?.email as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="you@example.com"
-              />
-              {/* Show Zod Email Validation Error */}
-              {state?.errors?.email && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.email[0]}</p>
-              )}
-            </div>
+          <form className="space-y-5" action={formAction}>
+            <FormError message={state?.error} />
 
-            {/* Password Input */}
-            <div>
-              <div className="flex justify-between items-center mb-1">
-                <label className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <Link href="/forgot-password" className="text-xs text-indigo-600 hover:underline">
+            <Input
+              label="Email Address"
+              icon={Envelope}
+              name="email"
+              type="email"
+              required
+              defaultValue={(state?.inputs?.email as string) || ""}
+              placeholder="you@example.com"
+              error={state?.errors?.email?.[0]}
+            />
+
+            <Input
+              label="Password"
+              icon={Lock}
+              name="password"
+              type="password"
+              required
+              defaultValue={(state?.inputs?.password as string) || ""}
+              placeholder="••••••••"
+              error={state?.errors?.password?.[0]}
+              labelAction={
+                <Link
+                  href="/forgot-password"
+                  className="text-xs font-medium text-indigo-600 transition-colors hover:text-indigo-800"
+                >
                   Forgot password?
                 </Link>
-              </div>
-              <input
-                name="password"
-                type="password"
-                required
-                defaultValue={state?.inputs?.password as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="••••••••"
-              />
-              {/* Show Zod Password Validation Error */}
-              {state?.errors?.password && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.password[0]}</p>
-              )}
-            </div>
-          </div>
+              }
+            />
 
-          <div>
-            <button
+            <Button
               type="submit"
-              disabled={isPending}
-              className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors cursor-pointer"
+              className="cursor-pointer"
+              fullWidth
+              size="lg"
+              pending={isPending}
+              pendingLabel="Signing in..."
             >
-              {isPending ? "Signing in..." : "Sign in"}
-            </button>
-          </div>
-        </form>
-      </div>
+              Sign in
+            </Button>
+          </form>
 
-      <div className="max-w-md w-full space-y-4 mt-4 animate-fade-in">
-        {/* Become a Vendor */}
-        <div className="bg-indigo-50 border border-indigo-100/80 p-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
-          <span className="text-sm text-indigo-900">
-            Want to sell products on our platform?
-          </span>
-          <Link
-            href="/register-vendor"
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1"
-          >
-            Become a Vendor &rarr;
-          </Link>
-        </div>
-
-        {/* Redirect to Register */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            New to our platform?{" "}
-            <Link href="/register" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-              Create an account
+          <div className="mt-8 space-y-4">
+            <Link
+              href="/register-vendor"
+              className="group flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50/70 px-4 py-3 transition-colors hover:border-indigo-200 hover:bg-indigo-50"
+            >
+              <span className="flex items-center gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-600">
+                  <Storefront size={18} weight="bold" />
+                </span>
+                <span className="text-sm font-medium text-indigo-900">
+                  Want to sell on our platform?
+                </span>
+              </span>
+              <ArrowRight
+                size={18}
+                weight="bold"
+                className="text-indigo-600 transition-transform group-hover:translate-x-1"
+              />
             </Link>
-          </p>
+
+            <p className="text-center text-sm text-slate-500">
+              New to our platform?{" "}
+              <Link
+                href="/register"
+                className="font-semibold text-indigo-600 transition-colors hover:text-indigo-500"
+              >
+                Create an account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }

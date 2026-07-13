@@ -5,6 +5,18 @@ import { useRouter } from "next/navigation";
 import { registerAction } from "@/actions/authActions";
 import Link from "next/link";
 import { toast } from "sonner";
+import {
+  User,
+  Envelope,
+  Phone,
+  Lock,
+  LockKey,
+  UserPlus,
+  Storefront,
+  ArrowRight,
+} from "@phosphor-icons/react";
+import { AuthShell, AuthBrandPanel } from "@/components/shared/auth";
+import { Input, Button, FormError, FormHeader } from "@/components/ui";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -25,151 +37,144 @@ export default function RegisterPage() {
     }
   }, [isPending, state, router]);
 
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4">
-      {/* Main white form card */}
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow border border-gray-100">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" action={formAction}>
-          {state?.error && (
-            <div className="p-3 bg-red-50 text-red-600 text-sm rounded-lg border border-red-100">
-              {state.error}
-            </div>
-          )}
+    <AuthShell>
+      <div className="animate-fade-in-up grid w-full max-w-4xl overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl lg:grid-cols-2">
+        <AuthBrandPanel
+          eyebrow="Join us"
+          heading="Start shopping smarter today."
+          subheading="Create your free account to save favourites, check out faster and track every order in one place."
+          features={[
+            {
+              icon: "sparkle",
+              title: "Free to join",
+              description: "No fees — set up your account in seconds.",
+            },
+            {
+              icon: "truck",
+              title: "Order tracking",
+              description: "Follow your parcels from cart to doorstep.",
+            },
+            {
+              icon: "shield",
+              title: "Buyer protection",
+              description: "Shop confidently with secure checkout.",
+            },
+          ]}
+        />
 
-          <div className="space-y-4">
-            {/* Name Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
-              </label>
-              <input
-                name="name"
-                type="text"
-                required
-                defaultValue={state?.inputs?.name as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="John Doe"
-              />
-              {state?.errors?.name && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.name[0]}</p>
-              )}
-            </div>
+        <div className="p-8 sm:p-10">
+          <FormHeader
+            icon={UserPlus}
+            title="Create your account"
+            subtitle="It only takes a minute."
+            showBrand
+          />
 
-            {/* Email Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email Address
-              </label>
-              <input
-                name="email"
-                type="email"
-                required
-                defaultValue={state?.inputs?.email as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="you@example.com"
-              />
-              {state?.errors?.email && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.email[0]}</p>
-              )}
-            </div>
+          <form className="space-y-5" action={formAction}>
+            <FormError message={state?.error} />
 
-            {/* Phone Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number
-              </label>
-              <input
-                name="phone"
-                type="text"
-                required
-                defaultValue={state?.inputs?.phone as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="01712345678"
-              />
-              {state?.errors?.phone && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.phone[0]}</p>
-              )}
-            </div>
+            <Input
+              label="Full Name"
+              icon={User}
+              name="name"
+              type="text"
+              required
+              defaultValue={(state?.inputs?.name as string) || ""}
+              placeholder="John Doe"
+              error={state?.errors?.name?.[0]}
+            />
 
-            {/* Password Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                name="password"
-                type="password"
-                required
-                defaultValue={state?.inputs?.password as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="••••••••"
-              />
-              {state?.errors?.password && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.password[0]}</p>
-              )}
-            </div>
+            <Input
+              label="Email Address"
+              icon={Envelope}
+              name="email"
+              type="email"
+              required
+              defaultValue={(state?.inputs?.email as string) || ""}
+              placeholder="you@example.com"
+              error={state?.errors?.email?.[0]}
+            />
 
-            {/* Password Confirmation Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
-              </label>
-              <input
-                name="password_confirmation"
-                type="password"
-                required
-                defaultValue={state?.inputs?.password_confirmation as string || ""}
-                className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                placeholder="••••••••"
-              />
-              {state?.errors?.password_confirmation && (
-                <p className="text-red-500 text-xs mt-1">{state.errors.password_confirmation[0]}</p>
-              )}
-            </div>
-          </div>
+            <Input
+              label="Phone Number"
+              icon={Phone}
+              name="phone"
+              type="text"
+              required
+              defaultValue={(state?.inputs?.phone as string) || ""}
+              placeholder="01712345678"
+              error={state?.errors?.phone?.[0]}
+            />
 
-          <div>
-            <button
+            <Input
+              label="Password"
+              icon={Lock}
+              name="password"
+              type="password"
+              required
+              defaultValue={(state?.inputs?.password as string) || ""}
+              placeholder="••••••••"
+              error={state?.errors?.password?.[0]}
+            />
+
+            <Input
+              label="Confirm Password"
+              icon={LockKey}
+              name="password_confirmation"
+              type="password"
+              required
+              defaultValue={
+                (state?.inputs?.password_confirmation as string) || ""
+              }
+              placeholder="••••••••"
+              error={state?.errors?.password_confirmation?.[0]}
+            />
+
+            <Button
               type="submit"
-              disabled={isPending}
-              className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors cursor-pointer"
+              className="cursor-pointer"
+              fullWidth
+              size="lg"
+              pending={isPending}
+              pendingLabel="Creating account..."
             >
-              {isPending ? "Creating account..." : "Register"}
-            </button>
-          </div>
-        </form>
-      </div>
+              Create account
+            </Button>
+          </form>
 
-      <div className="max-w-md w-full space-y-4 mt-4 animate-fade-in">
-        {/* Become a Vendor */}
-        <div className="bg-indigo-50 border border-indigo-100/80 p-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
-          <span className="text-sm text-indigo-900">
-            Want to sell products on our platform?
-          </span>
-          <Link
-            href="/register-vendor"
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1"
-          >
-            Become a Vendor &rarr;
-          </Link>
-        </div>
-
-        {/* Redirect to Login */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-              Sign In
+          <div className="mt-8 space-y-4">
+            <Link
+              href="/register-vendor"
+              className="group flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50/70 px-4 py-3 transition-colors hover:border-indigo-200 hover:bg-indigo-50"
+            >
+              <span className="flex items-center gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-600">
+                  <Storefront size={18} weight="bold" />
+                </span>
+                <span className="text-sm font-medium text-indigo-900">
+                  Want to sell on our platform?
+                </span>
+              </span>
+              <ArrowRight
+                size={18}
+                weight="bold"
+                className="text-indigo-600 transition-transform group-hover:translate-x-1"
+              />
             </Link>
-          </p>
+
+            <p className="text-center text-sm text-slate-500">
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-semibold text-indigo-600 transition-colors hover:text-indigo-500"
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }

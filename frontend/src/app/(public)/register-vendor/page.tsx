@@ -5,16 +5,37 @@ import { useRouter } from "next/navigation";
 import { registerVendorAction } from "@/actions/registerVendorAction";
 import { toast } from "sonner";
 import Link from "next/link";
+import {
+  User,
+  Envelope,
+  Phone,
+  Lock,
+  LockKey,
+  Storefront,
+  TextAlignLeft,
+  MapPin,
+  City,
+  MapTrifold,
+  ArrowRight,
+  ShoppingBag,
+} from "@phosphor-icons/react";
+import { AuthShell } from "@/components/shared/auth";
+import { Input, Textarea, Button } from "@/components/ui";
 
 export default function RegisterVendorPage() {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(registerVendorAction, null);
+  const [state, formAction, isPending] = useActionState(
+    registerVendorAction,
+    null,
+  );
 
   useEffect(() => {
     if (isPending) {
       toast.loading("Submitting vendor application...", { id: "auth-toast" });
     } else if (state?.success) {
-      toast.success("Registration successful! Accessing dashboard...", { id: "auth-toast" });
+      toast.success("Registration successful! Accessing dashboard...", {
+        id: "auth-toast",
+      });
       router.push("/dashboard");
       router.refresh();
     } else if (state?.error) {
@@ -25,221 +46,216 @@ export default function RegisterVendorPage() {
   }, [isPending, state, router]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 gap-4">
-      {/* Main Form Card */}
-      <div className="max-w-2xl w-full space-y-8 bg-white p-8 rounded-2xl shadow border border-gray-100">
-        <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Register as a Vendor
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Set up your shop and start selling on our platform.
-          </p>
+    <AuthShell>
+      <div className="animate-fade-in-up w-full max-w-3xl overflow-hidden rounded-3xl border border-white/60 bg-white/70 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl">
+        {/* Gradient header band */}
+        <div className="relative overflow-hidden bg-linear-to-r from-indigo-600 via-violet-600 to-fuchsia-600 px-8 py-8 sm:px-10">
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-16 -right-10 h-52 w-52 rounded-full bg-white/15 blur-3xl" />
+            <div
+              className="absolute inset-0 opacity-[0.1]"
+              style={{
+                backgroundImage:
+                  "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                backgroundSize: "22px 22px",
+              }}
+            />
+          </div>
+          <div className="relative z-10 flex items-center gap-4">
+            <span className="flex h-14 w-14 flex-none items-center justify-center rounded-2xl bg-white/20 text-white ring-1 ring-white/30 backdrop-blur-sm">
+              <Storefront size={28} weight="fill" />
+            </span>
+            <div>
+              <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                Register as a Vendor
+              </h1>
+              <p className="mt-1 text-sm text-indigo-100">
+                Set up your shop and start selling on our platform.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <form className="mt-8 space-y-6" action={formAction}>
-          {/* Personal Details */}
-          <div>
-            <h3 className="text-lg font-bold text-gray-800 border-b pb-2 mb-4">
-              Personal Details
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
+        <div className="p-8 sm:p-10">
+          <form className="space-y-8" action={formAction}>
+            {/* Personal Details */}
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <User size={18} weight="bold" className="text-indigo-600" />
+                <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
+                  Personal Details
+                </h3>
+                <span className="ml-2 h-px flex-1 bg-slate-200" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <Input
+                  label="Full Name"
+                  icon={User}
                   name="name"
                   type="text"
                   required
                   defaultValue={state?.inputs?.name || ""}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="John Doe"
+                  error={state?.errors?.name?.[0]}
                 />
-                {state?.errors?.name && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.name[0]}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
+                <Input
+                  label="Email Address"
+                  icon={Envelope}
                   name="email"
                   type="email"
                   required
                   defaultValue={state?.inputs?.email || ""}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="vendor@example.com"
+                  error={state?.errors?.email?.[0]}
                 />
-                {state?.errors?.email && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.email[0]}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                <input
+                <Input
+                  label="Phone Number"
+                  icon={Phone}
                   name="phone"
                   type="text"
                   required
                   defaultValue={state?.inputs?.phone || ""}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="01712345678"
+                  error={state?.errors?.phone?.[0]}
                 />
-                {state?.errors?.phone && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.phone[0]}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input
+                <Input
+                  label="Password"
+                  icon={Lock}
                   name="password"
                   type="password"
                   required
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="••••••••"
+                  error={state?.errors?.password?.[0]}
                 />
-                {state?.errors?.password && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.password[0]}</p>
-                )}
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                <input
-                  name="password_confirmation"
-                  type="password"
-                  required
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
-                  placeholder="••••••••"
-                />
-                {state?.errors?.password_confirmation && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.password_confirmation[0]}</p>
-                )}
+                <div className="md:col-span-2">
+                  <Input
+                    label="Confirm Password"
+                    icon={LockKey}
+                    name="password_confirmation"
+                    type="password"
+                    required
+                    placeholder="••••••••"
+                    error={state?.errors?.password_confirmation?.[0]}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Shop Details */}
-          <div className="pt-6">
-            <h3 className="text-lg font-bold text-gray-800 border-b pb-2 mb-4">
-              Shop Details
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
-                <input
+            {/* Shop Details */}
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <Storefront
+                  size={18}
+                  weight="bold"
+                  className="text-indigo-600"
+                />
+                <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
+                  Shop Details
+                </h3>
+                <span className="ml-2 h-px flex-1 bg-slate-200" />
+              </div>
+
+              <div className="space-y-5">
+                <Input
+                  label="Shop Name"
+                  icon={ShoppingBag}
                   name="shop_name"
                   type="text"
                   required
                   defaultValue={state?.inputs?.shop_name || ""}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="Super Fast Tech"
+                  error={state?.errors?.shop_name?.[0]}
                 />
-                {state?.errors?.shop_name && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.shop_name[0]}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shop Description</label>
-                <textarea
+                <Textarea
+                  label="Shop Description"
+                  icon={TextAlignLeft}
                   name="description"
                   required
                   defaultValue={state?.inputs?.description || ""}
                   rows={3}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500 text-sm"
                   placeholder="Briefly describe what your shop sells..."
+                  error={state?.errors?.description?.[0]}
                 />
-                {state?.errors?.description && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.description[0]}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Shop Address</label>
-                <input
+                <Input
+                  label="Shop Address"
+                  icon={MapPin}
                   name="address"
                   type="text"
                   required
                   defaultValue={state?.inputs?.address || ""}
-                  className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                   placeholder="123 Shop Street"
+                  error={state?.errors?.address?.[0]}
                 />
-                {state?.errors?.address && (
-                  <p className="text-red-500 text-xs mt-1">{state.errors.address[0]}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <input
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <Input
+                    label="City"
+                    icon={City}
                     name="city"
                     type="text"
                     required
                     defaultValue={state?.inputs?.city || ""}
-                    className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                     placeholder="Dhaka"
+                    error={state?.errors?.city?.[0]}
                   />
-                  {state?.errors?.city && (
-                    <p className="text-red-500 text-xs mt-1">{state.errors.city[0]}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">State / Division</label>
-                  <input
+                  <Input
+                    label="State / Division"
+                    icon={MapTrifold}
                     name="state"
                     type="text"
                     required
                     defaultValue={state?.inputs?.state || ""}
-                    className="rounded-lg w-full px-3 py-2 border border-gray-300 focus:outline-indigo-500"
                     placeholder="Dhaka Division"
+                    error={state?.errors?.state?.[0]}
                   />
-                  {state?.errors?.state && (
-                    <p className="text-red-500 text-xs mt-1">{state.errors.state[0]}</p>
-                  )}
                 </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <button
+            <Button
               type="submit"
-              disabled={isPending}
-              className="w-full flex justify-center py-3 px-4 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 transition-colors cursor-pointer"
+              className="cursor-pointer"
+              fullWidth
+              size="lg"
+              pending={isPending}
+              pendingLabel="Creating vendor account..."
             >
-              {isPending ? "Creating vendor account..." : "Submit Shop Application"}
-            </button>
-          </div>
-        </form>
-      </div>
+              Submit Shop Application
+            </Button>
+          </form>
 
-      <div className="max-w-2xl w-full space-y-4 mt-4 animate-fade-in">
-        {/* Register as Customer */}
-        <div className="bg-indigo-50 border border-indigo-100/80 p-4 rounded-xl flex items-center justify-center gap-2 shadow-sm">
-          <span className="text-sm text-indigo-900">
-            Just looking to buy products?
-          </span>
-          <Link
-            href="/register"
-            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1"
-          >
-            Register as a Customer &rarr;
-          </Link>
-        </div>
-
-        {/* Redirect to Login */}
-        <div className="text-center">
-          <p className="text-sm text-gray-500">
-            Already have a shop?{" "}
-            <Link href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors">
-              Sign In
+          <div className="mt-8 space-y-4">
+            <Link
+              href="/register"
+              className="group flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50/70 px-4 py-3 transition-colors hover:border-indigo-200 hover:bg-indigo-50"
+            >
+              <span className="flex items-center gap-2.5">
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600/10 text-indigo-600">
+                  <ShoppingBag size={18} weight="bold" />
+                </span>
+                <span className="text-sm font-medium text-indigo-900">
+                  Just looking to buy products?
+                </span>
+              </span>
+              <ArrowRight
+                size={18}
+                weight="bold"
+                className="text-indigo-600 transition-transform group-hover:translate-x-1"
+              />
             </Link>
-          </p>
+
+            <p className="text-center text-sm text-slate-500">
+              Already have a shop?{" "}
+              <Link
+                href="/login"
+                className="font-semibold text-indigo-600 transition-colors hover:text-indigo-500"
+              >
+                Sign In
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 }
