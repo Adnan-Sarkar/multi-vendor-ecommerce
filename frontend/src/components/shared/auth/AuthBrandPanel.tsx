@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Storefront, ShieldCheck, Truck, Sparkle } from "@phosphor-icons/react";
+import { Storefront, ShieldCheck, Truck, Sparkle } from "@phosphor-icons/react/dist/ssr";
 
 type Feature = {
   icon: "shield" | "truck" | "sparkle" | "store";
