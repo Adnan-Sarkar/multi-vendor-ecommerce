@@ -2,7 +2,7 @@
 
 import { useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
 import type { Icon } from "@phosphor-icons/react";
-import { Eye, EyeSlash } from "@phosphor-icons/react";
+import { EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
 
 type InputProps = {
   label?: string;
@@ -58,9 +58,9 @@ export function Input({ label, icon: LeadingIcon, error, labelAction, type = "te
             onClick={() => setReveal((v) => !v)}
             tabIndex={-1}
             aria-label={reveal ? "Hide password" : "Show password"}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-slate-400 transition-colors hover:text-indigo-600"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 cursor-pointer rounded-md p-1.5 text-slate-400 transition-colors hover:text-indigo-600"
           >
-            {reveal ? <EyeSlash size={18} /> : <Eye size={18} />}
+            {reveal ? <EyeSlashIcon size={18} /> : <EyeIcon size={18} />}
           </button>
         )}
       </div>

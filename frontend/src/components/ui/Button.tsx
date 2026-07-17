@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { CircleNotch } from "@phosphor-icons/react";
+import { CircleNotchIcon } from "@phosphor-icons/react";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost";
 type Size = "sm" | "md" | "lg";
@@ -39,7 +39,7 @@ export function Button({
   ...rest
 }: ButtonProps) {
   const classes = [
-    "group relative inline-flex items-center justify-center rounded-xl font-semibold transition-all focus:outline-none focus:ring-4 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70",
+    "group relative inline-flex cursor-pointer items-center justify-center rounded-xl font-semibold transition-all focus:outline-none focus:ring-4 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-70",
     VARIANTS[variant],
     SIZES[size],
     fullWidth ? "w-full" : "",
@@ -58,7 +58,7 @@ export function Button({
       )}
       {pending ? (
         <>
-          <CircleNotch size={18} weight="bold" className="animate-spin" />
+          <CircleNotchIcon size={18} weight="bold" className="animate-spin" />
           {pendingLabel ?? children}
         </>
       ) : (

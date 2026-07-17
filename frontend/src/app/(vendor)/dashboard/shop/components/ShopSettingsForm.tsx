@@ -3,12 +3,12 @@
 import { useActionState, useEffect } from "react";
 import { updateVendorProfileAction } from "@/actions/profileActions";
 import {
-  User,
-  Phone,
-  Storefront,
-  MapPin,
-  Buildings,
-  CircleNotch,
+  UserIcon,
+  PhoneIcon,
+  StorefrontIcon,
+  MapPinIcon,
+  BuildingsIcon,
+  CircleNotchIcon,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { Input, Textarea, FormError } from "@/components/ui";
@@ -64,7 +64,7 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <Input
             label="Full Name"
-            icon={User}
+            icon={UserIcon}
             id="name"
             name="name"
             type="text"
@@ -74,7 +74,7 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
           />
           <Input
             label="Phone Number"
-            icon={Phone}
+            icon={PhoneIcon}
             id="phone"
             name="phone"
             type="tel"
@@ -104,7 +104,7 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
         <div className="space-y-5">
           <Input
             label="Shop Name"
-            icon={Storefront}
+            icon={StorefrontIcon}
             id="shop_name"
             name="shop_name"
             type="text"
@@ -114,7 +114,7 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
           />
           <Textarea
             label="Description"
-            icon={Buildings}
+            icon={BuildingsIcon}
             id="description"
             name="description"
             rows={4}
@@ -132,7 +132,7 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
         <div className="space-y-5">
           <Input
             label="Address"
-            icon={MapPin}
+            icon={MapPinIcon}
             id="address"
             name="address"
             type="text"
@@ -176,9 +176,9 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+          className="inline-flex cursor-pointer items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isPending && <CircleNotch size={18} weight="bold" className="animate-spin" />}
+          {isPending && <CircleNotchIcon size={18} weight="bold" className="animate-spin" />}
           {isPending ? "Saving..." : "Save Changes"}
         </button>
       </div>
