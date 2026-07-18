@@ -8,12 +8,13 @@ export type SidebarItem = {
   href: string;
   label: string;
   icon: Icon;
+  exact?: boolean;
 };
 
-export function SidebarNavItem({ href, label, icon: ItemIcon }: SidebarItem) {
+export function SidebarNavItem({ href, label, icon: ItemIcon, exact }: SidebarItem) {
   const pathname = usePathname();
-  const isActive =
-    href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+  const useExact = exact ?? href === "/dashboard";
+  const isActive = useExact ? pathname === href : pathname.startsWith(href);
 
   const base =
     "flex items-center justify-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors md:justify-start";
