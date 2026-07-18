@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  // Extract values from request cookies
   const token = request.cookies.get(process.env.COOKIE_NAME as string)?.value;
-  const role = request.cookies.get(process.env.ROLE_COOKIE_NAME as string)?.value;
+  const role = request.cookies.get(
+    process.env.ROLE_COOKIE_NAME as string,
+  )?.value;
 
   const path = request.nextUrl.pathname;
 
@@ -27,6 +28,13 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Account route guard
+  if (path.startsWith("/account")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+  }
+
   // Checkout route guard
   if (path.startsWith("/checkout")) {
     if (!token) {
@@ -38,7 +46,8 @@ export async function proxy(request: NextRequest) {
   }
 
   // Prevent logged-in users from visiting auth routes
-  const isAuthroute = path === "/login" || path === "/register" || path === "/register-vendor";
+  const isAuthroute =
+    path === "/login" || path === "/register" || path === "/register-vendor";
   if (isAuthroute && token) {
     if (role === "vendor") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -57,8 +66,10 @@ export const config = {
     "/dashboard/:path*",
     "/admin/:path*",
     "/checkout/:path*",
+    "/account/:path*",
+    "/account",
     "/login",
     "/register",
     "/register-vendor",
   ],
-}
+};
