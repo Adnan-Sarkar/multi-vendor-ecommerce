@@ -3,3 +3,8 @@ export { Textarea } from "./Textarea";
 export { Button } from "./Button";
 export { FormError } from "./FormError";
 export { FormHeader } from "./FormHeader";
+export { DataTable } from "./DataTable";
+export type { Column, TableMeta } from "./DataTable";
+export { Pagination } from "./Pagination";
+export { Modal } from "./Modal";
+export { StatusBadge } from "./StatusBadge";

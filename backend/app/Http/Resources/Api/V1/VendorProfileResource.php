@@ -19,6 +19,7 @@ class VendorProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'shop_name' => $this->shop_name,
             'slug' => $this->slug,
             'description' => $this->whenNotNull($this->description),
