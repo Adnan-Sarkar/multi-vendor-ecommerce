@@ -78,6 +78,19 @@ class ProductService
     }
 
     /**
+     * @throws BaseException
+     */
+    public function getMyProduct(Product $product): Product {
+        $vendorId = auth()->user()->vendorProfile->id;
+
+        if ($product->vendor_id !== $vendorId) {
+            throw new BaseException('Product not found', 404);
+        }
+
+        return $this->productRepository->getVendorProductDetails($product);
+    }
+
+    /**
      * @throws Throwable
      */
     public function updateProduct(Product $product, array $data): Product {

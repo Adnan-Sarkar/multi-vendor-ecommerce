@@ -112,6 +112,11 @@ class ProductRepository
             ->paginate(20);
     }
 
+    public function getVendorProductDetails(Product $product): Product
+    {
+        return $product->load(['categories', 'tags', 'images', 'vendor']);
+    }
+
     public function addProductImages(Product $product, array $data): void {
         $product->images()->createMany($data['images']);
     }

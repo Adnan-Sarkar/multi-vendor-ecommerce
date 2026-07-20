@@ -92,6 +92,18 @@ class ProductController extends Controller
     }
 
     /**
+     * @throws BaseException
+     */
+    public function showMyProduct(Product $product): JsonResponse {
+        $result = $this->productService->getMyProduct($product);
+
+        return $this->success(
+            new ProductResource($result),
+            'Product retrieved successfully'
+        );
+    }
+
+    /**
      * @throws Throwable
      */
     public function update(UpdateProductRequest $request, Product $product): JsonResponse {

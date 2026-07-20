@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
         // Private routes
         Route::middleware(['auth:sanctum', 'permission:manage-own-products', 'throttle:api'])->group(function () {
             Route::get('/me/products', 'myProducts');
+            Route::get('/me/products/{product}', 'showMyProduct');
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');
             Route::post('/{product}/variants', 'storeProductVariant');
