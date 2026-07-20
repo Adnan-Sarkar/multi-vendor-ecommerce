@@ -1,28 +1,36 @@
-import { getVendorProducts } from "@/services/productService";
-import { ProductsTable } from "./components/ProductsTable";
 import Link from "next/link";
-import { Plus } from "@phosphor-icons/react/dist/ssr";
+import { PlusIcon } from "@phosphor-icons/react/ssr";
+import { getMyProducts } from "@/services/vendorProductService";
+import { ProductsTable } from "./components/ProductsTable";
 
-export default async function VendorProductsPage() {
-  const products = await getVendorProducts();
+interface VendorProductsPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function VendorProductsPage({ searchParams }: VendorProductsPageProps) {
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
+  const { data, meta } = await getMyProducts(currentPage);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-        <Link 
-          href="/dashboard/products/new" 
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700 transition-colors shadow-sm"
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+          <p className="mt-0.5 text-sm text-gray-500">
+            Manage your product catalog and track approval status.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/products/new"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm transition-colors hover:bg-indigo-700"
         >
-          <Plus size={20} weight="bold" />
+          <PlusIcon size={20} weight="bold" />
           Add Product
         </Link>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        <ProductsTable products={products} />
-      </div>
+      <ProductsTable products={data} meta={meta} />
     </div>
   );
 }
-

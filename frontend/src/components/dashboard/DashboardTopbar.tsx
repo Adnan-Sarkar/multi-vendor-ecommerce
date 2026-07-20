@@ -3,13 +3,46 @@
 import { usePathname } from "next/navigation";
 import { UserAvatar } from "./UserAvatar";
 
-function getPageTitle(pathname: string) {
-  const segment = pathname.split("/").filter(Boolean).pop() ?? "dashboard";
-  if (segment === "dashboard") return "Dashboard Overview";
-  return segment
+function toTitleCase(value: string) {
+  return value
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+}
+
+function toSingular(value: string) {
+  return value.endsWith("s") ? value.slice(0, -1) : value;
+}
+
+function isNumericId(value: string) {
+  return /^\d+$/.test(value);
+}
+
+function getPageTitle(pathname: string) {
+  const segments = pathname
+    .split("/")
+    .filter(Boolean)
+    .filter((segment) => segment !== "dashboard");
+
+  if (segments.length === 0) return "Dashboard Overview";
+
+  const lastSegment = segments[segments.length - 1];
+  const parentSegment = segments[segments.length - 2];
+
+  if (isNumericId(lastSegment) && parentSegment) {
+    return `${toTitleCase(toSingular(parentSegment))} Details`;
+  }
+
+  if (lastSegment === "new" && parentSegment) {
+    return `New ${toTitleCase(toSingular(parentSegment))}`;
+  }
+
+  if (lastSegment === "edit" && parentSegment && isNumericId(parentSegment)) {
+    const sectionSegment = segments[segments.length - 3];
+    return sectionSegment ? `Edit ${toTitleCase(toSingular(sectionSegment))}` : "Edit";
+  }
+
+  return toTitleCase(lastSegment);
 }
 
 type DashboardTopbarProps = {

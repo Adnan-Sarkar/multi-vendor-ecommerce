@@ -1,85 +1,148 @@
 "use client";
 
-import { Product } from "@/data/mock/products";
-import Image from "next/image";
-import { PencilSimple, Trash } from "@phosphor-icons/react";
+import { useState, useTransition } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { EyeIcon, PencilSimpleIcon, TrashIcon, PackageIcon } from "@phosphor-icons/react";
+import { DataTable, StatusBadge, Modal, Button, type Column } from "@/components/ui";
+import type { VendorProduct, PaginationMeta } from "@/services/vendorProductService";
+import { deleteProductAction } from "@/actions/productActions";
 
 interface ProductsTableProps {
-  products: Product[];
+  products: VendorProduct[];
+  meta: PaginationMeta;
 }
 
-export function ProductsTable({ products }: ProductsTableProps) {
-  const handleDelete = (id: number) => {
-    // Note: We will replace this with a proper Server Action and UI modal later
-    if (confirm("Are you sure you want to delete this product?")) {
-      console.log("Delete product", id);
-    }
+function formatPrice(price: string | null): string {
+  if (price === null) return "—";
+  return `$${Number(price).toFixed(2)}`;
+}
+
+export function ProductsTable({ products, meta }: ProductsTableProps) {
+  const router = useRouter();
+  const [productToDelete, setProductToDelete] = useState<VendorProduct | null>(null);
+  const [isDeleting, startDeleting] = useTransition();
+
+  const confirmDelete = () => {
+    if (!productToDelete) return;
+
+    startDeleting(async () => {
+      const result = await deleteProductAction(productToDelete.id);
+      if (result.success) {
+        toast.success(result.message);
+        setProductToDelete(null);
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
+    });
   };
 
+  const columns: Column<VendorProduct>[] = [
+    {
+      header: "Product",
+      cell: (product) => (
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100 text-gray-400">
+            {product.thumbnail ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={product.thumbnail} alt="" className="h-full w-full object-cover" />
+            ) : (
+              <PackageIcon size={20} />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-bold text-gray-900">{product.name}</p>
+            <p className="text-xs text-gray-400">{product.sku}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Price",
+      cell: (product) => (
+        <span className="font-bold text-gray-900">{formatPrice(product.regular_price)}</span>
+      ),
+    },
+    {
+      header: "Stock",
+      cell: (product) => (product.stock_qty ?? 0).toString(),
+    },
+    {
+      header: "Status",
+      cell: (product) => <StatusBadge status={product.status} />,
+    },
+    {
+      header: "Actions",
+      align: "right",
+      cell: (product) => (
+        <div className="flex items-center justify-end gap-1.5">
+          <Link
+            href={`/dashboard/products/${product.id}`}
+            title="View details"
+            className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
+          >
+            <EyeIcon size={20} />
+          </Link>
+          <Link
+            href={`/dashboard/products/${product.id}/edit`}
+            title="Edit product"
+            className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-amber-50 hover:text-amber-600"
+          >
+            <PencilSimpleIcon size={20} />
+          </Link>
+          <button
+            onClick={() => setProductToDelete(product)}
+            title="Delete product"
+            className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+          >
+            <TrashIcon size={20} />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-left text-sm text-gray-600">
-        <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
-          <tr>
-            <th className="px-6 py-4">Product</th>
-            <th className="px-6 py-4">Category</th>
-            <th className="px-6 py-4">Price</th>
-            <th className="px-6 py-4">Status</th>
-            <th className="px-6 py-4 text-right">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition-colors group">
-              <td className="px-6 py-4">
-                <div className="flex items-center gap-4">
-                  <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                    <Image src={product.thumbnail} alt={product.name} fill className="object-cover" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-gray-900 line-clamp-1">{product.name}</div>
-                    <div className="text-xs text-gray-400">ID: {product.id}</div>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-4 font-medium">{product.category}</td>
-              <td className="px-6 py-4 font-bold text-gray-900">${product.price.toFixed(2)}</td>
-              <td className="px-6 py-4">
-                {product.in_stock ? (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                    In Stock
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                    Out of Stock
-                  </span>
-                )}
-              </td>
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">
-                    <PencilSimple size={20} />
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(product.id)}
-                    className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition-colors"
-                  >
-                    <Trash size={20} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-          {products.length === 0 && (
-            <tr>
-              <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                No products found. Start by adding a new product.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <DataTable
+        columns={columns}
+        data={products}
+        rowKey={(product) => product.id}
+        title={`My Products (${meta.total})`}
+        emptyMessage="No products yet. Add your first product to get started."
+        meta={meta}
+      />
+
+      <Modal
+        open={!!productToDelete}
+        onClose={() => setProductToDelete(null)}
+        title="Delete Product"
+        size="sm"
+        footer={
+          <>
+            <Button variant="outline" onClick={() => setProductToDelete(null)} disabled={isDeleting}>
+              Cancel
+            </Button>
+            <Button
+              variant="secondary"
+              className="bg-red-600! hover:bg-red-700!"
+              pending={isDeleting}
+              pendingLabel="Deleting..."
+              onClick={confirmDelete}
+            >
+              Delete
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-gray-600">
+          Are you sure you want to delete{" "}
+          <span className="font-semibold text-gray-900">{productToDelete?.name}</span>? This action
+          cannot be undone.
+        </p>
+      </Modal>
+    </>
   );
 }
-
