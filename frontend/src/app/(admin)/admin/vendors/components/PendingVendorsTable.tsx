@@ -2,9 +2,16 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { EyeIcon, CheckCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import {
+  EyeIcon,
+  CheckCircleIcon,
+  WarningCircleIcon,
+} from "@phosphor-icons/react";
 import { DataTable, type Column } from "@/components/ui";
-import type { PendingVendor, PaginationMeta } from "@/services/adminVendorService";
+import type {
+  PendingVendor,
+  PaginationMeta,
+} from "@/services/adminVendorService";
 import {
   approveVendorAction,
   rejectVendorAction,
@@ -17,11 +24,21 @@ interface PendingVendorsTableProps {
   meta: PaginationMeta;
 }
 
-export function PendingVendorsTable({ vendors, meta }: PendingVendorsTableProps) {
+export function PendingVendorsTable({
+  vendors,
+  meta,
+}: PendingVendorsTableProps) {
   const router = useRouter();
-  const [selectedVendor, setSelectedVendor] = useState<PendingVendor | null>(null);
-  const [processingVendorId, setProcessingVendorId] = useState<number | null>(null);
-  const [feedback, setFeedback] = useState<{ success: boolean; text: string } | null>(null);
+  const [selectedVendor, setSelectedVendor] = useState<PendingVendor | null>(
+    null,
+  );
+  const [processingVendorId, setProcessingVendorId] = useState<number | null>(
+    null,
+  );
+  const [feedback, setFeedback] = useState<{
+    success: boolean;
+    text: string;
+  } | null>(null);
   const [isProcessing, startProcessing] = useTransition();
 
   const runAction = (vendorId: number, action: () => Promise<ActionResult>) => {
@@ -60,7 +77,9 @@ export function PendingVendorsTable({ vendors, meta }: PendingVendorsTableProps)
     {
       header: "Owner",
       cell: (vendor) => (
-        <span className="font-medium text-gray-900">{vendor.user?.name ?? "—"}</span>
+        <span className="font-medium text-gray-900">
+          {vendor.user?.name ?? "—"}
+        </span>
       ),
     },
     {
@@ -69,7 +88,8 @@ export function PendingVendorsTable({ vendors, meta }: PendingVendorsTableProps)
     },
     {
       header: "Location",
-      cell: (vendor) => [vendor.city, vendor.state].filter(Boolean).join(", ") || "—",
+      cell: (vendor) =>
+        [vendor.city, vendor.state].filter(Boolean).join(", ") || "—",
     },
     {
       header: "Actions",
