@@ -9,3 +9,4 @@ export { Pagination } from "./Pagination";
 export { Modal } from "./Modal";
 export { StatusBadge } from "./StatusBadge";
 export { CheckboxChips } from "./CheckboxChips";
+export { ImageUpload } from "./ImageUpload";
