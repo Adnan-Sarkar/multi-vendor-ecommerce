@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { updateCustomerProfileAction } from "@/actions/profileActions";
 import { User, Phone, Cake } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { Input, Button } from "@/components/ui";
+import { Input, Button, ImageUpload } from "@/components/ui";
 
 type CustomerProfile = {
   date_of_birth: string | null;
@@ -14,6 +14,7 @@ type CustomerProfile = {
 type Profile = {
   name: string;
   phone: string | null;
+  avatar: string | null;
   customer_profile: CustomerProfile | null;
 };
 
@@ -26,6 +27,7 @@ export function ProfileForm({ profile }: Props) {
     updateCustomerProfileAction,
     null,
   );
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   useEffect(() => {
     if (isPending) {
@@ -54,6 +56,17 @@ export function ProfileForm({ profile }: Props) {
       </div>
 
       <form action={formAction} className="space-y-5 px-7 py-6">
+        <ImageUpload
+          label="Profile Photo"
+          name="avatar"
+          folder="avatars"
+          shape="circle"
+          defaultUrl={profile.avatar}
+          helperText="Upload a clear photo of yourself."
+          error={state?.errors?.avatar?.[0]}
+          onUploadingChange={setIsImageUploading}
+        />
+
         <Input
           label="Full Name"
           icon={User}
@@ -115,8 +128,9 @@ export function ProfileForm({ profile }: Props) {
           className="cursor-pointer"
           fullWidth
           size="lg"
-          pending={isPending}
-          pendingLabel="Saving..."
+          disabled={isImageUploading}
+          pending={isPending || isImageUploading}
+          pendingLabel={isImageUploading ? "Uploading image..." : "Saving..."}
         >
           Save Changes
         </Button>

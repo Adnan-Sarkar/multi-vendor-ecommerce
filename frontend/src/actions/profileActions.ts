@@ -17,6 +17,7 @@ const CustomerProfileSchema = z.object({
     .or(z.literal("")),
   date_of_birth: z.string().optional().or(z.literal("")),
   gender: z.enum(["male", "female"]).optional().or(z.literal("")),
+  avatar: z.string().url("Avatar must be a valid URL").optional().or(z.literal("")),
 });
 
 const VendorProfileSchema = z.object({
@@ -60,6 +61,9 @@ const VendorProfileSchema = z.object({
     .min(2, "Zip code must be at least 2 characters")
     .optional()
     .or(z.literal("")),
+  avatar: z.string().url("Avatar must be a valid URL").optional().or(z.literal("")),
+  logo: z.string().url("Logo must be a valid URL").optional().or(z.literal("")),
+  banner: z.string().url("Banner must be a valid URL").optional().or(z.literal("")),
 });
 
 const ChangePasswordSchema = z
@@ -102,6 +106,7 @@ export async function updateCustomerProfileAction(
   if (formData.get("date_of_birth"))
     fields.date_of_birth = formData.get("date_of_birth");
   if (formData.get("gender")) fields.gender = formData.get("gender");
+  if (formData.get("avatar")) fields.avatar = formData.get("avatar");
 
   const validatedFields = CustomerProfileSchema.safeParse(fields);
 
@@ -159,6 +164,9 @@ export async function updateVendorProfileAction(
   if (formData.get("city")) fields.city = formData.get("city");
   if (formData.get("state")) fields.state = formData.get("state");
   if (formData.get("zip_code")) fields.zip_code = formData.get("zip_code");
+  if (formData.get("avatar")) fields.avatar = formData.get("avatar");
+  if (formData.get("logo")) fields.logo = formData.get("logo");
+  if (formData.get("banner")) fields.banner = formData.get("banner");
 
   const validatedFields = VendorProfileSchema.safeParse(fields);
 

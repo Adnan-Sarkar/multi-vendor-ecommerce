@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { updateVendorProfileAction } from "@/actions/profileActions";
 import {
   UserIcon,
@@ -11,13 +11,15 @@ import {
   CircleNotchIcon,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { Input, Textarea, FormError } from "@/components/ui";
+import { Input, Textarea, FormError, ImageUpload } from "@/components/ui";
 import { SettingsSection } from "./SettingsSection";
 
 type VendorProfile = {
   shop_name: string;
   slug: string;
   description: string | null;
+  logo: string | null;
+  banner: string | null;
   address: string | null;
   city: string | null;
   state: string | null;
@@ -28,6 +30,7 @@ type Profile = {
   name: string;
   email: string;
   phone: string | null;
+  avatar: string | null;
   vendor_profile: VendorProfile | null;
 };
 
@@ -38,6 +41,13 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
   );
 
   const shop = profile.vendor_profile;
+
+  const [activeUploadCount, setActiveUploadCount] = useState(0);
+  const isImageUploading = activeUploadCount > 0;
+
+  function handleUploadingChange(isUploading: boolean) {
+    setActiveUploadCount((count) => Math.max(0, count + (isUploading ? 1 : -1)));
+  }
 
   useEffect(() => {
     if (isPending) {
@@ -95,6 +105,18 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
             Email cannot be changed from here.
           </p>
         </div>
+        <div className="mt-5">
+          <ImageUpload
+            label="Profile Photo"
+            name="avatar"
+            folder="avatars"
+            shape="circle"
+            defaultUrl={profile.avatar}
+            helperText="Your personal account photo."
+            error={state?.errors?.avatar?.[0]}
+            onUploadingChange={handleUploadingChange}
+          />
+        </div>
       </SettingsSection>
 
       <SettingsSection
@@ -122,6 +144,28 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
             placeholder="Tell customers about your shop..."
             error={state?.errors?.description?.[0]}
           />
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <ImageUpload
+              label="Shop Logo"
+              name="logo"
+              folder="shops"
+              shape="square"
+              defaultUrl={shop?.logo}
+              helperText="Square image works best."
+              error={state?.errors?.logo?.[0]}
+              onUploadingChange={handleUploadingChange}
+            />
+            <ImageUpload
+              label="Shop Banner"
+              name="banner"
+              folder="shops"
+              shape="wide"
+              defaultUrl={shop?.banner}
+              helperText="Wide image shown on your store page."
+              error={state?.errors?.banner?.[0]}
+              onUploadingChange={handleUploadingChange}
+            />
+          </div>
         </div>
       </SettingsSection>
 
@@ -175,11 +219,17 @@ export function ShopSettingsForm({ profile }: { profile: Profile }) {
       <div className="flex justify-end">
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isPending || isImageUploading}
           className="inline-flex cursor-pointer items-center gap-2 bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isPending && <CircleNotchIcon size={18} weight="bold" className="animate-spin" />}
-          {isPending ? "Saving..." : "Save Changes"}
+          {(isPending || isImageUploading) && (
+            <CircleNotchIcon size={18} weight="bold" className="animate-spin" />
+          )}
+          {isImageUploading
+            ? "Uploading image..."
+            : isPending
+              ? "Saving..."
+              : "Save Changes"}
         </button>
       </div>
     </form>

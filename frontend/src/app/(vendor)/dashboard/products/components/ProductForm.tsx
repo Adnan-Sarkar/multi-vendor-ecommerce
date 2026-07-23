@@ -1,9 +1,9 @@
 "use client";
 
-import { useActionState, useEffect, type ReactNode } from "react";
+import { useActionState, useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Button, CheckboxChips, Input, Textarea } from "@/components/ui";
+import { Button, CheckboxChips, ImageUpload, Input, Textarea } from "@/components/ui";
 import type { ProductFormState } from "@/actions/productActions";
 import type { Category, Tag } from "@/services/catalogService";
 import type { VendorProduct } from "@/services/vendorProductService";
@@ -50,6 +50,7 @@ export function ProductForm({
     action,
     null,
   );
+  const [isImageUploading, setIsImageUploading] = useState(false);
 
   const selectedCategoryIds = initialProduct?.categories?.map((category) => category.id) ?? [];
   const selectedTagIds = initialProduct?.tags?.map((tag) => tag.id) ?? [];
@@ -98,13 +99,15 @@ export function ProductForm({
             placeholder="Detailed product description (optional)."
             error={state?.errors?.description?.[0]}
           />
-          <Input
-            label="Thumbnail URL"
+          <ImageUpload
+            label="Thumbnail"
             name="thumbnail"
-            type="url"
-            defaultValue={initialProduct?.thumbnail ?? ""}
-            placeholder="https://... (optional)"
+            folder="products"
+            shape="square"
+            defaultUrl={initialProduct?.thumbnail}
+            helperText="Upload a product thumbnail image (optional)."
             error={state?.errors?.thumbnail?.[0]}
+            onUploadingChange={setIsImageUploading}
           />
         </div>
       </FormSection>
@@ -217,7 +220,12 @@ export function ProductForm({
         <Button type="button" variant="outline" onClick={() => router.back()}>
           Cancel
         </Button>
-        <Button type="submit" pending={isPending} pendingLabel={pendingLabel}>
+        <Button
+          type="submit"
+          disabled={isImageUploading}
+          pending={isPending || isImageUploading}
+          pendingLabel={isImageUploading ? "Uploading image..." : pendingLabel}
+        >
           {submitLabel}
         </Button>
       </div>
