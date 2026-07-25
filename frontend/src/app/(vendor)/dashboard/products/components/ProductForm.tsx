@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button, CheckboxChips, ImageUpload, Input, Textarea } from "@/components/ui";
 import type { ProductFormState } from "@/actions/productActions";
 import type { Category, Tag } from "@/services/catalogService";
+import { flattenCategoryOptions } from "@/lib/categoryOptions";
 import type { VendorProduct } from "@/services/vendorProductService";
 
 type ProductFormAction = (
@@ -52,6 +53,7 @@ export function ProductForm({
   );
   const [isImageUploading, setIsImageUploading] = useState(false);
 
+  const categoryOptions = flattenCategoryOptions(categories);
   const selectedCategoryIds = initialProduct?.categories?.map((category) => category.id) ?? [];
   const selectedTagIds = initialProduct?.tags?.map((tag) => tag.id) ?? [];
 
@@ -117,7 +119,7 @@ export function ProductForm({
           <CheckboxChips
             label="Categories"
             name="categories"
-            options={categories}
+            options={categoryOptions}
             selectedIds={selectedCategoryIds}
             error={state?.errors?.categories?.[0]}
             emptyMessage="No categories available yet."

@@ -4,6 +4,14 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
+  description?: string | null;
+  image?: string | null;
+  is_active?: boolean;
+  order?: number | null;
+  parent?: Category | null;
+  children?: Category[];
+  products_count?: number;
+  created_at?: string;
 }
 
 export interface Tag {
