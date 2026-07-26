@@ -1,6 +1,10 @@
 import { WarningCircleIcon, PackageIcon } from "@phosphor-icons/react/ssr";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { VendorProduct } from "@/services/vendorProductService";
+import type { ProductVariant } from "@/services/productService";
+import type { Attribute } from "@/services/attributeService";
+import { ProductImagesManager } from "./ProductImagesManager";
+import { ProductVariantsManager } from "./ProductVariantsManager";
 
 function formatPrice(price: string | null): string {
   if (price === null) return "—";
@@ -9,6 +13,7 @@ function formatPrice(price: string | null): string {
 
 function formatDate(value: string | null | undefined): string {
   if (!value) return "—";
+
   return new Date(value).toLocaleDateString(undefined, {
     year: "numeric",
     month: "short",
@@ -25,7 +30,13 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+function Card({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="mb-3 text-base font-bold text-gray-900">{title}</h2>
@@ -34,15 +45,33 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-export function ProductDetails({ product }: { product: VendorProduct }) {
+interface ProductDetailsProps {
+  product: VendorProduct;
+  variants: ProductVariant[];
+  attributes: Attribute[];
+}
+
+export function ProductDetails({
+  product,
+  variants,
+  attributes,
+}: ProductDetailsProps) {
   return (
     <div className="space-y-6">
       {product.status === "rejected" && product.rejection_reason && (
         <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
-          <WarningCircleIcon size={20} weight="bold" className="mt-0.5 text-red-600" />
+          <WarningCircleIcon
+            size={20}
+            weight="bold"
+            className="mt-0.5 text-red-600"
+          />
           <div>
-            <p className="text-sm font-semibold text-red-800">Product rejected</p>
-            <p className="mt-0.5 text-sm text-red-700">{product.rejection_reason}</p>
+            <p className="text-sm font-semibold text-red-800">
+              Product rejected
+            </p>
+            <p className="mt-0.5 text-sm text-red-700">
+              {product.rejection_reason}
+            </p>
           </div>
         </div>
       )}
@@ -54,18 +83,26 @@ export function ProductDetails({ product }: { product: VendorProduct }) {
               <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-100 text-gray-400">
                 {product.thumbnail ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={product.thumbnail} alt="" className="h-full w-full object-cover" />
+                  <img
+                    src={product.thumbnail}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
                 ) : (
                   <PackageIcon size={32} />
                 )}
               </div>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-xl font-bold text-gray-900">{product.name}</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {product.name}
+                  </h2>
                   <StatusBadge status={product.status} />
                 </div>
                 <p className="mt-1 text-sm text-gray-400">{product.sku}</p>
-                <p className="mt-3 text-sm text-gray-600">{product.short_description}</p>
+                <p className="mt-3 text-sm text-gray-600">
+                  {product.short_description}
+                </p>
               </div>
             </div>
           </section>
@@ -121,48 +158,67 @@ export function ProductDetails({ product }: { product: VendorProduct }) {
             </div>
           </Card>
 
-          {product.images && product.images.length > 0 && (
-            <Card title="Gallery">
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {product.images.map((image) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    key={image.id}
-                    src={image.image_url}
-                    alt=""
-                    className="aspect-square w-full rounded-lg border border-gray-200 object-cover"
-                  />
-                ))}
-              </div>
-            </Card>
-          )}
+          <ProductImagesManager
+            productId={product.id}
+            existingImages={product.images ?? []}
+          />
+
+          <ProductVariantsManager
+            productId={product.id}
+            variants={variants}
+            attributes={attributes}
+          />
         </div>
 
         <div className="space-y-6">
           <Card title="Pricing">
             <div className="divide-y divide-gray-100">
-              <InfoRow label="Regular Price" value={formatPrice(product.regular_price)} />
-              <InfoRow label="Sale Price" value={formatPrice(product.sale_price)} />
-              <InfoRow label="Sale Starts" value={formatDate(product.sale_start_date)} />
-              <InfoRow label="Sale Ends" value={formatDate(product.sale_end_date)} />
+              <InfoRow
+                label="Regular Price"
+                value={formatPrice(product.regular_price)}
+              />
+              <InfoRow
+                label="Sale Price"
+                value={formatPrice(product.sale_price)}
+              />
+              <InfoRow
+                label="Sale Starts"
+                value={formatDate(product.sale_start_date)}
+              />
+              <InfoRow
+                label="Sale Ends"
+                value={formatDate(product.sale_end_date)}
+              />
             </div>
           </Card>
 
           <Card title="Inventory">
             <div className="divide-y divide-gray-100">
-              <InfoRow label="Stock Quantity" value={(product.stock_qty ?? 0).toString()} />
+              <InfoRow
+                label="Stock Quantity"
+                value={(product.stock_qty ?? 0).toString()}
+              />
               <InfoRow
                 label="Low Stock Alert"
                 value={(product.low_stock_threshold ?? 0).toString()}
               />
-              <InfoRow label="Tracks Stock" value={product.manage_stock ? "Yes" : "No"} />
-              <InfoRow label="In Stock" value={product.in_stock ? "Yes" : "No"} />
+              <InfoRow
+                label="Tracks Stock"
+                value={product.manage_stock ? "Yes" : "No"}
+              />
+              <InfoRow
+                label="In Stock"
+                value={product.in_stock ? "Yes" : "No"}
+              />
             </div>
           </Card>
 
           <Card title="Shipping">
             <div className="divide-y divide-gray-100">
-              <InfoRow label="Weight" value={product.weight ? `${product.weight} kg` : "—"} />
+              <InfoRow
+                label="Weight"
+                value={product.weight ? `${product.weight} kg` : "—"}
+              />
             </div>
           </Card>
 
@@ -170,7 +226,10 @@ export function ProductDetails({ product }: { product: VendorProduct }) {
             <div className="divide-y divide-gray-100">
               <InfoRow label="Views" value={product.views.toString()} />
               <InfoRow label="Created" value={formatDate(product.created_at)} />
-              <InfoRow label="Approved" value={formatDate(product.approved_at)} />
+              <InfoRow
+                label="Approved"
+                value={formatDate(product.approved_at)}
+              />
             </div>
           </Card>
         </div>

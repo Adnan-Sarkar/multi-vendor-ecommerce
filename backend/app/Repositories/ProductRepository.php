@@ -16,7 +16,8 @@ class ProductRepository
     public function getAllProducts(array $filters = []): LengthAwarePaginator
     {
         $query = Product::where('status', 'approved')
-            ->with(['images', 'tags', 'categories', 'vendor:id,shop_name,slug,status']);
+            ->with(['images', 'tags', 'categories', 'vendor:id,shop_name,slug,status'])
+            ->withCount('reviews');
 
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {

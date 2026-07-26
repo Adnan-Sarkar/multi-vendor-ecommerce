@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaretLeftIcon, PencilSimpleIcon } from "@phosphor-icons/react/ssr";
 import { getMyProduct } from "@/services/vendorProductService";
+import { getProductVariants } from "@/services/productService";
+import { getAttributes } from "@/services/attributeService";
 import { ProductDetails } from "./components/ProductDetails";
 
 interface ProductDetailsPageProps {
@@ -15,6 +17,11 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
   if (!product) {
     notFound();
   }
+
+  const [variants, attributes] = await Promise.all([
+    getProductVariants(product.slug),
+    getAttributes(),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -37,7 +44,11 @@ export default async function ProductDetailsPage({ params }: ProductDetailsPageP
         </Link>
       </div>
 
-      <ProductDetails product={product} />
+      <ProductDetails
+        product={product}
+        variants={variants}
+        attributes={attributes}
+      />
     </div>
   );
 }

@@ -19,7 +19,10 @@ function readText(formData: FormData, field: string): string {
   return String(formData.get(field) ?? "").trim();
 }
 
-function readOptionalText(formData: FormData, field: string): string | undefined {
+function readOptionalText(
+  formData: FormData,
+  field: string,
+): string | undefined {
   const value = readText(formData, field);
   return value === "" ? undefined : value;
 }
@@ -118,16 +121,63 @@ export async function updateProductAction(
   };
 }
 
-export async function deleteProductAction(
+export async function addProductImagesAction(
   productId: number,
-): Promise<DeleteProductResult> {
-  const response = await fetchServer(`/product/${productId}`, { method: "DELETE" });
+  imageUrls: string[],
+): Promise<ProductFormState> {
+  if (imageUrls.length === 0) {
+    return { success: false, message: "Please upload at least one image." };
+  }
+
+  const payload = {
+    images: imageUrls.map((imageUrl, index) => ({
+      image_url: imageUrl,
+      sort_order: index,
+    })),
+  };
+
+  const response = await fetchServer(`/product/${productId}/images`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
   const body = await response.json().catch(() => null);
 
   if (!response.ok) {
-    return { success: false, message: body?.message ?? "Failed to delete product." };
+    return {
+      success: false,
+      message: body?.message ?? "Failed to add images.",
+      errors: body?.errors,
+    };
+  }
+
+  revalidatePath(`/dashboard/products/${productId}`);
+
+  return {
+    success: true,
+    message: body?.message ?? "Images added successfully.",
+  };
+}
+
+export async function deleteProductAction(
+  productId: number,
+): Promise<DeleteProductResult> {
+  const response = await fetchServer(`/product/${productId}`, {
+    method: "DELETE",
+  });
+
+  const body = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    return {
+      success: false,
+      message: body?.message ?? "Failed to delete product.",
+    };
   }
 
   revalidatePath("/dashboard/products");
-  return { success: true, message: body?.message ?? "Product deleted successfully." };
+
+  return {
+    success: true,
+    message: body?.message ?? "Product deleted successfully.",
+  };
 }
