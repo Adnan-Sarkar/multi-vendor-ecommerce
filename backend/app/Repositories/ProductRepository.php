@@ -125,6 +125,20 @@ class ProductRepository
         return $product->variants()->create($data);
     }
 
+    public function getProductVariants(Product $product) {
+        return $product->variants()
+            ->with('attributeValues.attribute')
+            ->get();
+    }
+
+    public function updateProductVariant(ProductVariant $variant, array $data): void {
+        $variant->update($data);
+    }
+
+    public function deleteProductVariant(ProductVariant $variant): void {
+        $variant->delete();
+    }
+
     public function getPendingProducts(): LengthAwarePaginator {
         return Product::where('status', 'pending')
             ->with(['images', 'vendor', 'categories', 'variants'])

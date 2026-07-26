@@ -69,14 +69,17 @@ Route::prefix('v1')->group(function () {
             Route::post('/', 'store');
             Route::post('/{product}/images', 'storeProductImages');
             Route::post('/{product}/variants', 'storeProductVariant');
+            Route::patch('/{product}/variants/{variant}', 'updateProductVariant');
+            Route::delete('/{product}/variants/{variant}', 'destroyProductVariant');
             Route::patch('/{product}', 'update');
             Route::delete('/{product}', 'destroy');
         });
 
         // Public routes
         Route::get('/', 'index');
-        Route::get('/{product}/reviews', 'getProductReviews');
-        Route::get('/{product}', 'show');
+        Route::get('/{product:slug}/reviews', 'getProductReviews');
+        Route::get('/{product:slug}/variants', 'getProductVariants');
+        Route::get('/{product:slug}', 'show');
     });
 
     // Cart routes

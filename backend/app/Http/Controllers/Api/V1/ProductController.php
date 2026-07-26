@@ -8,10 +8,12 @@ use App\Http\Requests\Api\V1\Product\StoreProductImageRequest;
 use App\Http\Requests\Api\V1\Product\StoreProductRequest;
 use App\Http\Requests\Api\V1\Product\StoreProductVariantRequest;
 use App\Http\Requests\Api\V1\Product\UpdateProductRequest;
+use App\Http\Requests\Api\V1\Product\UpdateProductVariantRequest;
 use App\Http\Resources\Api\V1\ProductResource;
 use App\Http\Resources\Api\V1\ProductVariantResource;
 use App\Http\Resources\Api\V1\ReviewResource;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Services\ProductService;
 use App\Services\ReviewService;
 use App\Traits\ApiResponse;
@@ -149,6 +151,40 @@ class ProductController extends Controller
         return $this->paginated(
             ReviewResource::collection($result),
             'Product reviews retrieved successfully'
+        );
+    }
+
+    public function getProductVariants(Product $product): JsonResponse {
+        $result = $this->productService->getProductVariants($product);
+
+        return $this->success(
+            ProductVariantResource::collection($result),
+            'Product variants retrieved successfully'
+        );
+    }
+
+    /**
+     * @throws BaseException
+     * @throws Throwable
+     */
+    public function updateProductVariant(UpdateProductVariantRequest $request, Product $product, ProductVariant $variant): JsonResponse {
+        $result = $this->productService->updateProductVariant($product, $variant, $request->validated());
+
+        return $this->success(
+            new ProductVariantResource($result),
+            'Product variant updated successfully'
+        );
+    }
+
+    /**
+     * @throws BaseException
+     */
+    public function destroyProductVariant(Product $product, ProductVariant $variant): JsonResponse {
+        $this->productService->deleteProductVariant($product, $variant);
+
+        return $this->success(
+            null,
+            'Product variant deleted successfully'
         );
     }
 }
