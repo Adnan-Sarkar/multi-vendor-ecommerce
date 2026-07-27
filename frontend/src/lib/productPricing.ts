@@ -10,7 +10,10 @@ export function toNumber(value: string | number | null | undefined): number {
 }
 
 export function formatMoney(value: string | number | null | undefined): string {
-  return `$${toNumber(value).toFixed(2)}`;
+  return `$${toNumber(value).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 }
 
 export function hasActiveSale(product: PublicProduct): boolean {

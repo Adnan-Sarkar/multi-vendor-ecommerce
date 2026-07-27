@@ -29,22 +29,20 @@ class CartService
         $cart = $this->cartRepository->getOrCreateCart($userId);
 
         $product = Product::find($data['product_id']);
+        $variant = isset($data['variant_id'])
+            ? ProductVariant::find($data['variant_id'])
+            : null;
 
-        if (!$product->in_stock) {
-            throw new BaseException('Product is out of stock', 400);
-        }
+        $existingQuantity = $cart->cartItems()
+            ->where('product_id', $data['product_id'])
+            ->where('variant_id', $data['variant_id'] ?? null)
+            ->value('quantity') ?? 0;
 
-        if ($product->manage_stock && $product->stock_qty < $data['quantity']) {
-            throw new BaseException('Not enough stock available. Only ' . $product->stock_qty . ' left', 400);
-        }
+        $this->assertStockAvailable($product, $variant, $existingQuantity + $data['quantity']);
 
-        if (isset($data['variant_id'])) {
-            $price = ProductVariant::find($data['variant_id'])->price;
-        } else {
-            $price = $product->sale_price ?? $product->regular_price;
-        }
-
-        $data['unit_price'] = $price;
+        $data['unit_price'] = $variant
+            ? $variant->price
+            : ($product->sale_price ?? $product->regular_price);
 
         return $this->cartRepository->addItem($cart, $data);
     }
@@ -56,7 +54,12 @@ class CartService
         return $this->cartRepository->getCart($userId);
     }
 
+    /**
+     * @throws BaseException
+     */
     public function updateCartItem(CartItem $cartItem, int $quantity): CartItem {
+        $this->assertStockAvailable($cartItem->product, $cartItem->variant, $quantity);
+
         return $this->cartRepository->updateCartItem($cartItem, $quantity);
     }
 
@@ -69,5 +72,30 @@ class CartService
 
         $cart = $this->cartRepository->getOrCreateCart($userId);
         $this->cartRepository->clearCart($cart);
+    }
+
+    /**
+     * @throws BaseException
+     */
+    private function assertStockAvailable(Product $product, ?ProductVariant $variant, int $quantity): void {
+        if ($variant) {
+            if (!$variant->in_stock) {
+                throw new BaseException('This variant is out of stock', 400);
+            }
+
+            if ($variant->stock_qty < $quantity) {
+                throw new BaseException('Not enough stock available. Only ' . $variant->stock_qty . ' left', 400);
+            }
+
+            return;
+        }
+
+        if (!$product->in_stock) {
+            throw new BaseException('Product is out of stock', 400);
+        }
+
+        if ($product->manage_stock && $product->stock_qty < $quantity) {
+            throw new BaseException('Not enough stock available. Only ' . $product->stock_qty . ' left', 400);
+        }
     }
 }

@@ -32,6 +32,9 @@ class CartItemResource extends JsonResource
             'quantity' => $this->quantity,
             'unit_price' => $this->unit_price,
             'subtotal' => $this->unit_price * $this->quantity,
+            'available_stock' => $this->variant
+                ? $this->variant->stock_qty
+                : ($this->product->manage_stock ? $this->product->stock_qty : null),
         ];
     }
 }

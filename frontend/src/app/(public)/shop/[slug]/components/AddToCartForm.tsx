@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { MinusIcon, PlusIcon, ShoppingCartIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
-import { useCartStore } from "@/store/useCartStore";
-import { getEffectivePrice } from "@/lib/productPricing";
+import { addToCartAction } from "@/actions/cartActions";
 import type { PublicProduct } from "@/services/productService";
 
 interface AddToCartFormProps {
@@ -12,29 +12,34 @@ interface AddToCartFormProps {
 }
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
-  const addItem = useCartStore((state) => state.addItem);
+  const [isAdding, startAdding] = useTransition();
 
-  const decreaseQuantity = () => setQuantity((current) => Math.max(1, current - 1));
+  const decreaseQuantity = () =>
+    setQuantity((current) => Math.max(1, current - 1));
   const increaseQuantity = () => setQuantity((current) => current + 1);
 
   const handleAddToCart = () => {
-    addItem(
-      {
-        id: product.id,
-        slug: product.slug,
-        name: product.name,
-        short_description: product.short_description,
-        price: getEffectivePrice(product),
-        thumbnail: product.thumbnail ?? "",
-        category: product.categories?.[0]?.name ?? "",
-        in_stock: product.in_stock,
-        rating: 0,
-      },
-      quantity,
-    );
+    startAdding(async () => {
+      const result = await addToCartAction(product.id, quantity);
 
-    toast.success(`${quantity} × ${product.name} added to cart.`);
+      if (result.requiresAuth) {
+        toast.error(result.message);
+
+        router.push("/login");
+
+        return;
+      }
+
+      if (result.success) {
+        toast.success(`${quantity} × ${product.name} added to cart.`);
+
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
+    });
   };
 
   return (
@@ -60,7 +65,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
 
       <button
         onClick={handleAddToCart}
-        disabled={!product.in_stock}
+        disabled={!product.in_stock || isAdding}
         className="inline-flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-300"
       >
         <ShoppingCartIcon size={20} weight="fill" />
