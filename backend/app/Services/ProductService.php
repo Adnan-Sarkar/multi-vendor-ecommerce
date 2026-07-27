@@ -206,6 +206,10 @@ class ProductService
         return $this->productRepository->getPendingProducts();
     }
 
+    public function getAdminProducts(array $filters = []): LengthAwarePaginator {
+        return $this->productRepository->getAdminProducts($filters);
+    }
+
     public function approveProduct(Product $product): Product {
         $this->productRepository->approveProduct($product);
 

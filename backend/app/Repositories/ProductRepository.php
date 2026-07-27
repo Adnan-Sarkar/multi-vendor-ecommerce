@@ -146,6 +146,17 @@ class ProductRepository
             ->paginate(20);
     }
 
+    public function getAdminProducts(array $filters = []): LengthAwarePaginator {
+        $query = Product::with(['images', 'vendor', 'categories', 'variants'])
+            ->withCount('reviews');
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->latest()->paginate(20);
+    }
+
     public function approveProduct(Product $product): void {
         $product->update([
             'status' => 'approved',

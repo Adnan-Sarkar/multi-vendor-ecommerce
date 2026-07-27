@@ -24,12 +24,14 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
-    public function index(): JsonResponse {
-        $result = $this->productService->getPendingProducts();
+    public function index(Request $request): JsonResponse {
+        $filters = $request->only(['status']);
+
+        $result = $this->productService->getAdminProducts($filters);
 
         return $this->paginated(
             ProductResource::collection($result),
-            'Pending products retrieved successfully'
+            'Products retrieved successfully'
         );
     }
 
