@@ -1,10 +1,12 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getProfileAction } from "@/actions/profileActions";
+import { getAddresses } from "@/services/addressService";
 import { AuthBackground } from "@/components/shared/auth";
 import { ProfileHeader } from "./_components/ProfileHeader";
 import { ProfileForm } from "./_components/ProfileForm";
 import { ChangePasswordForm } from "./_components/ChangePasswordForm";
+import { AddressBook } from "./_components/AddressBook";
 
 export const metadata: Metadata = {
   title: "My Account | MultiVendor",
@@ -18,6 +20,8 @@ export default async function AccountPage() {
     redirect("/login");
   }
 
+  const addresses = await getAddresses();
+
   return (
     <div className="relative flex-1 px-4 py-12 sm:px-6">
       <AuthBackground />
@@ -29,6 +33,8 @@ export default async function AccountPage() {
           <ProfileForm profile={profile} />
           <ChangePasswordForm />
         </div>
+
+        <AddressBook addresses={addresses} />
       </div>
     </div>
   );
