@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ShoppingCartIcon,
   UserIcon,
+  HeartIcon,
   MagnifyingGlassIcon,
 } from "@phosphor-icons/react/dist/ssr";
 import { getCartCount } from "@/services/cartService";
@@ -54,8 +55,14 @@ export async function Navbar() {
 
         <div className="flex items-center gap-4">
           <Link
+            href="/wishlist"
+            className="cursor-pointer p-2 text-gray-600 transition-colors hover:text-black"
+          >
+            <HeartIcon size={24} />
+          </Link>
+          <Link
             href="/account"
-            className="p-2 text-gray-600 transition-colors hover:text-black"
+            className="cursor-pointer p-2 text-gray-600 transition-colors hover:text-black"
           >
             <UserIcon size={24} />
           </Link>

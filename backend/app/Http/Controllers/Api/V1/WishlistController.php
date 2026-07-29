@@ -34,6 +34,15 @@ class WishlistController extends Controller
         );
     }
 
+    public function productIds(): JsonResponse {
+        $result = $this->wishlistService->getWishlistProductIds();
+
+        return $this->success(
+            $result,
+            'Wishlist product ids retrieved successfully'
+        );
+    }
+
     public function store(StoreWishlistRequest $request): JsonResponse {
         $this->wishlistService->addToWishlist(
             $request->validated()['product_id']

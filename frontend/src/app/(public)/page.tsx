@@ -1,9 +1,14 @@
 import { getFeaturedProducts } from "@/services/productService";
+import { getWishlistProductIds } from "@/services/wishlistService";
 import { ProductCard } from "@/components/shared/ProductCard";
 import Link from "next/link";
 
 export default async function Home() {
-  const products = await getFeaturedProducts();
+  const [products, wishlistedProductIds] = await Promise.all([
+    getFeaturedProducts(),
+    getWishlistProductIds(),
+  ]);
+  const wishlistedSet = new Set(wishlistedProductIds);
 
   return (
     <div className="flex flex-col gap-16 pb-16">
@@ -39,7 +44,11 @@ export default async function Home() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isWishlisted={wishlistedSet.has(product.id)}
+              />
             ))}
           </div>
         )}

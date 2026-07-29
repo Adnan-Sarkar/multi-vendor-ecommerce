@@ -119,6 +119,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('/wishlist')->controller(WishlistController::class)->group(function () {
         Route::middleware(['auth:sanctum', 'role:customer', 'throttle:api'])->group(function () {
             Route::get('/', 'index');
+            Route::get('/ids', 'productIds');
             Route::post('/', 'store');
             Route::delete('/{product}', 'destroy');
         });

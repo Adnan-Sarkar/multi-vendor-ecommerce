@@ -8,9 +8,16 @@ import { ShopPagination } from "./ShopPagination";
 interface ProductGridProps {
   products: PublicProduct[];
   meta: PaginationMeta;
+  wishlistedProductIds?: number[];
 }
 
-export function ProductGrid({ products, meta }: ProductGridProps) {
+export function ProductGrid({
+  products,
+  meta,
+  wishlistedProductIds = [],
+}: ProductGridProps) {
+  const wishlistedSet = new Set(wishlistedProductIds);
+
   return (
     <div className="flex-1">
       <div className="mb-6 flex items-center justify-between">
@@ -29,7 +36,11 @@ export function ProductGrid({ products, meta }: ProductGridProps) {
         <>
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isWishlisted={wishlistedSet.has(product.id)}
+              />
             ))}
           </div>
 

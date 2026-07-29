@@ -13,6 +13,12 @@ class WishlistRepository
             ->paginate(20);
     }
 
+    public function getWishlistProductIds(int $userId): array {
+        return Wishlist::where('user_id', $userId)
+            ->pluck('product_id')
+            ->all();
+    }
+
     public function addToWishlist(int $productId, int $userId): void {
         Wishlist::firstOrCreate([
             'user_id' => $userId,

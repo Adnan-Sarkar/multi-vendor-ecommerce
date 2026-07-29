@@ -1,5 +1,6 @@
 import { getAllProducts } from "@/services/productService";
 import { getCategories } from "@/services/catalogService";
+import { getWishlistProductIds } from "@/services/wishlistService";
 import { ShopFilters } from "./components/ShopFilters";
 import { ProductGrid } from "./components/ProductGrid";
 
@@ -21,7 +22,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
   const pageParam = readSingleValue(params.page);
 
-  const [productsResult, categories] = await Promise.all([
+  const [productsResult, categories, wishlistedProductIds] = await Promise.all([
     getAllProducts({
       search: readSingleValue(params.search),
       categories: selectedCategories,
@@ -32,6 +33,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       page: pageParam ? Number(pageParam) : 1,
     }),
     getCategories(),
+    getWishlistProductIds(),
   ]);
 
   return (
@@ -45,7 +47,11 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           categories={categories}
           selectedCategories={selectedCategories}
         />
-        <ProductGrid products={productsResult.data} meta={productsResult.meta} />
+        <ProductGrid
+          products={productsResult.data}
+          meta={productsResult.meta}
+          wishlistedProductIds={wishlistedProductIds}
+        />
       </div>
     </div>
   );

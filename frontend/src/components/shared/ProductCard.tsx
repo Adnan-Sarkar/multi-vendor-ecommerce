@@ -14,6 +14,8 @@ import { WishlistButton } from "./WishlistButton";
 
 interface ProductCardProps {
   product: PublicProduct;
+  isWishlisted?: boolean;
+  onWishlistChange?: (active: boolean) => void;
 }
 
 const STOCK_DOT_COLORS: Record<string, string> = {
@@ -28,7 +30,11 @@ const STOCK_TEXT_COLORS: Record<string, string> = {
   out: "text-red-500",
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({
+  product,
+  isWishlisted,
+  onWishlistChange,
+}: ProductCardProps) {
   const categoryName = product.categories?.[0]?.name;
   const showSale = hasActiveSale(product);
   const discountPercentage = getDiscountPercentage(product);
@@ -72,7 +78,11 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
 
         <div className="absolute right-3 top-3">
-          <WishlistButton productId={product.id} />
+          <WishlistButton
+            productId={product.id}
+            initialActive={isWishlisted}
+            onChange={onWishlistChange}
+          />
         </div>
       </div>
 

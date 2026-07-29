@@ -23,6 +23,12 @@ class WishlistService
         return $this->wishlistRepository->getWishlists($userId);
     }
 
+    public function getWishlistProductIds(): array {
+        $userId = auth()->user()->id;
+
+        return $this->wishlistRepository->getWishlistProductIds($userId);
+    }
+
     public function addToWishlist(int $productId): void {
         $userId = auth()->user()->id;
 
