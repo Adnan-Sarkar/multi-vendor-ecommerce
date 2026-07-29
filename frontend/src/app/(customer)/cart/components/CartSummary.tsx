@@ -1,11 +1,15 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowRightIcon,
   ShieldCheckIcon,
   TruckIcon,
   ArrowUUpLeftIcon,
-} from "@phosphor-icons/react/dist/ssr";
+} from "@phosphor-icons/react";
 import { formatMoney } from "@/lib/productPricing";
+import type { AppliedCoupon } from "@/actions/couponActions";
 import { CouponField } from "./CouponField";
 
 interface CartSummaryProps {
@@ -14,6 +18,11 @@ interface CartSummaryProps {
 }
 
 export function CartSummary({ total, itemCount }: CartSummaryProps) {
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
+
+  const discount = appliedCoupon?.discount ?? 0;
+  const payableTotal = appliedCoupon ? appliedCoupon.finalTotal : total;
+
   return (
     <aside className="w-full shrink-0 lg:w-96">
       <div className="space-y-4 lg:sticky lg:top-24">
@@ -23,7 +32,11 @@ export function CartSummary({ total, itemCount }: CartSummaryProps) {
           </h2>
 
           <div className="mt-5">
-            <CouponField />
+            <CouponField
+              applied={appliedCoupon}
+              onApplied={setAppliedCoupon}
+              onRemoved={() => setAppliedCoupon(null)}
+            />
           </div>
 
           <div className="mt-5 space-y-3 border-t border-gray-100 pt-5 text-sm">
@@ -35,6 +48,18 @@ export function CartSummary({ total, itemCount }: CartSummaryProps) {
                 {formatMoney(total)}
               </span>
             </div>
+
+            {appliedCoupon && (
+              <div className="flex items-center justify-between">
+                <span className="text-gray-500">
+                  Discount · {appliedCoupon.code}
+                </span>
+                <span className="font-medium tabular-nums text-green-600">
+                  −{formatMoney(discount)}
+                </span>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Shipping</span>
               <span className="text-gray-400">Calculated at checkout</span>
@@ -44,7 +69,7 @@ export function CartSummary({ total, itemCount }: CartSummaryProps) {
           <div className="mt-5 flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-3.5">
             <span className="text-sm font-semibold text-gray-900">Total</span>
             <span className="text-xl font-bold tabular-nums text-indigo-700">
-              {formatMoney(total)}
+              {formatMoney(payableTotal)}
             </span>
           </div>
 

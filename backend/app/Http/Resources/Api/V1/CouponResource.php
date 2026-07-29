@@ -32,6 +32,12 @@ class CouponResource extends JsonResource
             'starts_at' => $this->whenNotNull($this->starts_at),
             'expires_at' => $this->whenNotNull($this->expires_at),
             'created_at' => $this->created_at,
+            'vendor' => $this->whenLoaded('vendor', fn () => [
+                'id' => $this->vendor->id,
+                'shop_name' => $this->vendor->shop_name,
+                'slug' => $this->vendor->slug,
+                'status' => $this->vendor->status,
+            ]),
         ];
     }
 }

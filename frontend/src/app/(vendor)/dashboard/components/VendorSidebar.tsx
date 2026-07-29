@@ -4,6 +4,7 @@ import {
   ChartLineUpIcon,
   PackageIcon,
   ClipboardTextIcon,
+  TicketIcon,
   StorefrontIcon,
 } from "@phosphor-icons/react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
@@ -13,6 +14,7 @@ const VENDOR_NAV_ITEMS: SidebarItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: ChartLineUpIcon },
   { href: "/dashboard/products", label: "Products", icon: PackageIcon },
   { href: "/dashboard/orders", label: "Orders", icon: ClipboardTextIcon },
+  { href: "/dashboard/coupons", label: "Coupons", icon: TicketIcon },
   { href: "/dashboard/shop", label: "Shop Settings", icon: StorefrontIcon },
 ];
 
