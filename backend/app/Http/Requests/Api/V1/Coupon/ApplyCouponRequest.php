@@ -24,7 +24,6 @@ class ApplyCouponRequest extends FormRequest
     {
         return [
             'code' => 'required|string',
-            'subtotal' => 'required|numeric|min:0',
         ];
     }
 }

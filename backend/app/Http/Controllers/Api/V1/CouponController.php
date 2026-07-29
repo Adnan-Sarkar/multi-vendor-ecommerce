@@ -68,13 +68,14 @@ class CouponController extends Controller
      */
     public function applyCoupon(ApplyCouponRequest $request): JsonResponse {
         $data = $request->validated();
-        $result = $this->couponService->applyCoupon($data['code'], $data['subtotal']);
+        $result = $this->couponService->applyCoupon($data['code']);
 
         return $this->success(
             [
             'coupon' => new CouponResource($result['coupon']),
             'discount' => $result['discount'],
-            'final_total' => $data['subtotal'] - $result['discount'],
+            'subtotal' => $result['subtotal'],
+            'final_total' => $result['final_total'],
             ],
             'Coupon applied successfully'
         );

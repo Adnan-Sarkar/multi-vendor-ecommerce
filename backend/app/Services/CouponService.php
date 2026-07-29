@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Exceptions\BaseException;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Coupon;
+use App\Repositories\CartRepository;
 use App\Repositories\CouponRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
@@ -12,18 +15,22 @@ class CouponService
 {
     protected CouponRepository $couponRepository;
 
+    protected CartRepository $cartRepository;
+
     /**
      * @param CouponRepository $couponRepository
+     * @param CartRepository $cartRepository
      */
-    public function __construct(CouponRepository $couponRepository)
+    public function __construct(CouponRepository $couponRepository, CartRepository $cartRepository)
     {
         $this->couponRepository = $couponRepository;
+        $this->cartRepository = $cartRepository;
     }
 
     /**
      * @throws BaseException
      */
-    public function applyCoupon(string $code, float $subtotal): array {
+    public function applyCoupon(string $code): array {
         $coupon = $this->couponRepository->findByCode($code);
 
         if (!$coupon) {
@@ -53,13 +60,56 @@ class CouponService
             throw new BaseException('You have already used this coupon the maximum number of times', 400);
         }
 
-        if ($coupon->min_order_amount && $subtotal < $coupon->min_order_amount) {
+        $cart = $this->cartRepository->getCart($userId);
+        $cartSubtotal = $this->calculateCartSubtotal($cart);
+        $vendorSubtotal = $this->calculateVendorSubtotal($cart, $coupon->vendor_id);
+
+        if ($vendorSubtotal <= 0) {
+            throw new BaseException('This coupon is not valid for any items in your cart', 400);
+        }
+
+        if ($coupon->min_order_amount && $vendorSubtotal < $coupon->min_order_amount) {
             throw new BaseException('Order amount does not meet the minimum requirement of ' . $coupon->min_order_amount, 400);
         }
 
-        // Calculate discount
+        $discount = $this->calculateDiscount($coupon, $vendorSubtotal);
+
+        return [
+            'coupon' => $coupon,
+            'discount' => $discount,
+            'subtotal' => $cartSubtotal,
+            'final_total' => $cartSubtotal - $discount,
+        ];
+    }
+
+    private function calculateCartSubtotal(?Cart $cart): float {
+        if (!$cart) {
+            return 0;
+        }
+
+        return $cart->cartItems->sum(function (CartItem $cartItem) {
+            return $cartItem->unit_price * $cartItem->quantity;
+        });
+    }
+
+    private function calculateVendorSubtotal(?Cart $cart, int $vendorId): float {
+        if (!$cart) {
+            return 0;
+        }
+
+        return $cart->cartItems
+            ->filter(function (CartItem $cartItem) use ($vendorId) {
+                return $cartItem->product && (int) $cartItem->product->vendor_id === $vendorId;
+            })
+            ->sum(function (CartItem $cartItem) {
+                return $cartItem->unit_price * $cartItem->quantity;
+            });
+    }
+
+    private function calculateDiscount(Coupon $coupon, float $vendorSubtotal): float {
         if ($coupon->type === 'percentage') {
-            $discount = ($subtotal * $coupon->value) / 100;
+            $discount = ($vendorSubtotal * $coupon->value) / 100;
+
             if ($coupon->max_discount_amount) {
                 $discount = min($discount, $coupon->max_discount_amount);
             }
@@ -67,10 +117,7 @@ class CouponService
             $discount = $coupon->value;
         }
 
-        return [
-            'coupon' => $coupon,
-            'discount' => $discount,
-        ];
+        return min($discount, $vendorSubtotal);
     }
 
     public function createCoupon(array $data): Coupon {
