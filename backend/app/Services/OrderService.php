@@ -19,15 +19,18 @@ class OrderService
 {
     protected OrderRepository $orderRepository;
     protected CartRepository $cartRepository;
+    protected CouponService $couponService;
 
     /**
      * @param OrderRepository $orderRepository
      * @param CartRepository $cartRepository
+     * @param CouponService $couponService
      */
-    public function __construct(OrderRepository $orderRepository, CartRepository $cartRepository)
+    public function __construct(OrderRepository $orderRepository, CartRepository $cartRepository, CouponService $couponService)
     {
         $this->orderRepository = $orderRepository;
         $this->cartRepository = $cartRepository;
+        $this->couponService = $couponService;
     }
 
     /**
@@ -48,6 +51,16 @@ class OrderService
             $subtotal = $cart->cartItems
                 ->sum(fn ($item) => $item->unit_price * $item->quantity);
 
+            // Resolve coupon (vendor-scoped, validated against the cart)
+            $coupon = null;
+            $couponDiscount = 0;
+
+            if (!empty($data['coupon_code'])) {
+                $couponResult = $this->couponService->applyCoupon($data['coupon_code']);
+                $coupon = $couponResult['coupon'];
+                $couponDiscount = $couponResult['discount'];
+            }
+
             // Generate order number
             $orderNumber = 'ORD-' . strtoupper(Str::random(10));
 
@@ -57,9 +70,11 @@ class OrderService
                 'order_number' => $orderNumber,
                 'shipping_address_id' => $data['shipping_address_id'],
                 'billing_address_id' => $data['billing_address_id'] ?? null,
+                'coupon_id' => $coupon?->id,
+                'coupon_discount' => $couponDiscount,
                 'payment_method' => $data['payment_method'],
                 'subtotal' => $subtotal,
-                'grand_total' => $subtotal,
+                'grand_total' => $subtotal - $couponDiscount,
                 'notes' => $data['notes'] ?? null,
             ]);
 
@@ -68,12 +83,19 @@ class OrderService
 
             // Create order vendors and items together
             foreach ($vendorGroups as $vendorId => $items) {
+                $vendorItemsTotal = $items->sum(fn($item) => $item->unit_price * $item->quantity);
+
+                // A coupon only discounts its own vendor's earning
+                $vendorDiscount = ($coupon && (int) $vendorId === (int) $coupon->vendor_id)
+                    ? $couponDiscount
+                    : 0;
+
                 // Create order vendor
                 $orderVendor = $order->orderVendors()->create([
                     'vendor_id' => $vendorId,
-                    'subtotal' => $items->sum(fn($item) => $item->unit_price * $item->quantity),
+                    'subtotal' => $vendorItemsTotal,
                     'commission' => 0,
-                    'vendor_earning' => $items->sum(fn($item) => $item->unit_price * $item->quantity),
+                    'vendor_earning' => max($vendorItemsTotal - $vendorDiscount, 0),
                 ]);
 
                 // Create order items for this vendor
@@ -99,6 +121,17 @@ class OrderService
                         $item->product->update(['in_stock' => false]);
                     }
                 }
+            }
+
+            // Record coupon usage once the order is committed
+            if ($coupon) {
+                $coupon->couponUsages()->create([
+                    'user_id' => $userId,
+                    'order_id' => $order->id,
+                    'discount_amount' => $couponDiscount,
+                ]);
+
+                $coupon->increment('used_count');
             }
 
             // Clear the cart

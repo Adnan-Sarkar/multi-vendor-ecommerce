@@ -45,6 +45,16 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Orders route guard
+  if (path.startsWith("/orders")) {
+    if (!token) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+    if (role !== "customer") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   // Prevent logged-in users from visiting auth routes
   const isAuthroute =
     path === "/login" || path === "/register" || path === "/register-vendor";
@@ -66,6 +76,8 @@ export const config = {
     "/dashboard/:path*",
     "/admin/:path*",
     "/checkout/:path*",
+    "/orders/:path*",
+    "/orders",
     "/account/:path*",
     "/account",
     "/login",

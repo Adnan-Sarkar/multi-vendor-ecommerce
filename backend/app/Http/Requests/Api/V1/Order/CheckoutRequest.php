@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\V1\Order;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CheckoutRequest extends FormRequest
 {
@@ -22,11 +23,14 @@ class CheckoutRequest extends FormRequest
      */
     public function rules(): array
     {
+        $belongsToUser = Rule::exists('addresses', 'id')->where('user_id', auth()->id());
+
         return [
-            'shipping_address_id' => 'required|integer|exists:addresses,id',
-            'billing_address_id' => 'sometimes|nullable|integer|exists:addresses,id',
+            'shipping_address_id' => ['required', 'integer', $belongsToUser],
+            'billing_address_id' => ['sometimes', 'nullable', 'integer', $belongsToUser],
             'payment_method' => 'required|string|in:sslcommerz,bkash,card,cod',
             'notes' => 'sometimes|string',
+            'coupon_code' => 'sometimes|nullable|string',
         ];
     }
 }
