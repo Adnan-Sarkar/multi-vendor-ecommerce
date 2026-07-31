@@ -184,12 +184,33 @@ class OrderService
         return $this->orderRepository->getVendorOrders($vendorId);
     }
 
+    /**
+     * @throws BaseException
+     */
     public function updateVendorOrder(OrderVendor $orderVendor, string $status): OrderVendor {
+        $this->authorizeVendorOrder($orderVendor);
+
         return $this->orderRepository->updateVendorOrder($orderVendor, $status);
     }
 
+    /**
+     * @throws BaseException
+     */
     public function updateTrackingNumber(OrderVendor $orderVendor, string $trackingNumber): OrderVendor {
+        $this->authorizeVendorOrder($orderVendor);
+
         return $this->orderRepository->updateTrackingNumber($orderVendor, $trackingNumber);
+    }
+
+    /**
+     * @throws BaseException
+     */
+    private function authorizeVendorOrder(OrderVendor $orderVendor): void {
+        $vendorId = auth()->user()->vendorProfile->id;
+
+        if ((int) $orderVendor->vendor_id !== (int) $vendorId) {
+            throw new BaseException('Order not found', 404);
+        }
     }
 
     public function getAllOrders(): LengthAwarePaginator {

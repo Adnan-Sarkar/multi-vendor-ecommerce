@@ -27,12 +27,20 @@ export interface OrderVendorGroup {
   delivered_at?: string | null;
 }
 
+export interface OrderCustomer {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+}
+
 export interface Order {
   id: number;
   order_number: string;
   status: string;
   payment_method: string;
   payment_status: string;
+  customer?: OrderCustomer | null;
   subtotal: string;
   shipping_cost: string;
   coupon_discount: string;

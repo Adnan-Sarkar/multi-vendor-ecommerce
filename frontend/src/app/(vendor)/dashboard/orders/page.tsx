@@ -1,23 +1,27 @@
-import { getVendorOrders } from "@/services/orderService";
-import { OrdersTable } from "./components/OrdersTable";
-import { Funnel } from "@phosphor-icons/react/dist/ssr";
+import { getVendorOrders } from "@/services/vendorOrderService";
+import { VendorOrdersTable } from "./components/VendorOrdersTable";
 
-export default async function VendorOrdersPage() {
-  const orders = await getVendorOrders();
+interface VendorOrdersPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+export default async function VendorOrdersPage({
+  searchParams,
+}: VendorOrdersPageProps) {
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
+  const { data, meta } = await getVendorOrders(currentPage);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div>
         <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-        <button className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors shadow-sm">
-          <Funnel size={20} />
-          Filter
-        </button>
+        <p className="mt-1 text-sm text-gray-500">
+          Manage orders for your products, update status and add tracking.
+        </p>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
-        <OrdersTable orders={orders} />
-      </div>
+      <VendorOrdersTable orders={data} meta={meta} />
     </div>
   );
 }
