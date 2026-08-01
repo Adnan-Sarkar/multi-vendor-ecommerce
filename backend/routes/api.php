@@ -233,7 +233,7 @@ Route::prefix('v1')->group(function () {
 
         // Admin review management
         Route::prefix('/review')->controller(\App\Http\Controllers\Api\V1\Admin\ReviewController::class)->group(function () {
-            Route::get('/', 'getPendingReviews');
+            Route::get('/', 'index');
             Route::post('/{review}/approve', 'approveReview');
         });
 

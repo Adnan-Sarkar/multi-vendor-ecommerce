@@ -17,7 +17,7 @@ class ProductRepository
     {
         $query = Product::where('status', 'approved')
             ->with(['images', 'tags', 'categories', 'vendor:id,shop_name,slug,status'])
-            ->withCount('reviews');
+            ->withCount(['reviews' => fn ($reviewQuery) => $reviewQuery->where('is_approved', true)]);
 
         if (!empty($filters['search'])) {
             $query->where(function ($q) use ($filters) {

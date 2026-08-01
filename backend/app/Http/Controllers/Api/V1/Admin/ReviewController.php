@@ -24,12 +24,14 @@ class ReviewController extends Controller
         $this->reviewService = $reviewService;
     }
 
-    public function getPendingReviews(): JsonResponse {
-        $result = $this->reviewService->getPendingReviews();
+    public function index(Request $request): JsonResponse {
+        $result = $this->reviewService->getAdminReviews([
+            'status' => $request->query('status'),
+        ]);
 
         return $this->paginated(
             ReviewResource::collection($result),
-            'Pending reviews retrieved successfully'
+            'Reviews retrieved successfully'
         );
     }
 

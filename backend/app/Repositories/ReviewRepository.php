@@ -27,11 +27,16 @@ class ReviewRepository
             ->paginate(10);
     }
 
-    public function getPendingReviews(): LengthAwarePaginator {
-        return Review::where('is_approved', false)
-            ->with(['user', 'product'])
-            ->latest()
-            ->paginate(20);
+    public function getAdminReviews(array $filters = []): LengthAwarePaginator {
+        $query = Review::with(['user', 'product']);
+
+        if (($filters['status'] ?? null) === 'approved') {
+            $query->where('is_approved', true);
+        } elseif (($filters['status'] ?? null) === 'pending') {
+            $query->where('is_approved', false);
+        }
+
+        return $query->latest()->paginate(20);
     }
 
     public function approveReview(Review $review): void {

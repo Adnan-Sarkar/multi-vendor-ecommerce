@@ -64,8 +64,8 @@ class ReviewService
         return $this->reviewRepository->getProductReviews($productId);
     }
 
-    public function getPendingReviews(): LengthAwarePaginator {
-        return $this->reviewRepository->getPendingReviews();
+    public function getAdminReviews(array $filters = []): LengthAwarePaginator {
+        return $this->reviewRepository->getAdminReviews($filters);
     }
 
     public function approveReview(Review $review): void {
