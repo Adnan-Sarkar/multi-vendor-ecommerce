@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BaseException;
 use App\Models\Order;
+use App\Models\OrderVendor;
 use App\Models\Review;
 use App\Repositories\OrderRepository;
 use App\Repositories\ReviewRepository;
@@ -38,14 +39,20 @@ class ReviewService
             throw new BaseException('You can only review products from your own orders', Response::HTTP_FORBIDDEN);
         }
 
-        if ($order->status !== 'delivered') {
+        $orderItem = $order->orderItems->firstWhere('product_id', $data['product_id']);
+
+        if (!$orderItem) {
+            throw new BaseException('This product was not part of the specified order', Response::HTTP_BAD_REQUEST);
+        }
+
+        $orderVendor = OrderVendor::find($orderItem->order_vendor_id);
+
+        if (!$orderVendor || $orderVendor->status !== 'delivered') {
             throw new BaseException('You can only review products after delivery', Response::HTTP_BAD_REQUEST);
         }
 
-        $orderHasProduct = $order->orderItems->contains('product_id', $data['product_id']);
-
-        if (!$orderHasProduct) {
-            throw new BaseException('This product was not part of the specified order', Response::HTTP_BAD_REQUEST);
+        if ($this->reviewRepository->userHasReviewed($userId, $data['product_id'], $data['order_id'])) {
+            throw new BaseException('You have already reviewed this product for this order', Response::HTTP_CONFLICT);
         }
 
         $data['user_id'] = $userId;

@@ -7,12 +7,14 @@ import type {
 
 export interface OrderItem {
   id: number;
+  product_id?: number;
   product_name: string;
   product_sku: string;
   variant_details?: string | null;
   quantity: number;
   unit_price: string;
   total: string;
+  fulfillment_status?: string | null;
 }
 
 export interface OrderVendorGroup {

@@ -190,7 +190,36 @@ class OrderService
     public function updateVendorOrder(OrderVendor $orderVendor, string $status): OrderVendor {
         $this->authorizeVendorOrder($orderVendor);
 
-        return $this->orderRepository->updateVendorOrder($orderVendor, $status);
+        $updatedOrderVendor = $this->orderRepository->updateVendorOrder($orderVendor, $status);
+
+        $this->syncOrderStatus($updatedOrderVendor->order);
+
+        return $updatedOrderVendor;
+    }
+
+    private function syncOrderStatus(Order $order): void {
+        $order->loadMissing('orderVendors');
+        $vendorStatuses = $order->orderVendors->pluck('status');
+
+        if ($vendorStatuses->isEmpty()) {
+            return;
+        }
+
+        if ($vendorStatuses->every(fn ($vendorStatus) => $vendorStatus === 'delivered')) {
+            $newStatus = 'delivered';
+        } elseif ($vendorStatuses->every(fn ($vendorStatus) => $vendorStatus === 'cancelled')) {
+            $newStatus = 'cancelled';
+        } elseif ($vendorStatuses->contains('shipped')) {
+            $newStatus = 'shipped';
+        } elseif ($vendorStatuses->contains(fn ($vendorStatus) => in_array($vendorStatus, ['processing', 'delivered']))) {
+            $newStatus = 'processing';
+        } else {
+            $newStatus = 'confirmed';
+        }
+
+        if ($order->status !== $newStatus) {
+            $order->update(['status' => $newStatus]);
+        }
     }
 
     /**

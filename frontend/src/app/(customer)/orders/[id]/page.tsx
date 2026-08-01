@@ -9,6 +9,7 @@ import { formatMoney } from "@/lib/productPricing";
 import { OrderStatusBadge } from "@/components/shared/OrderStatusBadge";
 import { getOrder } from "@/services/customerOrderService";
 import { CancelOrderButton } from "./components/CancelOrderButton";
+import { OrderItemReviewButton } from "./components/OrderItemReviewButton";
 
 export const metadata: Metadata = {
   title: "Order Details | MultiVendor",
@@ -110,9 +111,19 @@ export default async function OrderDetailPage({
                       {formatMoney(item.unit_price)} × {item.quantity}
                     </p>
                   </div>
-                  <span className="shrink-0 font-semibold tabular-nums text-gray-900">
-                    {formatMoney(item.total)}
-                  </span>
+                  <div className="flex shrink-0 items-center gap-3">
+                    {item.fulfillment_status === "delivered" &&
+                      item.product_id && (
+                        <OrderItemReviewButton
+                          orderId={order.id}
+                          productId={item.product_id}
+                          productName={item.product_name}
+                        />
+                      )}
+                    <span className="font-semibold tabular-nums text-gray-900">
+                      {formatMoney(item.total)}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>

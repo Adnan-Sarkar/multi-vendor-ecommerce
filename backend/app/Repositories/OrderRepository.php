@@ -39,7 +39,7 @@ class OrderRepository
             'orderVendors.vendor',
             'shippingAddress',
             'billingAddress',
-            'orderItems',
+            'orderItems.orderVendor',
         ]);
     }
 

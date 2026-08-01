@@ -12,6 +12,13 @@ class ReviewRepository
         return $review->load(['product', 'user']);
     }
 
+    public function userHasReviewed(int $userId, int $productId, int $orderId): bool {
+        return Review::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->where('order_id', $orderId)
+            ->exists();
+    }
+
     public function getProductReviews(int $productId): LengthAwarePaginator {
         return Review::where('product_id', $productId)
             ->where('is_approved', true)
