@@ -48,8 +48,10 @@ class WithdrawalController extends Controller
         );
     }
 
-    public function getPendingWithdrawals(): JsonResponse {
-        $result = $this->withdrawalService->getPendingWithdrawals();
+    public function getPendingWithdrawals(Request $request): JsonResponse {
+        $result = $this->withdrawalService->getPendingWithdrawals(
+            $request->query('status')
+        );
 
         return $this->paginated(
             WithdrawalResource::collection($result),

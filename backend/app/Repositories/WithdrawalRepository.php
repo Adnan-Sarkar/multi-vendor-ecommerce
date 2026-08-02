@@ -19,11 +19,14 @@ class WithdrawalRepository
             ->paginate(20);
     }
 
-    public function getPendingWithdrawals(): LengthAwarePaginator {
-        return Withdrawal::where('status', 'pending')
-            ->with(['vendor'])
-            ->latest()
-            ->paginate(20);
+    public function getPendingWithdrawals(?string $status = null): LengthAwarePaginator {
+        $query = Withdrawal::with(['vendor']);
+
+        if (in_array($status, ['pending', 'approved', 'rejected'], true)) {
+            $query->where('status', $status);
+        }
+
+        return $query->latest()->paginate(20);
     }
 
     public function approveWithdrawal(Withdrawal $withdrawal): Withdrawal {

@@ -41,8 +41,8 @@ class WithdrawalService
         return $this->withdrawalRepository->getVendorWithdrawals($vendorId);
     }
 
-    public function getPendingWithdrawals(): LengthAwarePaginator {
-        return $this->withdrawalRepository->getPendingWithdrawals();
+    public function getPendingWithdrawals(?string $status = null): LengthAwarePaginator {
+        return $this->withdrawalRepository->getPendingWithdrawals($status);
     }
 
     public function approveWithdrawal(Withdrawal $withdrawal): Withdrawal {
