@@ -80,6 +80,15 @@ export function ReviewDetailModal({
         ) : (
           <p className="text-sm text-gray-400">No written review.</p>
         )}
+
+        {review.vendor_reply && (
+          <div className="rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+            <p className="mb-1 text-xs font-semibold text-indigo-600">
+              Reply from {review.product?.vendor?.shop_name ?? "vendor"}
+            </p>
+            <p className="text-sm text-gray-700">{review.vendor_reply}</p>
+          </div>
+        )}
       </div>
     </Modal>
   );

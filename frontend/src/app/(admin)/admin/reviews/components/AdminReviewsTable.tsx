@@ -76,9 +76,16 @@ export function AdminReviewsTable({ reviews, meta }: AdminReviewsTableProps) {
               <PackageIcon size={20} />
             )}
           </div>
-          <p className="min-w-0 truncate font-bold text-gray-900">
-            {review.product?.name ?? "—"}
-          </p>
+          <div className="min-w-0">
+            <p className="truncate font-bold text-gray-900">
+              {review.product?.name ?? "—"}
+            </p>
+            {review.product?.vendor?.shop_name && (
+              <p className="truncate text-xs text-gray-400">
+                {review.product.vendor.shop_name}
+              </p>
+            )}
+          </div>
         </div>
       ),
     },
@@ -102,6 +109,11 @@ export function AdminReviewsTable({ reviews, meta }: AdminReviewsTableProps) {
           <p className="truncate text-xs text-gray-500">
             {review.body ?? "No written review."}
           </p>
+          {review.vendor_reply && (
+            <span className="mt-1 inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-600">
+              Vendor replied
+            </span>
+          )}
         </div>
       ),
     },

@@ -4,24 +4,15 @@ import type {
   PaginatedResponse,
 } from "@/services/vendorProductService";
 
-export interface AdminReviewProduct {
+export interface VendorReviewUser {
   id: number;
   name: string;
-  slug: string;
-  thumbnail: string | null;
-  vendor?: { id: number; shop_name: string; slug: string } | null;
+  email?: string;
 }
 
-export interface AdminReviewUser {
+export interface VendorReview {
   id: number;
-  name: string;
-  email: string;
-}
-
-export interface AdminReview {
-  id: number;
-  product?: AdminReviewProduct | null;
-  user?: AdminReviewUser | null;
+  user?: VendorReviewUser | null;
   rating: number;
   title?: string | null;
   body?: string | null;
@@ -33,28 +24,22 @@ export interface AdminReview {
 
 const emptyMeta: PaginationMeta = {
   current_page: 1,
-  per_page: 20,
+  per_page: 10,
   total: 0,
   last_page: 1,
   from: null,
   to: null,
 };
 
-export async function getAdminReviews(
+export async function getVendorProductReviews(
+  productId: number,
   page = 1,
-  status?: string,
-): Promise<PaginatedResponse<AdminReview>> {
+): Promise<PaginatedResponse<VendorReview>> {
   try {
-    const params = new URLSearchParams();
-    params.set("page", String(page));
-
-    if (status) {
-      params.set("status", status);
-    }
-
-    const response = await fetchServer(`/admin/review?${params.toString()}`, {
-      cache: "no-store",
-    });
+    const response = await fetchServer(
+      `/vendor/reviews/product/${productId}?page=${page}`,
+      { cache: "no-store" },
+    );
 
     if (!response.ok) {
       return { data: [], meta: emptyMeta };

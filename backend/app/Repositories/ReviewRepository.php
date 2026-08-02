@@ -28,7 +28,7 @@ class ReviewRepository
     }
 
     public function getAdminReviews(array $filters = []): LengthAwarePaginator {
-        $query = Review::with(['user', 'product']);
+        $query = Review::with(['user', 'product.vendor']);
 
         if (($filters['status'] ?? null) === 'approved') {
             $query->where('is_approved', true);
@@ -41,5 +41,21 @@ class ReviewRepository
 
     public function approveReview(Review $review): void {
         $review->update(['is_approved' => true]);
+    }
+
+    public function getVendorProductReviews(int $productId): LengthAwarePaginator {
+        return Review::where('product_id', $productId)
+            ->with('user')
+            ->latest()
+            ->paginate(10);
+    }
+
+    public function addVendorReply(Review $review, string $reply): Review {
+        $review->update([
+            'vendor_reply' => $reply,
+            'vendor_replied_at' => now(),
+        ]);
+
+        return $review->load('user');
     }
 }

@@ -51,7 +51,10 @@ export default async function ProductDetailsPage({
 
       <ProductVariants variants={variants} />
 
-      <ProductReviews reviews={reviews} />
+      <ProductReviews
+        reviews={reviews}
+        shopName={product.vendor?.shop_name}
+      />
     </div>
   );
 }

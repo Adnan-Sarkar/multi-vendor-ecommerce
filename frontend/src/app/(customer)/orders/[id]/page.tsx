@@ -118,6 +118,7 @@ export default async function OrderDetailPage({
                           orderId={order.id}
                           productId={item.product_id}
                           productName={item.product_name}
+                          alreadyReviewed={item.is_reviewed}
                         />
                       )}
                     <span className="font-semibold tabular-nums text-gray-900">

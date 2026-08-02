@@ -198,6 +198,12 @@ Route::prefix('v1')->group(function () {
             Route::delete('/{coupon}', 'destroy');
         });
 
+        // Vendor review management
+        Route::prefix('/reviews')->controller(\App\Http\Controllers\Api\V1\Vendor\ReviewController::class)->group(function () {
+            Route::get('/product/{product}', 'productReviews');
+            Route::patch('/{review}/reply', 'reply');
+        });
+
         // Vendor withdrawals management
         Route::prefix('/withdrawals')->controller(WithdrawalController::class)->group(function () {
                 Route::get('/', 'getVendorWithdrawals');

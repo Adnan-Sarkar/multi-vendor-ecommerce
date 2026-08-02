@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\BaseException;
 use App\Models\Order;
 use App\Models\OrderVendor;
+use App\Models\Product;
 use App\Models\Review;
 use App\Repositories\OrderRepository;
 use App\Repositories\ReviewRepository;
@@ -70,5 +71,40 @@ class ReviewService
 
     public function approveReview(Review $review): void {
         $this->reviewRepository->approveReview($review);
+    }
+
+    /**
+     * @throws BaseException
+     */
+    public function getVendorProductReviews(Product $product): LengthAwarePaginator {
+        $this->authorizeVendorProduct($product);
+
+        return $this->reviewRepository->getVendorProductReviews($product->id);
+    }
+
+    /**
+     * @throws BaseException
+     */
+    public function replyToReview(Review $review, string $reply): Review {
+        $review->loadMissing('product');
+
+        $this->authorizeVendorProduct($review->product);
+
+        if ($review->vendor_reply !== null) {
+            throw new BaseException('You have already replied to this review', Response::HTTP_CONFLICT);
+        }
+
+        return $this->reviewRepository->addVendorReply($review, $reply);
+    }
+
+    /**
+     * @throws BaseException
+     */
+    private function authorizeVendorProduct(Product $product): void {
+        $vendorId = auth()->user()->vendorProfile->id;
+
+        if ((int) $product->vendor_id !== (int) $vendorId) {
+            throw new BaseException('Product not found', Response::HTTP_NOT_FOUND);
+        }
     }
 }

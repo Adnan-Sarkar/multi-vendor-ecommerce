@@ -1,9 +1,11 @@
-import { UserCircleIcon } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
+import { UserCircleIcon, ChatCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { StarRating } from "@/components/shared/StarRating";
 import type { ProductReview } from "@/services/productService";
 
 interface ProductReviewsProps {
   reviews: ProductReview[];
+  shopName?: string;
 }
 
 function formatDate(value: string | undefined): string {
@@ -18,7 +20,7 @@ function formatDate(value: string | undefined): string {
   });
 }
 
-export function ProductReviews({ reviews }: ProductReviewsProps) {
+export function ProductReviews({ reviews, shopName }: ProductReviewsProps) {
   const averageRating =
     reviews.length > 0
       ? reviews.reduce((total, review) => total + review.rating, 0) /
@@ -53,7 +55,17 @@ export function ProductReviews({ reviews }: ProductReviewsProps) {
             >
               <div className="mb-3 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <UserCircleIcon size={36} className="text-gray-300" />
+                  {review.user?.avatar ? (
+                    <Image
+                      src={review.user.avatar}
+                      alt={review.user.name ?? "Reviewer"}
+                      width={36}
+                      height={36}
+                      className="h-9 w-9 rounded-full object-cover"
+                    />
+                  ) : (
+                    <UserCircleIcon size={36} className="text-gray-300" />
+                  )}
                   <div>
                     <p className="text-sm font-semibold text-gray-900">
                       {review.user?.name ?? "Anonymous"}
@@ -77,6 +89,19 @@ export function ProductReviews({ reviews }: ProductReviewsProps) {
                 <p className="text-sm leading-relaxed text-gray-600">
                   {review.body}
                 </p>
+              )}
+
+              {review.vendor_reply && (
+                <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50/50 p-4">
+                  <div className="mb-1 flex items-center gap-1.5 text-xs font-semibold text-indigo-600">
+                    <ChatCircleIcon size={14} weight="fill" />
+                    {shopName ?? "Seller"}
+                    <span className="font-normal text-indigo-400">
+                      · {formatDate(review.vendor_replied_at ?? undefined)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700">{review.vendor_reply}</p>
+                </div>
               )}
             </div>
           ))}

@@ -15,6 +15,7 @@ export interface OrderItem {
   unit_price: string;
   total: string;
   fulfillment_status?: string | null;
+  is_reviewed?: boolean;
 }
 
 export interface OrderVendorGroup {

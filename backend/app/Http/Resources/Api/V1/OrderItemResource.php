@@ -29,6 +29,7 @@ class OrderItemResource extends JsonResource
             'unit_price' => $this->unit_price,
             'total' => $this->total,
             'fulfillment_status' => $this->whenLoaded('orderVendor', fn () => $this->orderVendor->status),
+            'is_reviewed' => (bool) ($this->is_reviewed ?? false),
             'product' => new ProductResource($this->whenLoaded('product')),
             'variant' => new ProductVariantResource($this->whenLoaded('variant')),
         ];

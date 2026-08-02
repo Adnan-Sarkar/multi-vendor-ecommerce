@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderVendor;
+use App\Models\Review;
 use App\Notifications\OrderCancelledNotification;
 use App\Notifications\OrderPlacedNotification;
 use App\Repositories\CartRepository;
@@ -158,7 +159,18 @@ class OrderService
     }
 
     public function getOrderDetails(Order $order): Order {
-        return $this->orderRepository->getOrderDetails($order);
+        $order = $this->orderRepository->getOrderDetails($order);
+
+        $reviewedProductIds = Review::where('order_id', $order->id)
+            ->where('user_id', $order->user_id)
+            ->pluck('product_id')
+            ->all();
+
+        $order->orderItems->each(function ($orderItem) use ($reviewedProductIds) {
+            $orderItem->is_reviewed = in_array($orderItem->product_id, $reviewedProductIds);
+        });
+
+        return $order;
     }
 
     /**

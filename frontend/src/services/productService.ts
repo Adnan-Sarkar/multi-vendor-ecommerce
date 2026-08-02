@@ -78,6 +78,8 @@ export interface ProductReview {
   title: string | null;
   body: string | null;
   user?: ProductReviewUser | null;
+  vendor_reply?: string | null;
+  vendor_replied_at?: string | null;
   created_at?: string;
 }
 

@@ -9,16 +9,18 @@ interface OrderItemReviewButtonProps {
   orderId: number;
   productId: number;
   productName: string;
+  alreadyReviewed?: boolean;
 }
 
 export function OrderItemReviewButton({
   orderId,
   productId,
   productName,
+  alreadyReviewed = false,
 }: OrderItemReviewButtonProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
-  const [hasReviewed, setHasReviewed] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(alreadyReviewed);
 
   if (hasReviewed) {
     return (
