@@ -1,70 +1,76 @@
-import { CurrencyDollar, Package, ClipboardText, TrendUp } from "@phosphor-icons/react/dist/ssr";
+import {
+  CurrencyDollarIcon,
+  WalletIcon,
+  ClipboardTextIcon,
+  HourglassIcon,
+  PackageIcon,
+} from "@phosphor-icons/react/dist/ssr";
+import { formatMoney } from "@/lib/productPricing";
+import { getVendorDashboard } from "@/services/vendorDashboardService";
+import { getVendorOrders } from "@/services/vendorOrderService";
 import { StatCard } from "./components/StatCard";
+import { RecentVendorOrders } from "./components/RecentVendorOrders";
 
-export default function VendorDashboardPage() {
+const RECENT_ORDERS_LIMIT = 5;
+
+export default async function VendorDashboardPage() {
+  const [stats, ordersResult] = await Promise.all([
+    getVendorDashboard(),
+    getVendorOrders(1),
+  ]);
+
+  const recentOrders = ordersResult.data.slice(0, RECENT_ORDERS_LIMIT);
+
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard 
-          title="Total Revenue" 
-          value="$12,426.00" 
-          icon={<CurrencyDollar size={24} className="text-green-600" />} 
-          trend="+14% this month" 
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+          Dashboard
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          An overview of your store performance and earnings.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <StatCard
+          title="Total Revenue"
+          value={formatMoney(stats.total_revenue)}
+          subtitle="Lifetime earnings"
+          tone="green"
+          icon={<CurrencyDollarIcon size={22} />}
         />
-        <StatCard 
-          title="Active Orders" 
-          value="24" 
-          icon={<ClipboardText size={24} className="text-indigo-600" />} 
-          trend="4 pending fulfillment" 
+        <StatCard
+          title="Available Balance"
+          value={formatMoney(stats.balance)}
+          subtitle="Ready to withdraw"
+          tone="indigo"
+          icon={<WalletIcon size={22} />}
         />
-        <StatCard 
-          title="Total Products" 
-          value="156" 
-          icon={<Package size={24} className="text-purple-600" />} 
-          trend="+3 this week" 
+        <StatCard
+          title="Total Orders"
+          value={String(stats.total_orders)}
+          subtitle="All-time orders"
+          tone="purple"
+          icon={<ClipboardTextIcon size={22} />}
         />
-        <StatCard 
-          title="Store Views" 
-          value="4,821" 
-          icon={<TrendUp size={24} className="text-orange-600" />} 
-          trend="+22% this week" 
+        <StatCard
+          title="Pending Orders"
+          value={String(stats.pending_orders)}
+          subtitle="Awaiting fulfillment"
+          tone="amber"
+          icon={<HourglassIcon size={22} />}
+        />
+        <StatCard
+          title="Total Products"
+          value={String(stats.total_products)}
+          subtitle="Active listings"
+          tone="blue"
+          icon={<PackageIcon size={22} />}
         />
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-4">Order ID</th>
-                <th className="px-6 py-4">Customer</th>
-                <th className="px-6 py-4">Date</th>
-                <th className="px-6 py-4">Amount</th>
-                <th className="px-6 py-4">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <tr key={i} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">#ORD-{9000 + i}</td>
-                  <td className="px-6 py-4">John Doe</td>
-                  <td className="px-6 py-4">May 12, 2026</td>
-                  <td className="px-6 py-4">${(Math.random() * 200).toFixed(2)}</td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                      Pending
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <RecentVendorOrders orders={recentOrders} />
     </div>
   );
 }
-

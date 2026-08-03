@@ -1,26 +1,39 @@
-import React from "react";
+import type { ReactNode } from "react";
+
+type Tone = "green" | "indigo" | "amber" | "purple" | "blue";
+
+const TONES: Record<Tone, string> = {
+  green: "bg-green-50 text-green-600",
+  indigo: "bg-indigo-50 text-indigo-600",
+  amber: "bg-amber-50 text-amber-600",
+  purple: "bg-purple-50 text-purple-600",
+  blue: "bg-blue-50 text-blue-600",
+};
 
 interface StatCardProps {
   title: string;
   value: string;
-  icon: React.ReactNode;
-  trend: string;
+  icon: ReactNode;
+  subtitle: string;
+  tone: Tone;
 }
 
-export function StatCard({ title, value, icon, trend }: StatCardProps) {
+export function StatCard({ title, value, icon, subtitle, tone }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm flex flex-col gap-4">
-      <div className="flex justify-between items-start">
-        <div>
-          <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-          <h3 className="text-2xl font-bold text-gray-900">{value}</h3>
-        </div>
-        <div className="h-12 w-12 rounded-lg bg-gray-50 flex items-center justify-center">
+    <div className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+      <div className="flex items-start justify-between">
+        <p className="text-sm font-medium text-gray-500">{title}</p>
+        <span
+          className={`flex h-11 w-11 items-center justify-center rounded-xl ${TONES[tone]}`}
+        >
           {icon}
-        </div>
+        </span>
       </div>
-      <div className="text-sm font-medium text-gray-500">
-        {trend}
+      <div>
+        <h3 className="text-2xl font-bold tracking-tight text-gray-900">
+          {value}
+        </h3>
+        <p className="mt-1 text-xs font-medium text-gray-400">{subtitle}</p>
       </div>
     </div>
   );
