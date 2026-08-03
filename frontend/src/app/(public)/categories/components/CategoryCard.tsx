@@ -17,11 +17,16 @@ export function CategoryCard({ category }: CategoryCardProps) {
   );
   const hiddenSubcategoryCount =
     subcategories.length - visibleSubcategories.length;
+  const groupSlugs = [
+    category.slug,
+    ...subcategories.map((child) => child.slug),
+  ];
+  const shopAllHref = `/shop?categories=${groupSlugs.join(",")}`;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl">
       <Link
-        href={`/shop?category=${category.slug}`}
+        href={`/category/${category.id}`}
         className="relative block h-44 cursor-pointer overflow-hidden bg-gray-100"
       >
         {category.image ? (
@@ -65,8 +70,8 @@ export function CategoryCard({ category }: CategoryCardProps) {
               {visibleSubcategories.map((child) => (
                 <Link
                   key={child.id}
-                  href={`/shop?category=${child.slug}`}
-                  className="cursor-pointer rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700"
+                  href={`/shop?categories=${child.slug}`}
+                  className="cursor-pointer rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors"
                 >
                   {child.name}
                 </Link>
@@ -81,7 +86,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
         )}
 
         <Link
-          href={`/shop?category=${category.slug}`}
+          href={shopAllHref}
           className="group/link mt-auto inline-flex cursor-pointer items-center gap-1.5 pt-5 text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
         >
           Shop all {category.name}

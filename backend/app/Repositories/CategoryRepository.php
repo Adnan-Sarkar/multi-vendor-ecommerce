@@ -19,8 +19,10 @@ class CategoryRepository
     }
 
     public function getCategoryDetails(Category $category): Category {
-        return $category->load(['parent', 'children'])
-            ->loadCount('products');
+        return $category->load([
+            'parent',
+            'children' => fn ($query) => $query->withCount('products'),
+        ])->loadCount('products');
     }
 
     public function updateCategory(Category $category, array $data): Category {;

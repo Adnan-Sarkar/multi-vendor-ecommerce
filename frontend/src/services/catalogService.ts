@@ -35,6 +35,21 @@ export async function getCategories(): Promise<Category[]> {
   }
 }
 
+export async function getCategoryById(id: number): Promise<Category | null> {
+  try {
+    const response = await fetchServer(`/category/${id}`, { cache: "no-store" });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const body = await response.json();
+    return body.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getTags(): Promise<Tag[]> {
   try {
     const response = await fetchServer("/tag", { cache: "no-store" });
