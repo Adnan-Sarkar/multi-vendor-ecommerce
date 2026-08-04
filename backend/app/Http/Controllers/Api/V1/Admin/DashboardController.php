@@ -22,8 +22,8 @@ class DashboardController extends Controller
         $this->dashboardService = $dashboardService;
     }
 
-    public function index(): JsonResponse {
-        $result = $this->dashboardService->getAdminDashboard();
+    public function index(Request $request): JsonResponse {
+        $result = $this->dashboardService->getAdminDashboard($request->query('range'));
         return $this->success($result, 'Admin dashboard retrieved successfully');
     }
 }

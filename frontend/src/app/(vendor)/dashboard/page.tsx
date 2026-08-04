@@ -8,7 +8,7 @@ import {
 import { formatMoney } from "@/lib/productPricing";
 import { getVendorDashboard } from "@/services/vendorDashboardService";
 import { getVendorOrders } from "@/services/vendorOrderService";
-import { StatCard } from "./components/StatCard";
+import { StatCard } from "@/components/shared/StatCard";
 import { RecentVendorOrders } from "./components/RecentVendorOrders";
 
 const RECENT_ORDERS_LIMIT = 5;
