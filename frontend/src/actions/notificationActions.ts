@@ -2,6 +2,11 @@
 
 import { fetchServer } from "@/lib/api-server";
 import { revalidatePath } from "next/cache";
+import { getUnreadNotificationCount } from "@/services/notificationService";
+
+export async function getUnreadCountAction(): Promise<number> {
+  return getUnreadNotificationCount();
+}
 
 export async function markNotificationReadAction(notificationId: string) {
   try {

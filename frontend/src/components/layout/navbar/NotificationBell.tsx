@@ -22,6 +22,7 @@ import {
 import {
   markNotificationReadAction,
   markAllNotificationsReadAction,
+  getUnreadCountAction,
 } from "@/actions/notificationActions";
 
 interface NotificationBellProps {
@@ -77,6 +78,36 @@ export function NotificationBell({
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const scheduleNextPoll = () => {
+      const nextDelay = 60000 + Math.random() * 10000;
+      timeoutId = setTimeout(runPoll, nextDelay);
+    };
+
+    const runPoll = async () => {
+      if (!isActive) return;
+
+      if (document.visibilityState === "visible") {
+        const latestCount = await getUnreadCountAction();
+        if (isActive) {
+          setUnreadCount(latestCount);
+        }
+      }
+
+      scheduleNextPoll();
+    };
+
+    scheduleNextPoll();
+
+    return () => {
+      isActive = false;
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   function handleItemClick(notification: AppNotification) {
