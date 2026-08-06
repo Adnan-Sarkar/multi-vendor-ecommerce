@@ -44,11 +44,22 @@ class VendorProfile extends Model
     }
 
     public function products() {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class, 'vendor_id');
+    }
+
+    public function reviews() {
+        return $this->hasManyThrough(
+            Review::class,
+            Product::class,
+            'vendor_id',
+            'product_id',
+            'id',
+            'id'
+        );
     }
 
     public function orderVendors() {
-        return $this->hasMany(OrderVendor::class);
+        return $this->hasMany(OrderVendor::class, 'vendor_id');
     }
 
     public function withdrawals() {

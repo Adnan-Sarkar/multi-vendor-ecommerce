@@ -18,6 +18,7 @@ use \App\Http\Controllers\Api\V1\NotificationController;
 use \App\Http\Controllers\Api\V1\TagController;
 use \App\Http\Controllers\Api\V1\AttributeController;
 use \App\Http\Controllers\Api\V1\PaymentController;
+use \App\Http\Controllers\Api\V1\PublicVendorController;
 
 // Health
 Route::get('/health', function () {
@@ -80,6 +81,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/{product:slug}/reviews', 'getProductReviews');
         Route::get('/{product:slug}/variants', 'getProductVariants');
         Route::get('/{product:slug}', 'show');
+    });
+
+    // Public vendor storefront routes
+    Route::prefix('/vendors')->controller(PublicVendorController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{vendorProfile:slug}/products', 'products');
+        Route::get('/{vendorProfile:slug}', 'show');
     });
 
     // Cart routes

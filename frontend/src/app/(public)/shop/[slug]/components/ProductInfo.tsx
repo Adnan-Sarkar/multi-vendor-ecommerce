@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StorefrontIcon } from "@phosphor-icons/react/dist/ssr";
 import type { PublicProduct } from "@/services/productService";
 import {
@@ -64,9 +65,12 @@ export function ProductInfo({ product }: ProductInfoProps) {
         <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
           <StorefrontIcon size={18} />
           Sold by
-          <span className="font-semibold text-gray-900">
+          <Link
+            href={`/vendors/${product.vendor.slug}`}
+            className="cursor-pointer font-semibold text-indigo-600 transition-colors hover:text-indigo-700 hover:underline"
+          >
             {product.vendor.shop_name}
-          </span>
+          </Link>
         </div>
       )}
 
