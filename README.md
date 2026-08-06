@@ -77,7 +77,7 @@ Admin
 | Payments | SSLCommerz (Sandbox)               |
 | Frontend | Next.js 16, React 19, TypeScript   |
 | Styling  | Tailwind CSS 4                     |
-| Forms    | React Hook Form, Zod               |
+| Validation | Zod |
 | Charts   | Recharts                           |
 | Media    | Cloudinary                         |
 

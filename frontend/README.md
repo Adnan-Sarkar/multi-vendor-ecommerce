@@ -69,7 +69,6 @@ src/
 ├── services/         functions that call the API
 ├── actions/          server actions for mutations
 ├── lib/              helpers such as the API client and Cloudinary upload
-├── store/            Zustand stores
 ├── data/             static data
 └── types/            shared TypeScript types
 ```
