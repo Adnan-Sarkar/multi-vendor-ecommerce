@@ -60,7 +60,7 @@ export default async function Home() {
       <ProductRow
         title="Deals"
         subtitle="On sale now"
-        viewAllHref="/shop"
+        viewAllHref="/shop?on_sale=1"
         products={onSaleProducts}
         wishlistedProductIds={wishlistedProductIds}
       />

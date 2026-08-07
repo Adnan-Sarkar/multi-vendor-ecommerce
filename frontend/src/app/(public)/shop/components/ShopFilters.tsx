@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FunnelIcon } from "@phosphor-icons/react";
+import { FunnelIcon, CaretDownIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui";
 import type { Category } from "@/services/catalogService";
 
@@ -32,6 +32,26 @@ export function ShopFilters({
   const [inStockOnly, setInStockOnly] = useState(
     searchParams.get("in_stock") === "1",
   );
+  const [onSaleOnly, setOnSaleOnly] = useState(
+    searchParams.get("on_sale") === "1",
+  );
+
+  const [expandedParents, setExpandedParents] = useState<number[]>(() =>
+    categories
+      .filter((category) =>
+        (category.children ?? []).some((child) =>
+          selectedCategories.includes(child.slug),
+        ),
+      )
+      .map((category) => category.id),
+  );
+
+  const toggleExpanded = (categoryId: number) =>
+    setExpandedParents((current) =>
+      current.includes(categoryId)
+        ? current.filter((id) => id !== categoryId)
+        : [...current, categoryId],
+    );
 
   const addSlugs = (slugs: string[]) =>
     setCheckedSlugs((current) => [...new Set([...current, ...slugs])]);
@@ -89,6 +109,12 @@ export function ShopFilters({
       params.delete("in_stock");
     }
 
+    if (onSaleOnly) {
+      params.set("on_sale", "1");
+    } else {
+      params.delete("on_sale");
+    }
+
     params.delete("page");
 
     router.push(`/shop?${params.toString()}`);
@@ -99,6 +125,7 @@ export function ShopFilters({
     setMinPrice("");
     setMaxPrice("");
     setInStockOnly(false);
+    setOnSaleOnly(false);
     router.push("/shop");
   };
 
@@ -106,7 +133,8 @@ export function ShopFilters({
     checkedSlugs.length +
     (minPrice ? 1 : 0) +
     (maxPrice ? 1 : 0) +
-    (inStockOnly ? 1 : 0);
+    (inStockOnly ? 1 : 0) +
+    (onSaleOnly ? 1 : 0);
 
   return (
     <aside className="w-full shrink-0 lg:w-72">
@@ -125,37 +153,59 @@ export function ShopFilters({
             )}
           </div>
 
-          <div className="space-y-6 px-5 py-5">
-            <div>
-              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
-                Categories
-              </h3>
+          <div className="px-5 py-5">
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
+              Categories
+            </h3>
 
-              {categories.length === 0 ? (
-                <p className="text-sm text-gray-400">
-                  No categories available.
-                </p>
-              ) : (
-                <ul className="space-y-2.5">
-                  {categories.map((category) => (
+            {categories.length === 0 ? (
+              <p className="text-sm text-gray-400">No categories available.</p>
+            ) : (
+              <ul className="max-h-72 space-y-1 overflow-y-auto pr-1">
+                {categories.map((category) => {
+                  const children = category.children ?? [];
+                  const hasChildren = children.length > 0;
+                  const isExpanded = expandedParents.includes(category.id);
+                  const isFullySelected = collectCategorySlugs(category).every(
+                    (slug) => checkedSlugs.includes(slug),
+                  );
+
+                  return (
                     <li key={category.id}>
-                      <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50">
-                        <input
-                          type="checkbox"
-                          checked={collectCategorySlugs(category).every(
-                            (slug) => checkedSlugs.includes(slug),
-                          )}
-                          onChange={() => toggleParentCategory(category)}
-                          className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                        />
-                        <span className="text-sm font-medium text-gray-700">
-                          {category.name}
-                        </span>
-                      </label>
+                      <div className="flex items-center gap-1">
+                        <label className="flex flex-1 cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            checked={isFullySelected}
+                            onChange={() => toggleParentCategory(category)}
+                            className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          />
+                          <span className="text-sm font-medium text-gray-700">
+                            {category.name}
+                          </span>
+                        </label>
 
-                      {(category.children ?? []).length > 0 && (
-                        <ul className="mt-1 space-y-1 border-l border-gray-100 pl-4">
-                          {category.children?.map((child) => (
+                        {hasChildren && (
+                          <button
+                            type="button"
+                            onClick={() => toggleExpanded(category.id)}
+                            aria-label={`Toggle ${category.name}`}
+                            className="cursor-pointer rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-50 hover:text-gray-600"
+                          >
+                            <CaretDownIcon
+                              size={14}
+                              weight="bold"
+                              className={`transition-transform ${
+                                isExpanded ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+                        )}
+                      </div>
+
+                      {hasChildren && isExpanded && (
+                        <ul className="mb-1 ml-4 space-y-0.5 border-l border-gray-100 pl-3">
+                          {children.map((child) => (
                             <li key={child.id}>
                               <label className="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-50">
                                 <input
@@ -175,12 +225,12 @@ export function ShopFilters({
                         </ul>
                       )}
                     </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                  );
+                })}
+              </ul>
+            )}
 
-            <div className="border-t border-gray-100 pt-5">
+            <div className="mt-6 border-t border-gray-100 pt-5">
               <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-500">
                 Price Range
               </h3>
@@ -226,7 +276,7 @@ export function ShopFilters({
               </div>
             </div>
 
-            <div className="border-t border-gray-100 pt-5">
+            <div className="mt-5 space-y-3 border-t border-gray-100 pt-5">
               <label className="flex cursor-pointer items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">
                   In stock only
@@ -238,9 +288,21 @@ export function ShopFilters({
                   className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                 />
               </label>
+
+              <label className="flex cursor-pointer items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">
+                  On sale only
+                </span>
+                <input
+                  type="checkbox"
+                  checked={onSaleOnly}
+                  onChange={(event) => setOnSaleOnly(event.target.checked)}
+                  className="h-4 w-4 cursor-pointer rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                />
+              </label>
             </div>
 
-            <div className="flex flex-col gap-2.5 border-t border-gray-100 pt-5">
+            <div className="mt-5 flex flex-col gap-2.5 border-t border-gray-100 pt-5">
               <Button onClick={applyFilters} fullWidth>
                 Apply Filters
               </Button>

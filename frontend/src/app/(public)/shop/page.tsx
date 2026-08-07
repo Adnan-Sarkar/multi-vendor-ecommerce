@@ -29,12 +29,21 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
       min_price: readSingleValue(params.min),
       max_price: readSingleValue(params.max),
       in_stock: params.in_stock === "1",
+      on_sale: params.on_sale === "1",
       sort: readSingleValue(params.sort),
       page: pageParam ? Number(pageParam) : 1,
     }),
     getCategories(),
     getWishlistProductIds(),
   ]);
+
+  const filtersKey = [
+    selectedCategories.join(","),
+    readSingleValue(params.min) ?? "",
+    readSingleValue(params.max) ?? "",
+    params.in_stock === "1" ? "1" : "",
+    params.on_sale === "1" ? "1" : "",
+  ].join("|");
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -44,6 +53,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <ShopFilters
+          key={filtersKey}
           categories={categories}
           selectedCategories={selectedCategories}
         />
