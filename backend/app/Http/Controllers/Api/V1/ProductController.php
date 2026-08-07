@@ -49,6 +49,7 @@ class ProductController extends Controller
             'vendor_id',
             'featured',
             'in_stock',
+            'on_sale',
             'sort'
         ]);
 

@@ -89,6 +89,7 @@ export interface ProductListFilters {
   min_price?: string;
   max_price?: string;
   in_stock?: boolean;
+  on_sale?: boolean;
   sort?: string;
   page?: number;
 }
@@ -128,6 +129,10 @@ function buildListQuery(filters: ProductListFilters): string {
 
   if (filters.in_stock) {
     params.set("in_stock", "1");
+  }
+
+  if (filters.on_sale) {
+    params.set("on_sale", "1");
   }
 
   if (filters.sort) {
@@ -177,6 +182,21 @@ export async function getFeaturedProducts(): Promise<PublicProduct[]> {
   } catch {
     return [];
   }
+}
+
+export async function getNewArrivals(limit = 8): Promise<PublicProduct[]> {
+  const result = await getAllProducts({ sort: "newest" });
+  return result.data.slice(0, limit);
+}
+
+export async function getPopularProducts(limit = 8): Promise<PublicProduct[]> {
+  const result = await getAllProducts({ sort: "popular" });
+  return result.data.slice(0, limit);
+}
+
+export async function getOnSaleProducts(limit = 8): Promise<PublicProduct[]> {
+  const result = await getAllProducts({ on_sale: true });
+  return result.data.slice(0, limit);
 }
 
 export async function getProductBySlug(

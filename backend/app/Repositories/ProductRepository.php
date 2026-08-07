@@ -61,6 +61,11 @@ class ProductRepository
                 filter_var($filters['in_stock'], FILTER_VALIDATE_BOOLEAN));
         }
 
+        if (!empty($filters['on_sale'])) {
+            $query->whereNotNull('sale_price')
+                ->whereColumn('sale_price', '<', 'regular_price');
+        }
+
         switch ($filters['sort'] ?? null) {
             case 'price_asc':
                 $query->orderBy('regular_price');
