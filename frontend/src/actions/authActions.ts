@@ -58,7 +58,7 @@ export async function createSession(token: string, role: string) {
   });
 }
 
-export async function loginAction(prevState: any, formData: FormData) {
+export async function loginAction(prevState: unknown, formData: FormData) {
   const validatedFields = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password")
@@ -97,12 +97,12 @@ export async function loginAction(prevState: any, formData: FormData) {
     await createSession(token, user.role);
 
     return { success: true, role: user.role };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Server connection failed." };
   }
 }
 
-export async function registerAction(prevState: any, formData: FormData) {
+export async function registerAction(prevState: unknown, formData: FormData) {
   const validatedFields = RegisterSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -146,7 +146,7 @@ export async function registerAction(prevState: any, formData: FormData) {
     await createSession(token, user.role);
 
     return { success: true, role: user.role };
-  } catch (err) {
+  } catch {
     return { success: false, error: "Server connection failed." };
   }
 }
@@ -175,7 +175,7 @@ export async function logoutAction() {
   }
 }
 
-export async function forgotPasswordAction(prevState: any, formData: FormData) {
+export async function forgotPasswordAction(prevState: unknown, formData: FormData) {
   const validatedFields = ForgotPasswordSchema.safeParse({
     email: formData.get("email"),
   });
@@ -208,7 +208,7 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
       };
     }
     return { success: true, email };
-  } catch (err) {
+  } catch {
     return {
       success: false,
       error: "Server connection failed.",
@@ -217,7 +217,7 @@ export async function forgotPasswordAction(prevState: any, formData: FormData) {
   }
 }
 
-export async function resetPasswordAction(prevState: any, formData: FormData) {
+export async function resetPasswordAction(prevState: unknown, formData: FormData) {
   const validatedFields = ResetPasswordSchema.safeParse({
     email: formData.get("email"),
     otp: formData.get("otp"),
@@ -259,7 +259,7 @@ export async function resetPasswordAction(prevState: any, formData: FormData) {
     }
 
     return { success: true };
-  } catch (err) {
+  } catch {
     return {
       success: false,
       error: "Server connection failed.",

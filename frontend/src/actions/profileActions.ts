@@ -90,16 +90,16 @@ export async function getProfileAction() {
     const result = await res.json();
 
     return result.success ? result.data : null;
-  } catch (err) {
+  } catch {
     return null;
   }
 }
 
 export async function updateCustomerProfileAction(
-  prevState: any,
+  prevState: unknown,
   formData: FormData,
 ) {
-  const fields: Record<string, any> = {};
+  const fields: Record<string, unknown> = {};
 
   if (formData.get("name")) fields.name = formData.get("name");
   if (formData.get("phone")) fields.phone = formData.get("phone");
@@ -119,7 +119,7 @@ export async function updateCustomerProfileAction(
 
   const payload = Object.fromEntries(
     Object.entries(validatedFields.data).filter(
-      ([_key, value]) => value !== undefined && value !== "",
+      ([, value]) => value !== undefined && value !== "",
     ),
   );
 
@@ -141,19 +141,19 @@ export async function updateCustomerProfileAction(
     revalidatePath("/account");
 
     return { success: true, message: "Profile updated successfully!" };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err.message || "Server connection failed.",
+      error: err instanceof Error ? err.message : "Server connection failed.",
     };
   }
 }
 
 export async function updateVendorProfileAction(
-  prevState: any,
+  prevState: unknown,
   formData: FormData,
 ) {
-  const fields: Record<string, any> = {};
+  const fields: Record<string, unknown> = {};
 
   if (formData.get("name")) fields.name = formData.get("name");
   if (formData.get("phone")) fields.phone = formData.get("phone");
@@ -179,7 +179,7 @@ export async function updateVendorProfileAction(
 
   const payload = Object.fromEntries(
     Object.entries(validatedFields.data).filter(
-      ([_key, value]) => value !== undefined && value !== "",
+      ([, value]) => value !== undefined && value !== "",
     ),
   );
 
@@ -201,15 +201,18 @@ export async function updateVendorProfileAction(
     revalidatePath("/dashboard/shop");
 
     return { success: true, message: "Shop details updated successfully!" };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err.message || "Server connection failed.",
+      error: err instanceof Error ? err.message : "Server connection failed.",
     };
   }
 }
 
-export async function changePasswordAction(prevState: any, formData: FormData) {
+export async function changePasswordAction(
+  prevState: unknown,
+  formData: FormData,
+) {
   const validatedFields = ChangePasswordSchema.safeParse({
     current_password: formData.get("current_password"),
     new_password: formData.get("new_password"),
@@ -245,10 +248,10 @@ export async function changePasswordAction(prevState: any, formData: FormData) {
     }
 
     return { success: true, message: "Password changed successfully!" };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err.message || "Server connection failed.",
+      error: err instanceof Error ? err.message : "Server connection failed.",
     };
   }
 }

@@ -21,7 +21,10 @@ const VendorRegisterSchema = z.object({
   path: ["password_confirmation"],
 });
 
-export async function registerVendorAction(prevState: any, formData: FormData) {
+export async function registerVendorAction(
+  prevState: unknown,
+  formData: FormData,
+) {
   const validatedFields = VendorRegisterSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -87,10 +90,10 @@ export async function registerVendorAction(prevState: any, formData: FormData) {
     await createSession(token, user.role);
 
     return { success: true, role: user.role };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       success: false,
-      error: err?.message || "Server connection failed.",
+      error: err instanceof Error ? err.message : "Server connection failed.",
       inputs: {
         name: data.name,
         email: data.email,

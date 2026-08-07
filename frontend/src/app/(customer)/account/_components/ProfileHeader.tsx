@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   ShieldCheck,
   Envelope,
@@ -54,9 +55,11 @@ export function ProfileHeader({ profile }: Props) {
         <div className="relative flex-none">
           <div className="bg-brand-gradient absolute -inset-1.5 rounded-full opacity-60 blur-md" />
           {profile.avatar ? (
-            <img
+            <Image
               src={profile.avatar}
               alt={profile.name}
+              width={96}
+              height={96}
               className="relative h-24 w-24 rounded-full border-4 border-white object-cover shadow-lg"
             />
           ) : (
