@@ -3,7 +3,12 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { EyeIcon, CheckCircleIcon, PackageIcon } from "@phosphor-icons/react";
+import {
+  EyeIcon,
+  CheckCircleIcon,
+  PackageIcon,
+  ChatCircleTextIcon,
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 import { DataTable, type Column } from "@/components/ui";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -16,18 +21,6 @@ import { ReviewDetailModal } from "./ReviewDetailModal";
 interface AdminReviewsTableProps {
   reviews: AdminReview[];
   meta: PaginationMeta;
-}
-
-function formatDate(value?: string): string {
-  if (!value) {
-    return "—";
-  }
-
-  return new Date(value).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
 }
 
 export function AdminReviewsTable({ reviews, meta }: AdminReviewsTableProps) {
@@ -90,32 +83,8 @@ export function AdminReviewsTable({ reviews, meta }: AdminReviewsTableProps) {
       ),
     },
     {
-      header: "Customer",
-      cell: (review) => review.user?.name ?? "—",
-    },
-    {
       header: "Rating",
       cell: (review) => <ReviewStars rating={review.rating} />,
-    },
-    {
-      header: "Review",
-      cell: (review) => (
-        <div className="max-w-xs">
-          {review.title && (
-            <p className="truncate font-medium text-gray-900">
-              {review.title}
-            </p>
-          )}
-          <p className="truncate text-xs text-gray-500">
-            {review.body ?? "No written review."}
-          </p>
-          {review.vendor_reply && (
-            <span className="mt-1 inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-medium text-indigo-600">
-              Vendor replied
-            </span>
-          )}
-        </div>
-      ),
     },
     {
       header: "Status",
@@ -124,8 +93,16 @@ export function AdminReviewsTable({ reviews, meta }: AdminReviewsTableProps) {
       ),
     },
     {
-      header: "Submitted",
-      cell: (review) => formatDate(review.created_at),
+      header: "Vendor Reply",
+      cell: (review) =>
+        review.vendor_reply ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600">
+            <ChatCircleTextIcon size={13} weight="fill" />
+            Replied
+          </span>
+        ) : (
+          <span className="text-sm text-gray-300">—</span>
+        ),
     },
     {
       header: "Actions",

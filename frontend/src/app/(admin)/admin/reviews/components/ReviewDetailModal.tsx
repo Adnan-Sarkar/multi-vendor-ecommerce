@@ -65,6 +65,12 @@ export function ReviewDetailModal({
             </p>
             <p className="text-xs text-gray-400">
               by {review.user?.name ?? "Customer"}
+              {review.created_at &&
+                ` · ${new Date(review.created_at).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}`}
             </p>
           </div>
         </div>
