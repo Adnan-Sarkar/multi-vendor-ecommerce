@@ -228,6 +228,7 @@ Route::prefix('v1')->group(function () {
     Route::prefix('/admin')->middleware(['auth:sanctum', 'role:super_admin|admin'])->group(function () {
         // Admin vendor management
         Route::prefix('/vendor')->controller(VendorController::class)->group(function () {
+            Route::get('/', 'index');
             Route::get('/pending', 'getPendingVendors');
             Route::post('/{vendorProfile}/approve', 'approveVendor');
             Route::post('/{vendorProfile}/reject', 'rejectVendor');

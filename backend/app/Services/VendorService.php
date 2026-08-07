@@ -24,6 +24,10 @@ class VendorService
         return $this->vendorRepository->getPendingVendors();
     }
 
+    public function getVendors(?string $status = null): LengthAwarePaginator {
+        return $this->vendorRepository->getVendors($status);
+    }
+
     public function getPublicVendors(array $filters = []): LengthAwarePaginator {
         return $this->vendorRepository->getPublicVendors($filters);
     }

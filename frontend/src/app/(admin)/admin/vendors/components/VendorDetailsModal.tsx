@@ -74,7 +74,13 @@ export function VendorDetailsModal({
     onClose();
   };
 
-  const footer = rejecting ? (
+  const isPending = (vendor.status ?? "pending") === "pending";
+
+  const footer = !isPending ? (
+    <Button variant="outline" onClick={handleClose}>
+      Close
+    </Button>
+  ) : rejecting ? (
     <>
       <Button
         variant="ghost"

@@ -7,7 +7,7 @@ import {
   CheckCircleIcon,
   WarningCircleIcon,
 } from "@phosphor-icons/react";
-import { DataTable, type Column } from "@/components/ui";
+import { DataTable, StatusBadge, type Column } from "@/components/ui";
 import type {
   PendingVendor,
   PaginationMeta,
@@ -19,15 +19,12 @@ import {
 } from "@/actions/adminVendorActions";
 import { VendorDetailsModal } from "./VendorDetailsModal";
 
-interface PendingVendorsTableProps {
+interface VendorsTableProps {
   vendors: PendingVendor[];
   meta: PaginationMeta;
 }
 
-export function PendingVendorsTable({
-  vendors,
-  meta,
-}: PendingVendorsTableProps) {
+export function VendorsTable({ vendors, meta }: VendorsTableProps) {
   const router = useRouter();
   const [selectedVendor, setSelectedVendor] = useState<PendingVendor | null>(
     null,
@@ -87,9 +84,8 @@ export function PendingVendorsTable({
       cell: (vendor) => vendor.user?.email ?? "—",
     },
     {
-      header: "Location",
-      cell: (vendor) =>
-        [vendor.city, vendor.state].filter(Boolean).join(", ") || "—",
+      header: "Status",
+      cell: (vendor) => <StatusBadge status={vendor.status ?? "pending"} />,
     },
     {
       header: "Actions",
@@ -103,14 +99,16 @@ export function PendingVendorsTable({
           >
             <EyeIcon size={20} />
           </button>
-          <button
-            onClick={() => approveVendor(vendor.id)}
-            disabled={isVendorProcessing(vendor.id)}
-            title="Approve vendor"
-            className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <CheckCircleIcon size={20} />
-          </button>
+          {vendor.status === "pending" && (
+            <button
+              onClick={() => approveVendor(vendor.id)}
+              disabled={isVendorProcessing(vendor.id)}
+              title="Approve vendor"
+              className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-green-50 hover:text-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <CheckCircleIcon size={20} />
+            </button>
+          )}
         </div>
       ),
     },
@@ -135,8 +133,8 @@ export function PendingVendorsTable({
         columns={columns}
         data={vendors}
         rowKey={(vendor) => vendor.id}
-        title={`Pending Vendor Approvals (${meta.total})`}
-        emptyMessage="No pending vendor applications."
+        title={`Vendors (${meta.total})`}
+        emptyMessage="No vendors found."
         meta={meta}
       />
 

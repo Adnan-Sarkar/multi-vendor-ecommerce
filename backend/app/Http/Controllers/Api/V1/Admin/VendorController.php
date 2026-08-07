@@ -33,6 +33,15 @@ class VendorController extends Controller
         );
     }
 
+    public function index(Request $request): JsonResponse {
+        $result = $this->vendorService->getVendors($request->query('status'));
+
+        return $this->paginated(
+            VendorProfileResource::collection($result),
+            'Vendors retrieved successfully'
+        );
+    }
+
     public function approveVendor(VendorProfile $vendorProfile): JsonResponse {
         $result = $this->vendorService->approveVendor($vendorProfile);
 

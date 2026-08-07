@@ -50,11 +50,18 @@ const emptyMeta: PaginationMeta = {
   to: null,
 };
 
-export async function getPendingVendors(
+export async function getVendors(
   page = 1,
+  status = "",
 ): Promise<PaginatedResponse<PendingVendor>> {
+  const query = new URLSearchParams({ page: String(page) });
+
+  if (status) {
+    query.set("status", status);
+  }
+
   try {
-    const response = await fetchServer(`/admin/vendor/pending?page=${page}`, {
+    const response = await fetchServer(`/admin/vendor?${query.toString()}`, {
       cache: "no-store",
     });
 

@@ -15,6 +15,16 @@ class VendorRepository
             ->paginate(20);
     }
 
+    public function getVendors(?string $status = null): LengthAwarePaginator {
+        $query = VendorProfile::with('user');
+
+        if (in_array($status, ['pending', 'approved', 'rejected'], true)) {
+            $query->where('status', $status);
+        }
+
+        return $query->latest()->paginate(20);
+    }
+
     public function getPublicVendors(array $filters = []): LengthAwarePaginator {
         $query = VendorProfile::where('status', 'approved')
             ->withCount(['products' => fn ($productQuery) => $productQuery->where('status', 'approved')])
