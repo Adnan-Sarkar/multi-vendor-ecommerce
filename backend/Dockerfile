@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # System packages and PHP extension build dependencies
 RUN apk add --no-cache \
