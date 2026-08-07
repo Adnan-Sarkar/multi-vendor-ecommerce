@@ -1,0 +1,83 @@
+services:
+  - type: web
+    name: multivendor-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /up
+    autoDeploy: true
+    envVars:
+      - key: APP_NAME
+        value: "Multi Vendor Ecommerce"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_TIMEZONE
+        value: Asia/Dhaka
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: warning
+      - key: AUTH_GUARD
+        value: api
+
+      # Secrets and per-environment values — set in the Render dashboard
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: SANCTUM_STATEFUL_DOMAINS
+        sync: false
+
+      # Database (Neon Postgres)
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+
+      # Drivers — sync queue (no always-on worker on free tier)
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: FILESYSTEM_DISK
+        value: local
+
+      # First deploy only: set to "true", then remove after tables are seeded
+      - key: RUN_SEED
+        value: "false"
+
+      # Payment gateway (SSLCommerz)
+      - key: SSLC_STORE_ID
+        sync: false
+      - key: SSLC_STORE_PASSWORD
+        sync: false
+      - key: SSLC_SANDBOX
+        value: "true"
+      - key: SSLC_STORE_CURRENCY
+        value: BDT
+
+      # Mail
+      - key: MAIL_MAILER
+        value: log
+      - key: MAIL_FROM_ADDRESS
+        value: "noreply@multivendor.com"
+      - key: MAIL_FROM_NAME
+        value: "Multi Vendor Ecommerce"
