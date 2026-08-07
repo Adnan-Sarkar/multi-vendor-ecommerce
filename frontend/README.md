@@ -61,7 +61,8 @@ The `app` folder is split into groups by user type.
 ```text
 src/
 ├── app/
-│   ├── (public)/     home, shop, product, categories, vendors, auth pages
+│   ├── (public)/     home, shop, product, categories, vendors
+│   ├── (auth)/       login, register, vendor register, password reset
 │   ├── (customer)/   cart, checkout, payment, orders, wishlist, account
 │   ├── (vendor)/     vendor dashboard, products, orders, coupons, withdrawals
 │   └── (admin)/      admin dashboard, moderation, catalog management
@@ -77,11 +78,14 @@ src/
 
 Public
 
-- Home
-- Shop with search, category filter, price range, sort, and pagination
+- Home with hero, categories, product rows, and featured stores
+- Shop with search, category filter, price range, on sale, sort, and pagination
 - Product details with image gallery, variants, and reviews
 - Categories and a category landing page
 - Vendor directory and a vendor storefront with shop stats
+
+Auth
+
 - Login, register, vendor register, forgot password, and reset password
 
 Customer

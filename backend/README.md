@@ -362,6 +362,7 @@ Admin moderation
 
 | Method | Endpoint                              | Description                      | Access |
 | ------ | ------------------------------------- | -------------------------------- | ------ |
+| GET    | /admin/vendor                         | List vendors filtered by status  | Admin  |
 | GET    | /admin/vendor/pending                 | List pending vendor applications | Admin  |
 | POST   | /admin/vendor/{vendorProfile}/approve | Approve a vendor                 | Admin  |
 | POST   | /admin/vendor/{vendorProfile}/reject  | Reject a vendor                  | Admin  |
