@@ -13,11 +13,11 @@ Most pages are server rendered. A page becomes a client component only when it n
 
 ## Live
 
-Not deployed yet. Update this link after publishing.
+| Part     | Link                                                                   | URL                                                         |
+| -------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Frontend | [Live site](https://multi-vendor-ecommerce-by-adnan-sarkar.vercel.app) | `https://multi-vendor-ecommerce-by-adnan-sarkar.vercel.app` |
 
-| Part     | Link                             | URL                   |
-| -------- | -------------------------------- | --------------------- |
-| Frontend | [Live site](https://example.com) | `https://example.com` |
+Hosted on Vercel with the root directory set to `frontend`. It talks to the Render-hosted API; see the deployment section in the [root README](../README.md#deployment).
 
 ## Contents
 

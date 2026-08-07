@@ -6,7 +6,7 @@
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
 </p>
 
@@ -16,12 +16,12 @@ There are three types of users. Customers browse and buy products. Vendors manag
 
 ## Live
 
-Not deployed yet. Update these links after publishing.
+| Part     | Link                                                                   | URL                                                         |
+| -------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Frontend | [Live site](https://multi-vendor-ecommerce-by-adnan-sarkar.vercel.app) | `https://multi-vendor-ecommerce-by-adnan-sarkar.vercel.app` |
+| API      | [API Base URL](https://multivendor-api-6k5d.onrender.com/api/health)   | `https://multivendor-api-6k5d.onrender.com/api/v1`          |
 
-| Part     | Link                                    | URL                       |
-| -------- | --------------------------------------- | ------------------------- |
-| Frontend | [Live site](https://example.com)        | `https://example.com`     |
-| API      | [API base URL](https://api.example.com) | `https://api.example.com` |
+> The API runs on a free Render instance and sleeps after inactivity, so the first request may take up to a minute to wake.
 
 ## Repository layout
 
@@ -69,17 +69,17 @@ Admin
 
 ## Tech stack
 
-| Area     | Technology                         |
-| -------- | ---------------------------------- |
-| API      | Laravel 13, PHP 8.3                |
-| Auth     | Laravel Sanctum, Spatie Permission |
-| Database | PostgreSQL                         |
-| Payments | SSLCommerz (Sandbox)               |
-| Frontend | Next.js 16, React 19, TypeScript   |
-| Styling  | Tailwind CSS 4                     |
-| Validation | Zod |
-| Charts   | Recharts                           |
-| Media    | Cloudinary                         |
+| Area       | Technology                         |
+| ---------- | ---------------------------------- |
+| API        | Laravel 13, PHP 8.3                |
+| Auth       | Laravel Sanctum, Spatie Permission |
+| Database   | PostgreSQL                         |
+| Payments   | SSLCommerz (Sandbox)               |
+| Frontend   | Next.js 16, React 19, TypeScript   |
+| Styling    | Tailwind CSS 4                     |
+| Validation | Zod                                |
+| Charts     | Recharts                           |
+| Media      | Cloudinary                         |
 
 ## Requirements
 
@@ -136,6 +136,30 @@ After seeding, you can log in with these accounts. The password for all of them 
 | Customer | `aduvai@gmail.com` |
 | Vendor   | `rahman@test.com`  |
 | Admin    | `admin@gmail.com`  |
+
+## Deployment
+
+The project is hosted for free across three services.
+
+| Service                      | Hosts       | Notes                                                                                            |
+| ---------------------------- | ----------- | ------------------------------------------------------------------------------------------------ |
+| [Render](https://render.com) | Laravel API | Built from `backend/Dockerfile` via the `render.yaml` blueprint. Free instance sleeps when idle. |
+| [Neon](https://neon.tech)    | PostgreSQL  | Serverless Postgres. Use the pooled connection host.                                             |
+| [Vercel](https://vercel.com) | Next.js app | Root directory set to `frontend`.                                                                |
+
+Backend deployment (Render blueprint):
+
+- The `render.yaml` at the repo root defines the `multivendor-api` web service.
+- The Docker image installs PHP dependencies with `--no-dev`, builds framework caches, and runs `php artisan migrate --force` on every boot.
+- Set `RUN_SEED=true` for the first deploy to seed demo data, then set it back to `false`.
+- Secrets (`APP_KEY`, database, SSLCommerz) are provided as environment variables in the Render dashboard, not committed.
+
+Frontend deployment (Vercel):
+
+- Import the repo and set the **Root Directory** to `frontend`.
+- Set `API_URL` to the Render API base (`.../api/v1`) and `COOKIE_NAME` to match the auth cookie.
+
+Because images are uploaded to Cloudinary, the API needs no persistent disk, so the free ephemeral filesystem is fine.
 
 ## Notes
 

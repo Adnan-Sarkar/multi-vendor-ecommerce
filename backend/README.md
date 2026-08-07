@@ -3,7 +3,7 @@
 <p align="left">
   <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" />
   <img src="https://img.shields.io/badge/PHP-8.3-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
-  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/PostgreSQL-18-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Sanctum-Auth-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Sanctum" />
 </p>
 
@@ -11,11 +11,11 @@ This is the REST API for the MultiVendor Ecommerce platform. It handles authenti
 
 ## Live
 
-Not deployed yet. Update this link after publishing.
+| Part         | Link                                                        | URL                                                |
+| ------------ | ----------------------------------------------------------- | -------------------------------------------------- |
+| API base URL | [API](https://multivendor-api-6k5d.onrender.com/api/health) | `https://multivendor-api-6k5d.onrender.com/api/v1` |
 
-| Part         | Link                           | URL                       |
-| ------------ | ------------------------------ | ------------------------- |
-| API base URL | [API](https://api.example.com) | `https://api.example.com` |
+Hosted on a free Render instance (Docker) with a Neon PostgreSQL database. The instance sleeps when idle, so the first request may take up to a minute. See the deployment section in the [root README](../README.md#deployment).
 
 ## Contents
 
