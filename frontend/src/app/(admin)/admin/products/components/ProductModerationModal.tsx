@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { PackageIcon } from "@phosphor-icons/react";
-import { Button, Modal, Textarea } from "@/components/ui";
+import { Button, Modal, Textarea, StatusBadge } from "@/components/ui";
 import { formatMoney } from "@/lib/productPricing";
 import type { AdminProduct } from "@/services/adminProductService";
 
@@ -35,6 +35,7 @@ export function ProductModerationModal({
 }: ProductModerationModalProps) {
   const [rejectionReason, setRejectionReason] = useState("");
 
+  const isPending = product?.status === "pending";
   const canReject =
     rejectionReason.trim().length >= MINIMUM_REJECTION_REASON_LENGTH;
 
@@ -57,20 +58,26 @@ export function ProductModerationModal({
       size="lg"
       title="Review Product"
       footer={
-        <>
-          <Button
-            variant="secondary"
-            onClick={handleReject}
-            disabled={!canReject || busy}
-            pending={busy}
-            pendingLabel="Working..."
-          >
-            Reject
+        isPending ? (
+          <>
+            <Button
+              variant="secondary"
+              onClick={handleReject}
+              disabled={!canReject || busy}
+              pending={busy}
+              pendingLabel="Working..."
+            >
+              Reject
+            </Button>
+            <Button onClick={handleApprove} disabled={busy}>
+              Approve
+            </Button>
+          </>
+        ) : (
+          <Button variant="outline" onClick={onClose}>
+            Close
           </Button>
-          <Button onClick={handleApprove} disabled={busy}>
-            Approve
-          </Button>
-        </>
+        )
       }
     >
       {product && (
@@ -91,9 +98,12 @@ export function ProductModerationModal({
             </div>
 
             <div className="min-w-0">
-              <h3 className="text-lg font-bold text-gray-900">
-                {product.name}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900">
+                  {product.name}
+                </h3>
+                <StatusBadge status={product.status} />
+              </div>
               <p className="text-xs text-gray-400">{product.sku}</p>
               <p className="mt-2 text-sm text-gray-600">
                 {product.short_description}
@@ -165,19 +175,21 @@ export function ProductModerationModal({
             </div>
           )}
 
-          <div>
-            <Textarea
-              label="Rejection Reason"
-              name="rejection_reason"
-              rows={3}
-              value={rejectionReason}
-              onChange={(event) => setRejectionReason(event.target.value)}
-              placeholder="Required only when rejecting (at least 10 characters)."
-            />
-            <p className="mt-1.5 text-xs text-gray-400">
-              Explain what the vendor needs to fix before approval.
-            </p>
-          </div>
+          {isPending && (
+            <div>
+              <Textarea
+                label="Rejection Reason"
+                name="rejection_reason"
+                rows={3}
+                value={rejectionReason}
+                onChange={(event) => setRejectionReason(event.target.value)}
+                placeholder="Required only when rejecting (at least 10 characters)."
+              />
+              <p className="mt-1.5 text-xs text-gray-400">
+                Explain what the vendor needs to fix before approval.
+              </p>
+            </div>
+          )}
         </div>
       )}
     </Modal>
