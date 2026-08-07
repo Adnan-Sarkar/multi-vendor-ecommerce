@@ -25,6 +25,7 @@ type DataTableProps<T> = {
   title?: ReactNode;
   toolbar?: ReactNode;
   meta?: TableMeta;
+  rowClassName?: (row: T) => string;
 };
 
 const ALIGN: Record<NonNullable<Column<unknown>["align"]>, string> = {
@@ -41,6 +42,7 @@ export function DataTable<T>({
   title,
   toolbar,
   meta,
+  rowClassName,
 }: DataTableProps<T>) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
@@ -66,7 +68,10 @@ export function DataTable<T>({
           </thead>
           <tbody className="divide-y divide-gray-100">
             {data.map((row) => (
-              <tr key={rowKey(row)} className="hover:bg-gray-50 transition-colors group">
+              <tr
+                key={rowKey(row)}
+                className={`transition-colors group hover:bg-gray-50 ${rowClassName?.(row) ?? ""}`}
+              >
                 {columns.map((column, columnIndex) => (
                   <td
                     key={columnIndex}

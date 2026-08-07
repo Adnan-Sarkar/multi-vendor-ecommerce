@@ -62,9 +62,13 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
     {
       header: "Name",
       cell: ({ category, parentName }) => (
-        <div className={parentName ? "pl-4" : ""}>
-          <p className="font-bold text-gray-900">
-            {parentName && <span className="text-gray-300">↳ </span>}
+        <div className={parentName ? "pl-6" : ""}>
+          <p className="flex items-center gap-2 font-bold text-gray-900">
+            {parentName && (
+              <span className="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-indigo-700">
+                Sub
+              </span>
+            )}
             {category.name}
           </p>
           <p className="text-xs text-gray-400">/{category.slug}</p>
@@ -98,6 +102,9 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
         columns={columns}
         data={rows}
         rowKey={({ category }) => category.id}
+        rowClassName={({ parentName }) =>
+          parentName ? "bg-indigo-50/70 hover:bg-indigo-100!" : ""
+        }
         title={`Categories (${rows.length})`}
         emptyMessage="No categories yet. Create your first category."
         toolbar={
