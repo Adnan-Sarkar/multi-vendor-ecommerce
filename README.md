@@ -164,3 +164,19 @@ Because images are uploaded to Cloudinary, the API needs no persistent disk, so 
 ## Notes
 
 The backend and frontend are two separate apps. The frontend never talks to the database directly. It calls the API and passes the auth token from an http only cookie on every request.
+
+## Screenshots
+
+![Home Page](./projectImages/Admin%20Dashboard%20Page.png)
+![Home Page](./projectImages/Vendor%20Dashboard%20Page.png)
+![Home Page](./projectImages/Vendor%20Product%20Page.png)
+![Home Page](./projectImages/Landing%20Page.png)
+![Home Page](./projectImages/Categories%20Page.png)
+![Home Page](./projectImages/Shop%20Page.png)
+![Home Page](./projectImages/Product%20Details%20Page.png)
+![Home Page](./projectImages/Cart%20Page.png)
+![Home Page](./projectImages/Customer%20Order%20Details%20Page.png)
+![Home Page](./projectImages/Customer%20Profile%20Pgae.png)
+![Home Page](./projectImages/Login%20Page.png)
+![Home Page](./projectImages/Registration%20Page.png)
+![Home Page](./projectImages/Vendor%20Registration%20Page.png)
